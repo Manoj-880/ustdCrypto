@@ -53,6 +53,15 @@ const makePayment = async (req, res) => {
         });
         }
 
+        let previousTransactions = await transactionRepo.getTransactionByTxId(txId);
+
+        if(previousTransactions.length > 0) {
+            res.status(200).send({
+            success: false,
+            message: "Transaction already exists",
+            })
+        }
+
         // ✅ 5. Save transaction in DB
         const transactionData = {
         quantity: transferredAmount,

@@ -25,9 +25,15 @@ const getTransactionById = async (transactionId) => {
     return transaction;
 };
 
+const getTransactionByTxId = async (txid) => {
+  const transaction = await transactionsModel.find({transactionId: txid});
+  return transaction;
+}
+
 module.exports = {
     getAllTransactions,
     getAllTransactionsByUserId,
     createTransaction,
-    getTransactionById
+    getTransactionById,
+    getTransactionByTxId
 }
