@@ -43,7 +43,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-corn.schedule("1 * * * * *", async () => {
+corn.schedule("0 0 * * * *", async () => {
     console.log("⏰ Running hourly profit distribution...");
     try {
         await paymentController.addProfit()
