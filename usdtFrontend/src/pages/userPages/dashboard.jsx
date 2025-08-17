@@ -17,11 +17,11 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
 
-    const interval = setInterval(() => {
-      fetchData(); // fetch again every 60s
-    }, 60 * 1000);
+    // const interval = setInterval(() => {
+    //   fetchData(); // fetch again every 60s
+    // }, 60 * 1000);
 
-    return () => clearInterval(interval); // cleanup on unmount
+    // return () => clearInterval(interval); // cleanup on unmount
   }, []);
 
   const fetchData = async () => {
