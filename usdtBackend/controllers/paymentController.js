@@ -3,7 +3,7 @@ const axios = require("axios");
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
 
-const MY_WALLET = "TQ5xtoptrJfaHS8Sx7G7pBXoq4kyhCRQuK"; // Your TronLink Pro wallet
+const MY_WALLET = "TWjGg1Ssi17T6yRi87iVp6oLDXLYzoTjv3"; // Your TronLink Pro wallet
 
 const makePayment = async (req, res) => {
     try {

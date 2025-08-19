@@ -4,7 +4,7 @@ import { FaCopy, FaCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const PaymentQr = () => {
-    const walletId = "TQ5xtoptrJfaHS8Sx7G7pBXoq4kyhCRQuK";
+    const walletId = "TWjGg1Ssi17T6yRi87iVp6oLDXLYzoTjv3";
     const [copied, setCopied] = useState(false);
     const navigate = useNavigate();
 
