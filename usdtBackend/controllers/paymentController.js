@@ -72,8 +72,12 @@ const makePayment = async (req, res) => {
         transactionId: txId,
         };
 
-        // const transaction = new transactionsModel(transactionData);
-        // await transaction.save();
+        let user = await userRepo.getUserById(userId);
+
+        const updatedBalance = user.balance + transferredAmount;
+        user.balance = updatedBalance;
+        
+        user = await userRepo.updateUser(user._id, user);
         await transactionRepo.createTransaction(transactionData);
 
         // 6. Send success response
