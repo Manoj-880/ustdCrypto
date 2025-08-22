@@ -88,7 +88,7 @@ const makePayment = async (req, res) => {
         from: transfer.from_address,
         to: transfer.to_address,
         amount: transferredAmount,
-        transaction,
+        transactionData,
         });
 
     } catch (error) {
