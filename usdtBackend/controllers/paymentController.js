@@ -3,49 +3,43 @@ const axios = require("axios");
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
 
-const MY_WALLET = "TWjGg1Ssi17T6yRi87iVp6oLDXLYzoTjv3"; // Your TronLink Pro wallet
+// const MY_WALLET = "TWjGg1Ssi17T6yRi87iVp6oLDXLYzoTjv3"; // Your TronLink Pro wallet
+const MY_WALLET = "TJwjK5ayfhcrkvi7tzEdJkii7uXJLNmnCa"; // Your TronLink Pro wallet
 
 const makePayment = async (req, res) => {
     try {
-        const { txId, amount, userId, userWalletId } = req.body; // user submits TxID, amount, userId
+        const { txId, userId } = req.body;
 
-        if (!txId || !amount || !userId || !userWalletId) {
+        if (!txId || !userId) {
         return res.status(200).send({
             success: false,
-            message: "TxID, amount, userId and userWalletId are required",
+            message: "TxID and userId are required",
         });
         }
 
-        // 1. Fetch transaction details from Tronscan API
-        const url = `https://apilist.tronscanapi.com/api/transaction-info?hash=${txId}`;
+        // 1. Get all transfers related to MY_WALLET
+        const url = `https://apilist.tronscan.org/api/token_trc20/transfers?limit=100&start=0&sort=-timestamp&count=true&relatedAddress=${MY_WALLET}`;
         const response = await axios.get(url);
-        const txData = response.data;
 
-        // 2. Basic validations
-        if (!txData || txData.contractType !== 31) {
-        // 31 = TRC-20 contract call
-        return res.status(200).send({
-            success: false,
-            message: "Invalid or non TRC-20 transaction",
-        });
-        }
+        const transfers = response.data?.token_transfers || [];
 
-        // 3. Get TRC-20 transfer details
-        const transfer = txData.tokenTransferInfo;
+        // 2. Find the transfer matching given txId
+        const transfer = transfers.find((t) => t.transaction_id === txId);
+
         if (!transfer) {
         return res.status(200).send({
             success: false,
-            message: "No token transfer found in transaction",
+            message: "Transaction not found in wallet transfers",
         });
         }
 
-        // 4. Validate it is USDT and sent to your wallet
-        const transferredAmount = parseFloat(transfer.amount_str) / 1e6; // convert to USDT
+        // 3. Validate USDT and sent to our wallet
+        const decimals = transfer.tokenInfo?.tokenDecimal || 6;
+        const transferredAmount = parseFloat(transfer.quant) / (10 ** decimals);
 
         if (
-        transfer.symbol !== "USDT" ||
-        transfer.to_address !== MY_WALLET ||
-        transferredAmount < parseFloat(amount)
+        transfer.tokenInfo?.tokenAbbr !== "USDT" ||
+        transfer.to_address !== MY_WALLET
         ) {
         return res.status(200).send({
             success: false,
@@ -53,34 +47,31 @@ const makePayment = async (req, res) => {
         });
         }
 
+        // 4. Prevent duplicate transaction
         let previousTransactions = await transactionRepo.getTransactionByTxId(txId);
-
-        if(previousTransactions.length > 0) {
-            res.status(200).send({
+        if (previousTransactions.length > 0) {
+        return res.status(200).send({
             success: false,
             message: "Transaction already exists",
-            })
+        });
         }
 
-        // ✅ 5. Save transaction in DB
+        // 5. Save transaction in DB
         const transactionData = {
         quantity: transferredAmount,
-        date: new Date(),
+        date: new Date(transfer.block_ts || Date.now()),
         userId,
         activeWalleteId: MY_WALLET,
-        userWalletId,
+        userWalletId: transfer.from_address,
         transactionId: txId,
         };
 
         let user = await userRepo.getUserById(userId);
+        const updatedBalance = (parseFloat(user.balance) || 0) + transferredAmount;
 
-        const updatedBalance = user.balance + transferredAmount;
-        user.balance = updatedBalance;
-        
-        user = await userRepo.updateUser(user._id, user);
+        await userRepo.updateUser(user._id, { balance: updatedBalance.toFixed(2).toString() });
         await transactionRepo.createTransaction(transactionData);
 
-        // 6. Send success response
         return res.status(200).send({
         success: true,
         message: "Deposit verified and transaction saved",
@@ -92,13 +83,14 @@ const makePayment = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send({
+        console.error("makePayment error:", error.message);
+        return res.status(500).send({
         success: false,
         message: "Internal server error",
         });
     }
 };
+
 
 const addProfit = async () => {
     try {

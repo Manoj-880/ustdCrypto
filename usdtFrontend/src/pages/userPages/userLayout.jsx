@@ -12,7 +12,6 @@ import { Link, Routes, Route, useNavigate, useLocation } from "react-router-dom"
 import Dashboard from "./dashboard";
 import Transactions from "./transaction";
 import Profile from "./profile";
-import PaymentConformation from "./userPaymentConformation";
 
 const { Header, Sider, Content } = Layout;
 
@@ -80,7 +79,6 @@ const UserLayout = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/payment-conformation" element={<PaymentConformation />} />
           </Routes>
         </Content>
       </Layout>

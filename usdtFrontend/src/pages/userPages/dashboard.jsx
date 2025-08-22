@@ -126,11 +126,17 @@ const Dashboard = () => {
       <Modal
         title="Transfer USDTs to the Wallet ID or scan the QR"
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false);
+          fetchData();
+        }}
         footer={null} // ✅ Hide default footer
         centered
       >
-        {<PaymentQr />}
+        {<PaymentQr onCancel={() => {
+          setIsModalOpen(false);
+          fetchData();
+        }} />}
       </Modal>
     </div>
   );
