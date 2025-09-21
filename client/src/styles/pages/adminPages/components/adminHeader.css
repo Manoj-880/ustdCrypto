@@ -1,0 +1,205 @@
+/* =========================
+   Admin Header Styles
+========================= */
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+  z-index: var(--z-sidebar);
+  position: relative;
+}
+
+.admin-header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.admin-menu-toggle {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.admin-menu-toggle:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-primary);
+}
+
+.admin-platform-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.admin-header-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(22, 119, 255, 0.2));
+}
+
+.admin-platform-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.admin-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  min-width: 44px;
+  justify-content: center;
+}
+
+.admin-logout-btn:hover {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+  color: var(--color-error);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-logout-btn .anticon {
+  font-size: 16px;
+  color: var(--color-error);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Mobile Devices (768px and below) */
+@media (max-width: 768px) {
+  .admin-logout-btn {
+    padding: var(--space-2);
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .admin-logout-btn span {
+    display: none;
+  }
+
+  .admin-logout-btn .anticon {
+    font-size: 16px;
+    color: var(--color-error) !important;
+  }
+
+  .admin-header-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .admin-platform-name {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .admin-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .admin-platform-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .admin-logout-btn span {
+    display: none;
+  }
+
+  .admin-logout-btn .anticon {
+    font-size: 14px;
+    color: var(--color-error) !important;
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .admin-platform-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .admin-logout-btn span {
+    display: none;
+  }
+
+  .admin-logout-btn .anticon {
+    font-size: 14px;
+    color: var(--color-error) !important;
+  }
+
+  .admin-header-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .admin-platform-name {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .admin-platform-name {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .admin-platform-name {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .admin-platform-name {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* 2XL Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .admin-platform-name {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* 3XL Devices (TVs and very large screens, 1400px and up) */
+@media (min-width: 1400px) {
+  .admin-platform-name {
+    font-size: var(--font-size-2xl);
+  }
+}

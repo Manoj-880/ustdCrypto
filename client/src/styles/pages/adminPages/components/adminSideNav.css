@@ -1,0 +1,283 @@
+/* =========================
+   Admin Side Navigation Styles
+========================= */
+
+.admin-sidebar {
+  background: var(--color-bg-card);
+  width: 200px;
+  transition: width var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-4);
+  z-index: var(--z-sidebar);
+  position: relative;
+}
+
+/* Admin Profile Card */
+.admin-profile-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  min-height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-avatar {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+  min-width: 42px;
+  min-height: 42px;
+}
+
+.admin-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-profile-info h4 {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.admin-email {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+  word-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  opacity: 0.8;
+}
+
+.view-profile {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--transition-fast);
+  font-weight: var(--font-weight-semibold);
+}
+
+.view-profile:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* =========================
+   Admin Menu Styles
+========================= */
+.admin-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.admin-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-family-primary);
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  width: 100%;
+  min-height: 36px;
+  position: relative;
+}
+
+.admin-menu-item svg,
+.admin-menu-item .anticon {
+  font-size: var(--font-size-lg);
+  min-width: 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.admin-menu-item:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  transform: translateX(4px);
+}
+
+.admin-menu-item.active {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-menu-item.active:hover {
+  background: var(--color-primary-hover);
+  color: var(--color-text-inverse);
+  transform: translateX(4px);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Mobile Devices (768px and below) */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: var(--z-modal);
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-xl);
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+  }
+
+  .admin-sidebar:not(.collapsed) {
+    width: 200px;
+    padding: var(--space-6) var(--space-4);
+    transform: translateX(0);
+  }
+}
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .admin-sidebar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: var(--z-modal);
+    background: var(--color-bg-card);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .admin-sidebar:not(.collapsed) {
+    width: 200px;
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .admin-profile-card {
+    padding: var(--space-3);
+  }
+
+  .admin-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .admin-sidebar {
+    width: 80px;
+    padding: var(--space-4) var(--space-2);
+  }
+
+  .admin-sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .admin-profile-card {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-3);
+  }
+
+  .admin-profile-info {
+    display: none;
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .admin-sidebar {
+    width: 180px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 60px;
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .admin-sidebar {
+    width: 200px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 60px;
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .admin-sidebar {
+    width: 220px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 60px;
+  }
+}
+
+/* 2XL Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .admin-sidebar {
+    width: 240px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 60px;
+  }
+}
+
+/* 3XL Devices (TVs and very large screens, 1400px and up) */
+@media (min-width: 1400px) {
+  .admin-sidebar {
+    width: 260px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 60px;
+  }
+}

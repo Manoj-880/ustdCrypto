@@ -1,0 +1,581 @@
+/* =========================
+   User Dashboard Styles
+========================= */
+
+.user-dashboard {
+  padding: var(--space-8) var(--space-6);
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+}
+
+/* =========================
+   Dashboard Header
+========================= */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+  gap: var(--space-4);
+}
+
+.dashboard-title {
+  color: var(--color-text-primary) !important;
+  margin: 0 !important;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-subtitle {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-2);
+  font-weight: var(--font-weight-medium);
+}
+
+.refresh-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  border: none !important;
+  border-radius: var(--radius-lg);
+  height: 48px;
+  font-weight: var(--font-weight-semibold);
+  padding: 0 var(--space-6);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  color: white !important;
+}
+
+.refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary-light) 100%) !important;
+}
+
+/* =========================
+   Wallet Card
+========================= */
+.wallet-card {
+  background: linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-tertiary) 100%);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  margin-bottom: var(--space-8);
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.wallet-card .ant-card-body {
+  padding: var(--space-8);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.wallet-icon-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.usdt-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  background: var(--color-bg-card);
+  border: 4px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-glow);
+  transition: all var(--transition-normal);
+}
+
+.usdt-icon-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(22, 119, 255, 0.4);
+}
+
+.usdt-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.card-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+/* =========================
+   Wallet Action Buttons
+========================= */
+.wallet-actions {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-funds-btn {
+  background: linear-gradient(135deg, var(--color-success) 0%, #2ea043 100%);
+  border: none;
+  border-radius: var(--radius-xl);
+  height: 48px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  padding: 0 var(--space-8);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  color: white;
+  min-width: 140px;
+}
+
+.add-funds-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+  background: linear-gradient(135deg, #2ea043 0%, #28a745 100%);
+  color: white;
+}
+
+.add-funds-btn:focus {
+  background: linear-gradient(135deg, var(--color-success) 0%, #2ea043 100%);
+  color: white;
+}
+
+.withdraw-btn {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  height: 48px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  padding: 0 var(--space-8);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  color: var(--color-text-primary);
+  min-width: 140px;
+}
+
+.withdraw-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-bg-tertiary);
+}
+
+.withdraw-btn:focus {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* =========================
+   Profit Cards
+========================= */
+.profit-cards {
+  margin-bottom: var(--space-8);
+  width: 100%;
+}
+
+.profit-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  height: 100%;
+  transition: all var(--transition-normal);
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.profit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-success), var(--color-info));
+}
+
+.profit-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-2xl);
+  border-color: var(--color-primary);
+}
+
+.profit-card .ant-card-body {
+  padding: var(--space-8);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.profit-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+  flex: 1;
+}
+
+.growth-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.growth-text {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  color: var(--color-success);
+}
+
+.growth-label {
+  font-size: var(--font-size-sm);
+  text-align: right;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.profit-card-footer {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-primary);
+}
+
+.daily-average {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) 0;
+}
+
+.daily-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+.daily-value {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary) !important;
+}
+
+.total-profit-tag {
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-1) var(--space-3);
+}
+
+.total-profit-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Monthly Profit Card Specific */
+.monthly-profit {
+  border-left: 6px solid var(--color-success);
+}
+
+.monthly-profit::before {
+  background: linear-gradient(90deg, var(--color-success), #2ea043);
+}
+
+/* Total Profit Card Specific */
+.total-profit {
+  border-left: 6px solid var(--color-primary);
+}
+
+.total-profit::before {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+/* =========================
+   Quick Stats
+========================= */
+.quick-stats {
+  margin-top: var(--space-8);
+  width: 100%;
+}
+
+.stat-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-info), var(--color-primary));
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-primary);
+}
+
+.stat-card .ant-card-body {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.stat-card .ant-statistic-title {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card .ant-statistic-content {
+  color: var(--color-text-primary) !important;
+}
+
+.stat-card .ant-statistic-content-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .user-dashboard {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .refresh-btn {
+    align-self: flex-end;
+    height: 40px;
+    padding: 0 var(--space-4);
+  }
+
+  .wallet-card .ant-card-body {
+    padding: var(--space-6);
+  }
+
+  .usdt-icon-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .usdt-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .profit-card .ant-card-body {
+    padding: var(--space-6);
+  }
+
+  .profit-card-header {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+
+  .growth-indicator {
+    align-items: flex-start;
+  }
+
+  .growth-label {
+    text-align: left;
+  }
+
+  .stat-card .ant-card-body {
+    padding: var(--space-4);
+  }
+
+  .wallet-actions {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+  }
+
+  .add-funds-btn,
+  .withdraw-btn {
+    height: 44px;
+    font-size: var(--font-size-sm);
+    padding: 0 var(--space-6);
+    min-width: 120px;
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .user-dashboard {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: stretch;
+  }
+
+  .refresh-btn {
+    align-self: flex-end;
+  }
+
+  .wallet-card .ant-card-body {
+    padding: var(--space-6);
+  }
+
+  .profit-card-header {
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+
+  .growth-indicator {
+    align-items: flex-start;
+  }
+
+  .growth-label {
+    text-align: left;
+  }
+
+  .wallet-actions {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+  }
+
+  .add-funds-btn,
+  .withdraw-btn {
+    height: 46px;
+    min-width: 130px;
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .user-dashboard {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .dashboard-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .wallet-card .ant-card-body {
+    padding: var(--space-7);
+  }
+
+  .profit-card .ant-card-body {
+    padding: var(--space-7);
+  }
+
+  .wallet-actions {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .user-dashboard {
+    padding: var(--space-7) var(--space-6);
+  }
+
+  .wallet-card .ant-card-body {
+    padding: var(--space-8);
+  }
+
+  .profit-card .ant-card-body {
+    padding: var(--space-8);
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .user-dashboard {
+    padding: var(--space-8) var(--space-7);
+  }
+}
+
+/* 2XL Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .user-dashboard {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+/* 3XL Devices (TVs and very large screens, 1400px and up) */
+@media (min-width: 1400px) {
+  .user-dashboard {
+    padding: var(--space-12) var(--space-10);
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-4xl);
+  }
+
+  .usdt-icon-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .usdt-icon {
+    width: 80px;
+    height: 80px;
+  }
+}

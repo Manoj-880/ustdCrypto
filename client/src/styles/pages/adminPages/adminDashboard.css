@@ -1,0 +1,474 @@
+/* =========================
+   Admin Dashboard Styles
+========================= */
+
+.admin-dashboard {
+  padding: 0;
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+}
+
+/* =========================
+   Dashboard Header
+========================= */
+.admin-dashboard-header {
+  margin-bottom: var(--space-8);
+}
+
+.dashboard-title {
+  color: var(--color-text-primary) !important;
+  margin: 0 0 var(--space-2) 0 !important;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-subtitle {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   Statistics Cards
+========================= */
+.stats-cards {
+  margin-bottom: var(--space-8);
+}
+
+.stat-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-primary);
+}
+
+.stat-card .ant-card-body {
+  padding: var(--space-6);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Custom stat content layout */
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.stat-icon {
+  font-size: var(--font-size-3xl);
+  color: var(--color-primary);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.stat-title {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.stat-card .ant-statistic {
+  text-align: center;
+  width: 100%;
+}
+
+/* =========================
+   Activity Section
+========================= */
+.activity-section {
+  margin-bottom: var(--space-8);
+}
+
+.activity-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.activity-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.activity-card .ant-card-head {
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.activity-card .ant-card-head-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+}
+
+.activity-card .ant-card-body {
+  padding: 0;
+}
+
+/* =========================
+   Activity Tables
+========================= */
+.activity-card .ant-table {
+  background: transparent;
+}
+
+.activity-card .ant-table-thead > tr > th {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 2px solid var(--color-border-primary) !important;
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-4);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activity-card .ant-table-tbody > tr > td {
+  background-color: transparent !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--color-border-primary) !important;
+  padding: var(--space-4);
+  transition: all var(--transition-fast);
+}
+
+.activity-card .ant-table-tbody > tr:hover > td {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+/* =========================
+   Quick Actions
+========================= */
+.quick-actions {
+  margin-bottom: var(--space-8);
+}
+
+.actions-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.actions-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.actions-card .ant-card-head {
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.actions-card .ant-card-head-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+}
+
+.actions-card .ant-card-body {
+  padding: var(--space-6);
+}
+
+.actions-card .ant-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+  height: 40px;
+  padding: 0 var(--space-6);
+}
+
+.actions-card .ant-btn:hover {
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%) !important;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.actions-card .ant-btn:not(.ant-btn-primary) {
+  background: var(--color-bg-tertiary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.actions-card .ant-btn:not(.ant-btn-primary):hover {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   Special Elements
+========================= */
+.transaction-id {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary) !important;
+  font-size: var(--font-size-sm);
+}
+
+.user-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary) !important;
+}
+
+.user-email {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary) !important;
+}
+
+/* =========================
+   View All Button
+========================= */
+.view-all-btn {
+  color: var(--color-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  padding: 0 !important;
+  height: auto !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.view-all-btn:hover {
+  color: var(--color-primary-hover) !important;
+  background: transparent !important;
+}
+
+/* =========================
+   Recent Tables
+========================= */
+.recent-table {
+  height: 200px;
+  overflow-y: auto;
+}
+
+.activity-card {
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-card .ant-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.activity-card .ant-table-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-card .ant-table {
+  flex: 1;
+}
+
+.activity-card .ant-table-tbody {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .stat-card {
+    height: 140px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: var(--space-4);
+  }
+
+  .stat-card .ant-statistic-content-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .activity-card .ant-table-thead > tr > th,
+  .activity-card .ant-table-tbody > tr > td {
+    padding: var(--space-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .actions-card .ant-card-body {
+    padding: var(--space-4);
+  }
+
+  .actions-card .ant-btn {
+    height: 36px;
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .stat-card {
+    height: 150px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: var(--space-5);
+  }
+
+  .activity-card .ant-table-thead > tr > th,
+  .activity-card .ant-table-tbody > tr > td {
+    padding: var(--space-4);
+  }
+
+  .actions-card .ant-card-body {
+    padding: var(--space-5);
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .activity-card .ant-table-thead > tr > th,
+  .activity-card .ant-table-tbody > tr > td {
+    padding: var(--space-5);
+  }
+
+  .actions-card .ant-card-body {
+    padding: var(--space-6);
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .activity-card .ant-table-thead > tr > th,
+  .activity-card .ant-table-tbody > tr > td {
+    padding: var(--space-6);
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+}
+
+/* 2XL Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+}
+
+/* 3XL Devices (TVs and very large screens, 1400px and up) */
+@media (min-width: 1400px) {
+  .admin-dashboard {
+    padding: 0;
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-4xl);
+  }
+
+  .activity-card .ant-table-thead > tr > th,
+  .activity-card .ant-table-tbody > tr > td {
+    padding: var(--space-8);
+    font-size: var(--font-size-base);
+  }
+
+  .stat-card .ant-statistic-content-value {
+    font-size: var(--font-size-3xl);
+  }
+}

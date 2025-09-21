@@ -1,0 +1,925 @@
+/* =========================
+   Transactions Page Styles
+========================= */
+
+.transactions-page {
+  padding: var(--space-8) var(--space-6);
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+}
+
+/* =========================
+   Page Header
+========================= */
+.transactions-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-title {
+  color: var(--color-text-primary) !important;
+  margin: 0 0 var(--space-2) 0 !important;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   Summary Cards
+========================= */
+.summary-cards {
+  margin-bottom: var(--space-8);
+}
+
+.summary-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-primary);
+}
+
+.summary-card .ant-card-body {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.summary-card .ant-statistic-title {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-card .ant-statistic-content {
+  color: var(--color-text-primary) !important;
+}
+
+.summary-card .ant-statistic-content-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* =========================
+   Filters Card
+========================= */
+.filters-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+
+.filters-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-info), var(--color-primary));
+}
+
+.filters-card .ant-card-body {
+  padding: var(--space-8);
+}
+
+.search-input {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+}
+
+.search-input .ant-input {
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base);
+}
+
+.search-input .ant-input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.search-input .ant-input:focus,
+.search-input .ant-input-focused {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.search-input:focus,
+.search-input-focused {
+  border-color: var(--color-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.date-picker {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+}
+
+.date-picker .ant-picker-input > input {
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base);
+}
+
+.date-picker .ant-picker-input > input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.date-picker:focus,
+.date-picker-focused {
+  border-color: var(--color-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.filter-select {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+}
+
+.filter-select .ant-select-selector {
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+}
+
+.filter-select .ant-select-selection-placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.filter-select:focus,
+.filter-select-focused {
+  border-color: var(--color-border-focus) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.clear-btn {
+  background-color: var(--color-bg-tertiary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+}
+
+.clear-btn:hover {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   Table Card
+========================= */
+.table-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: visible;
+}
+
+/* =========================
+   Transaction Modal
+========================= */
+.transaction-modal {
+  z-index: var(--z-modal) !important;
+}
+
+.transaction-modal .ant-modal-mask {
+  z-index: var(--z-modal-backdrop) !important;
+}
+
+.transaction-modal .ant-modal-wrap {
+  z-index: var(--z-modal) !important;
+}
+
+.table-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-success), var(--color-primary));
+}
+
+.table-card .ant-card-body {
+  padding: 0;
+  overflow: visible;
+}
+
+/* =========================
+   Transactions Table
+========================= */
+.transactions-table {
+  background: transparent;
+  min-height: 400px;
+}
+
+.transactions-table .ant-table {
+  background: transparent;
+}
+
+.transactions-table .ant-table-thead > tr > th {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 2px solid var(--color-border-primary) !important;
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-6);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.transactions-table .ant-table-tbody > tr > td {
+  background-color: transparent !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--color-border-primary) !important;
+  padding: var(--space-6);
+  transition: all var(--transition-fast);
+}
+
+.transactions-table .ant-table-tbody > tr:hover > td {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.transactions-table .ant-table-pagination {
+  background-color: var(--color-bg-card) !important;
+  padding: var(--space-6);
+  margin: 0;
+  border-top: 2px solid var(--color-border-primary);
+}
+
+.transactions-table .ant-pagination-item {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.transactions-table .ant-pagination-item a {
+  color: var(--color-text-primary) !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+.transactions-table .ant-pagination-item-active {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+  box-shadow: var(--shadow-md);
+}
+
+.transactions-table .ant-pagination-item-active a {
+  color: white !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+.transactions-table .ant-pagination-item:hover {
+  border-color: var(--color-primary) !important;
+  transform: translateY(-1px);
+}
+
+.transactions-table .ant-pagination-prev,
+.transactions-table .ant-pagination-next {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.transactions-table .ant-pagination-prev a,
+.transactions-table .ant-pagination-next a {
+  color: var(--color-text-primary) !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+/* Fix prev/next button icons */
+.transactions-table .ant-pagination-prev .anticon,
+.transactions-table .ant-pagination-next .anticon {
+  color: var(--color-text-primary) !important;
+  font-size: 14px !important;
+  display: inline-block !important;
+}
+
+.transactions-table .ant-pagination-prev:hover .anticon,
+.transactions-table .ant-pagination-next:hover .anticon {
+  color: var(--color-primary) !important;
+}
+
+.transactions-table .ant-pagination-prev:hover,
+.transactions-table .ant-pagination-next:hover {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+}
+
+.transactions-table .ant-pagination-prev:hover a,
+.transactions-table .ant-pagination-next:hover a {
+  color: var(--color-primary) !important;
+}
+
+.transactions-table .ant-pagination-item:hover a {
+  color: var(--color-text-primary) !important;
+}
+
+/* Ellipsis and other pagination elements */
+.transactions-table .ant-pagination-jump-prev,
+.transactions-table .ant-pagination-jump-next {
+  color: var(--color-text-primary) !important;
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.transactions-table .ant-pagination-jump-prev:hover,
+.transactions-table .ant-pagination-jump-next:hover {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+}
+
+.transactions-table .ant-pagination-jump-prev a,
+.transactions-table .ant-pagination-jump-next a {
+  color: var(--color-text-primary) !important;
+  text-decoration: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+.transactions-table .ant-pagination-jump-prev:hover a,
+.transactions-table .ant-pagination-jump-next:hover a {
+  color: var(--color-primary) !important;
+}
+
+/* =========================
+   Pagination Visibility Fixes
+========================= */
+.transactions-table .ant-table-pagination {
+  background-color: var(--color-bg-card) !important;
+  padding: var(--space-6) !important;
+  margin: 0 !important;
+  border-top: 2px solid var(--color-border-primary) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 60px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.transactions-table .ant-pagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--space-2) !important;
+  flex-wrap: wrap !important;
+}
+
+.transactions-table .ant-pagination-options {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--space-2) !important;
+}
+
+.transactions-table .ant-pagination-options-size-changer {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.transactions-table .ant-pagination-options-quick-jumper {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--space-2) !important;
+}
+
+.transactions-table .ant-pagination-total-text {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-sm) !important;
+  font-weight: var(--font-weight-medium) !important;
+  margin-right: var(--space-4) !important;
+}
+
+/* Size changer and quick jumper text */
+.transactions-table .ant-pagination-options-size-changer .ant-select-selector {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.transactions-table .ant-pagination-options-size-changer .ant-select-selection-item {
+  color: var(--color-text-primary) !important;
+  line-height: 1 !important;
+}
+
+/* Fix dropdown arrow icon */
+.transactions-table .ant-pagination-options-size-changer .ant-select-arrow {
+  color: var(--color-text-primary) !important;
+  font-size: 12px !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.transactions-table .ant-pagination-options-size-changer .ant-select-arrow .anticon {
+  color: var(--color-text-primary) !important;
+  font-size: 12px !important;
+}
+
+.transactions-table .ant-pagination-options-size-changer:hover .ant-select-arrow,
+.transactions-table .ant-pagination-options-size-changer:hover .ant-select-arrow .anticon {
+  color: var(--color-primary) !important;
+}
+
+.transactions-table .ant-pagination-options-quick-jumper input {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 32px !important;
+  text-align: center !important;
+  padding: 4px 8px !important;
+}
+
+.transactions-table .ant-pagination-options-quick-jumper input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.transactions-table .ant-pagination-options-quick-jumper span {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Ensure pagination is always visible even with empty data */
+.transactions-table .ant-table-placeholder + .ant-table-pagination,
+.transactions-table .ant-table-tbody:empty + .ant-table-pagination {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Fix for when table has no data but pagination should still show */
+.transactions-table .ant-empty + .ant-table-pagination {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* =========================
+   Table Content Styling
+========================= */
+.transaction-id {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary) !important;
+  font-size: var(--font-size-sm);
+}
+
+.amount-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.amount {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+}
+
+.amount.positive {
+  color: var(--color-success);
+}
+
+.amount.negative {
+  color: var(--color-error);
+}
+
+.fee {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.date {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-sm);
+}
+
+.time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+.balance-cell {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-sm);
+}
+
+.action-btn {
+  color: var(--color-primary) !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+  color: var(--color-primary-hover) !important;
+  background-color: var(--color-primary-bg) !important;
+  transform: scale(1.1);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .transactions-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .filters-card .ant-card-body {
+    padding: var(--space-4);
+  }
+
+  .transactions-table .ant-table-thead > tr > th,
+  .transactions-table .ant-table-tbody > tr > td {
+    padding: var(--space-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .transactions-table .ant-table-pagination {
+    padding: var(--space-4) !important;
+    min-height: 50px !important;
+  }
+
+  .transactions-table .ant-pagination {
+    flex-direction: column !important;
+    gap: var(--space-3) !important;
+  }
+
+  .transactions-table .ant-pagination-options {
+    order: 2 !important;
+  }
+
+  .summary-card .ant-card-body {
+    padding: var(--space-4);
+  }
+
+  .summary-card .ant-statistic-content-value {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .transactions-page {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .filters-card .ant-card-body {
+    padding: var(--space-6);
+  }
+
+  .transactions-table .ant-table-thead > tr > th,
+  .transactions-table .ant-table-tbody > tr > td {
+    padding: var(--space-4);
+  }
+
+  .transactions-table .ant-table-pagination {
+    padding: var(--space-5) !important;
+    min-height: 55px !important;
+  }
+
+  .summary-card .ant-card-body {
+    padding: var(--space-5);
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .transactions-page {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .filters-card .ant-card-body {
+    padding: var(--space-7);
+  }
+
+  .transactions-table .ant-table-thead > tr > th,
+  .transactions-table .ant-table-tbody > tr > td {
+    padding: var(--space-5);
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .transactions-page {
+    padding: var(--space-7) var(--space-6);
+  }
+
+  .filters-card .ant-card-body {
+    padding: var(--space-8);
+  }
+
+  .transactions-table .ant-table-thead > tr > th,
+  .transactions-table .ant-table-tbody > tr > td {
+    padding: var(--space-6);
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .transactions-page {
+    padding: var(--space-8) var(--space-7);
+  }
+}
+
+/* 2XL Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .transactions-page {
+    padding: var(--space-10) var(--space-8);
+  }
+}
+
+/* 3XL Devices (TVs and very large screens, 1400px and up) */
+@media (min-width: 1400px) {
+  .transactions-page {
+    padding: var(--space-12) var(--space-10);
+  }
+
+  .page-title {
+    font-size: var(--font-size-4xl);
+  }
+
+  .transactions-table .ant-table-thead > tr > th,
+  .transactions-table .ant-table-tbody > tr > td {
+    padding: var(--space-8);
+    font-size: var(--font-size-base);
+  }
+
+  .summary-card .ant-statistic-content-value {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+/* =========================
+   Mobile Card Styles
+========================= */
+.mobile-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.mobile-transaction-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.mobile-transaction-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.mobile-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.transaction-id-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.transaction-id {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.status-tag {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-sm);
+}
+
+.transaction-type {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-divider {
+  margin: var(--space-3) 0;
+  border-color: var(--color-border-primary);
+}
+
+.mobile-card-content {
+  margin-bottom: var(--space-3);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.amount-value.positive {
+  color: var(--color-success);
+}
+
+.amount-value.negative {
+  color: var(--color-error);
+}
+
+.description-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.mobile-card-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-2);
+}
+
+.mobile-action-btn {
+  height: 36px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.mobile-action-btn .anticon {
+  font-size: var(--font-size-sm);
+}
+
+/* Mobile Card Responsive Adjustments */
+@media (max-width: 399px) {
+  .mobile-transaction-card {
+    margin: 0 var(--space-1);
+    padding: var(--space-3);
+  }
+  
+  .transaction-id {
+    font-size: var(--font-size-xs);
+  }
+  
+  .stat-value {
+    font-size: var(--font-size-xs);
+  }
+  
+  .mobile-action-btn {
+    height: 32px;
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (min-width: 400px) and (max-width: 575px) {
+  .mobile-transaction-card {
+    margin: 0 var(--space-2);
+  }
+  
+  .mobile-action-btn {
+    height: 34px;
+  }
+}
+
+/* Hide mobile cards on desktop */
+@media (min-width: 992px) {
+  .mobile-cards-container {
+    display: none;
+  }
+}

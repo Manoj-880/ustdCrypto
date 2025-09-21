@@ -1,0 +1,539 @@
+/* =========================
+   Add Funds Modal Styles
+========================= */
+
+.add-funds-modal .ant-modal-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
+  padding: var(--space-6);
+}
+
+.add-funds-modal .ant-modal-title {
+  color: white !important;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.modal-icon {
+  font-size: var(--font-size-2xl);
+  color: white;
+}
+
+.add-funds-modal .ant-modal-body {
+  padding: var(--space-6);
+  background: var(--color-bg-primary);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.add-funds-content {
+  width: 100%;
+}
+
+.modal-row {
+  margin-top: var(--space-4);
+}
+
+.qr-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   Steps Styling
+========================= */
+.verification-steps {
+  margin-bottom: var(--space-6);
+}
+
+.verification-steps .ant-steps-item-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.verification-steps .ant-steps-item-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.verification-steps .ant-steps-item-icon {
+  background: var(--color-bg-card);
+  border-color: var(--color-border-primary);
+}
+
+.verification-steps .ant-steps-item-process .ant-steps-item-icon {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.verification-steps .ant-steps-item-finish .ant-steps-item-icon {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* =========================
+   Step Content
+========================= */
+.step-content {
+  min-height: 400px;
+}
+
+.step-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-6) !important;
+  text-align: center;
+}
+
+/* =========================
+   Verification Notice
+========================= */
+.verification-notice {
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-warning);
+}
+
+.verification-notice .ant-alert-message {
+  color: var(--color-warning) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* =========================
+   QR Code Card
+========================= */
+.qr-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-4);
+  background: white;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  border: 2px solid var(--color-border-primary);
+  flex-shrink: 0;
+}
+
+.qr-image {
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.wallet-details {
+  padding: var(--space-4);
+}
+
+.wallet-details .ant-typography {
+  margin-bottom: var(--space-2) !important;
+}
+
+.wallet-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.wallet-info:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.wallet-id-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wallet-id {
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+  max-width: 200px;
+}
+
+.copy-btn {
+  color: var(--color-primary);
+  padding: var(--space-1);
+  min-width: auto;
+  height: auto;
+}
+
+.copy-btn:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-primary-bg);
+}
+
+/* =========================
+   Instructions
+========================= */
+.instructions {
+  background: var(--color-bg-secondary);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  flex-shrink: 0;
+}
+
+.instructions .ant-typography {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.instructions li {
+  margin-bottom: var(--space-2);
+  line-height: 1.6;
+}
+
+/* =========================
+   Step Actions
+========================= */
+.step-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
+.start-verification-btn {
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-hover) 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  height: 48px;
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-lg);
+}
+
+.start-verification-btn:hover {
+  background: linear-gradient(135deg, var(--color-success-hover) 0%, var(--color-success) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* =========================
+   Timer Alert
+========================= */
+.timer-alert {
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-lg);
+}
+
+.timer-alert.ant-alert-error {
+  border-color: var(--color-error);
+  background: var(--color-error-bg);
+}
+
+.timer-alert.ant-alert-info {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+/* =========================
+   Verification Card
+========================= */
+.verification-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.verification-form {
+  padding: var(--space-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: var(--space-6);
+}
+
+.form-label {
+  display: block;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-base);
+}
+
+.transaction-input {
+  background: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base);
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.transaction-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.transaction-input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.help-text {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.verification-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: var(--space-4);
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.cancel-button {
+  height: 48px !important;
+  background: var(--color-bg-tertiary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-md) !important;
+  font-size: var(--font-size-base) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  color: var(--color-text-primary) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-normal) !important;
+  flex: 1;
+}
+
+.cancel-button:hover {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-border-secondary) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+.verify-btn {
+  flex: 1;
+}
+
+.verify-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  height: 48px;
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-lg);
+}
+
+.verify-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================
+   Help Section
+========================= */
+.help-section {
+  background: var(--color-bg-secondary);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+}
+
+.help-section .ant-typography {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+.help-section ul {
+  margin: 0;
+  padding-left: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.help-section li {
+  margin-bottom: var(--space-2);
+  line-height: 1.6;
+}
+
+/* =========================
+   Success Content
+========================= */
+.success-content {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.success-icon {
+  font-size: 64px;
+  color: var(--color-success);
+  margin-bottom: var(--space-6);
+  display: block;
+}
+
+.success-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+.success-description {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  margin-bottom: var(--space-8) !important;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Tablet Devices */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .add-funds-modal .ant-modal {
+    width: 90vw !important;
+    max-width: 90vw;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .add-funds-modal .ant-modal {
+    margin: var(--space-4);
+    max-width: calc(100vw - 32px);
+    width: calc(100vw - 32px) !important;
+  }
+
+  .add-funds-modal .ant-modal-body {
+    padding: var(--space-4);
+    max-height: 90vh;
+  }
+
+  .modal-row {
+    margin-top: var(--space-2);
+  }
+
+  .qr-container {
+    padding: var(--space-3);
+  }
+
+  .qr-image {
+    width: 150px !important;
+    height: 150px !important;
+  }
+
+  .wallet-id {
+    max-width: 150px;
+    font-size: var(--font-size-xs);
+  }
+
+  .instructions {
+    padding: var(--space-3);
+  }
+
+  .verification-actions {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+  }
+
+  .verify-btn {
+    width: 100%;
+    height: 44px;
+  }
+
+  .qr-card,
+  .verification-card {
+    margin-bottom: var(--space-3);
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  .add-funds-modal .ant-modal {
+    margin: var(--space-2);
+    max-width: calc(100vw - 16px);
+  }
+
+  .qr-image {
+    width: 120px !important;
+    height: 120px !important;
+  }
+
+  .wallet-id {
+    max-width: 120px;
+  }
+
+  .success-icon {
+    font-size: 48px;
+  }
+
+  .success-title {
+    font-size: var(--font-size-lg) !important;
+  }
+
+  .success-description {
+    font-size: var(--font-size-base) !important;
+  }
+}
