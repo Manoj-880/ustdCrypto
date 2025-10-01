@@ -5,8 +5,9 @@ const BigNumber = require("bignumber.js");
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
 const withdrawalRepo = require("../repos/withdrawRepo");
+const { sendDepositSuccessEmail } = require("../services/emailService");
+const lockinRepo = require("../repos/lockinRepo");
 
-const USDT_CONTRACT = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
 // USDT ABI minimal
 const usdtAbi = [
   {
@@ -94,6 +95,29 @@ const makePayment = async (req, res) => {
     });
     await transactionRepo.createTransaction(transactionData);
 
+    // Send email notification for successful deposit
+    try {
+      const emailResult = await sendDepositSuccessEmail(
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        transferredAmount,
+        txId,
+        transactionData.date
+      );
+
+      if (emailResult.success) {
+        console.log("Deposit success email sent to:", user.email);
+      } else {
+        console.warn(
+          "Failed to send deposit success email:",
+          emailResult.message
+        );
+      }
+    } catch (emailError) {
+      console.error("Error sending deposit success email:", emailError);
+      // Don't fail the transaction if email fails
+    }
+
     return res.status(200).send({
       success: true,
       message: "Deposit verified and transaction saved",
@@ -128,13 +152,27 @@ const addProfit = async () => {
 
     // Loop through each user and update balance
     for (let user of users) {
-      const balance = parseFloat(user.balance) || 0;
+      const userLockins = await lockinRepo.getLockinsByUserId(user._id);
+
+      let userLockinTotal = userLockins
+        .map((lockin) => parseFloat(lockin.amount) || 0)
+        .reduce((sum, amount) => sum + amount, 0);
+
+      let userLockinProfit = userLockins
+        .filter((lockin) => lockin.status === "ACTIVE") // consider only ACTIVE lockins
+        .map(
+          (lockin) =>
+            (parseFloat(lockin.amount) || 0) *
+            (parseFloat(lockin.intrestRate) || 0)
+        )
+        .reduce((sum, profit) => sum + profit, 0);
+
+      const balance = parseFloat(user.balance);
       let userProfit = parseFloat(user.profit);
       if (balance <= 0) continue;
 
-      const profit = (balance * 0.25) / 100; // ✅ 0.25% profit
-      const newBalance = balance + profit;
-      userProfit = userProfit + profit;
+      const newBalance = balance + userLockinProfit;
+      userProfit = userProfit + userLockinProfit;
 
       // Update user balance in DB
       await userRepo.updateUser(user._id, {
@@ -144,7 +182,7 @@ const addProfit = async () => {
 
       // Save profit transaction log
       await transactionRepo.createTransaction({
-        quantity: profit,
+        quantity: userLockinProfit.toFixed(2).toString(),
         date: new Date(),
         userId: user._id,
         activeWalleteId: MY_WALLET,
@@ -158,75 +196,76 @@ const addProfit = async () => {
   }
 };
 
-const withdraw = async (req, res) => {
-  try {
-    const { userid, amount } = req.body;
-    const user = await userRepo.getUserById(userid);
-    if (!user) {
-      return res.status(200).send({
-        success: false,
-        message: "User not found",
-      });
-    } else {
-      if (user.balance < amount) {
-        return res.status(200).send({
-          success: false,
-          message: "Insufficient balance",
-        });
-      } else {
-        let data = {
-          userId: userid,
-          amount: amount,
-          walltAddress: user.walletKey,
-          userBalance: user.balance,
-        };
-        await withdrawalRepo.createRequest(data);
-        return res.status(200).send({
-          success: true,
-          message:
-            "Withdraw request placed successfully and will be processed within 24 hours",
-          data: data,
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Withdraw error:", error);
-    return res.status(500).send({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
+// const withdraw = async (req, res) => {
+//   try {
+//     const { userid, amount } = req.body;
+//     const user = await userRepo.getUserById(userid);
+//     if (!user) {
+//       return res.status(200).send({
+//         success: false,
+//         message: "User not found",
+//       });
+//     } else {
+//       if (user.balance < amount) {
+//         return res.status(200).send({
+//           success: false,
+//           message: "Insufficient balance",
+//         });
+//       } else {
+//         let data = {
+//           userId: userid,
+//           amount: amount,
+//           walltAddress: user.walletKey,
+//           userBalance: user.balance,
+//         };
+//         await withdrawalRepo.createRequest(data);
+//         return res.status(200).send({
+//           success: true,
+//           message:
+//             "Withdraw request placed successfully and will be processed within 24 hours",
+//           data: data,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Withdraw error:", error);
+//     return res.status(500).send({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
-const withdrawSuccess = async (req, res) => {
-  try {
-    const { requestId, transactionId } = req.body;
-    // 1. Get all transfers related to MY_WALLET
-    const url = `https://apilist.tronscan.org/api/token_trc20/transfers?limit=100&start=0&sort=-timestamp&count=true&relatedAddress=${MY_WALLET}`;
-    const response = await axios.get(url);
+// const withdrawSuccess = async (req, res) => {
+//   try {
+//     const { requestId, transactionId } = req.body;
+//     // 1. Get all transfers related to MY_WALLET
+//     const url = `https://apilist.tronscan.org/api/token_trc20/transfers?limit=100&start=0&sort=-timestamp&count=true&relatedAddress=${MY_WALLET}`;
+//     const response = await axios.get(url);
 
-    const transfers = response.data?.token_transfers || [];
+//     const transfers = response.data?.token_transfers || [];
 
-    // 2. Find the transfer matching given txId
-    const transfer = transfers.find((t) => t.transaction_id === transactionId);
+//     // 2. Find the transfer matching given txId
+//     const transfer = transfers.find((t) => t.transaction_id === transactionId);
 
-    if (!transfer) {
-      return res.status(200).send({
-        success: false,
-        message: "Transaction not found in wallet transfers",
-      });
-    }
-  } catch (error) {
-    console.error("Withdraw error:", error);
-    return res.status(500).send({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
+//     if (!transfer) {
+//       return res.status(200).send({
+//         success: false,
+//         message: "Transaction not found in wallet transfers",
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Withdraw error:", error);
+//     return res.status(500).send({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
 module.exports = {
   makePayment,
   addProfit,
-  withdraw,
+  // withdraw,
+  // withdrawSuccess,
 };

@@ -33,6 +33,10 @@ const userSchema = new Schema({
     profit: {
         type: String,
         default: "0",
+    },
+    joinDate: {
+        type: Date,
+        default: Date.now
     }
 });
 
