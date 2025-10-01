@@ -44,12 +44,11 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-corn.schedule("0 0 * * * *", async () => {
-  console.log("⏰ Running hourly profit distribution...");
+corn.schedule("* * * * *", async () => {
   try {
     await paymentController.addProfit();
   } catch (error) {
-    console.error("Error running addProfit cron:", err);
+    console.error("Error running addProfit cron:", error);
   }
 });
 
@@ -85,6 +84,12 @@ let login = require("./routes/loginRoute");
 let transactions = require("./routes/transactionRoute");
 let payments = require("./routes/paymentRoute");
 let wallet = require("./routes/walletRoutes");
+let lockinPlans = require("./routes/lockinPlansRoute");
+let lockins = require("./routes/lockinRoute");
+let admin = require("./routes/adminRoute");
+let dashboard = require("./routes/dashboardRoute");
+let withdrawalRequests = require("./routes/withdrawalRequestsRoute");
+let faq = require("./routes/faqRoute");
 
 // end points
 app.use("/api/users", user);
@@ -92,6 +97,12 @@ app.use("/api/login", login);
 app.use("/api/transactions", transactions);
 app.use("/api/payment", payments);
 app.use("/api/wallets", wallet);
+app.use("/api/lockin-plans", lockinPlans);
+app.use("/api/lockins", lockins);
+app.use("/api/admin", admin);
+app.use("/api/dashboard", dashboard);
+app.use("/api/withdrawal-requests", withdrawalRequests);
+app.use("/api/faq", faq);
 
 const PORT = constants.PORT;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
