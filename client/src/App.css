@@ -374,6 +374,137 @@ a:hover {
 }
 
 /* =========================
+   Table Empty States
+========================= */
+.table-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+  min-height: 200px;
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+}
+
+.table-empty-state .empty-state-icon {
+  font-size: 3rem;
+  color: var(--color-text-tertiary) !important;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.table-empty-state .empty-state-title {
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  margin-bottom: var(--space-2) !important;
+}
+
+.table-empty-state .empty-state-description {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-sm) !important;
+  line-height: var(--line-height-normal) !important;
+  max-width: 300px;
+}
+
+/* Override Ant Design table empty state */
+.ant-table-empty .ant-table-tbody > tr > td {
+  background: var(--color-bg-primary) !important;
+  border: none !important;
+}
+
+.ant-table-empty .ant-table-tbody > tr > td .ant-empty {
+  background: transparent !important;
+}
+
+.ant-table-empty .ant-table-tbody > tr > td .ant-empty .ant-empty-description {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Force dark theme for all empty states globally */
+.empty-state,
+.empty-state *,
+[class*="empty-state"],
+[class*="empty-state"] * {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-content,
+[class*="empty-state-content"] {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-title,
+[class*="empty-state-title"] {
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-description,
+[class*="empty-state-description"] {
+  color: var(--color-text-secondary) !important;
+}
+
+.empty-state-icon,
+[class*="empty-state-icon"] {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* Override any potential inline styles */
+div[class*="empty"] {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+div[class*="empty"] * {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+/* Ultra-specific overrides for empty states */
+.admin-transactions .table-section .empty-state,
+.admin-users .table-card .empty-state,
+.admin-withdraw-requests .table-section .empty-state,
+.admin-wallets .wallets-list .empty-state {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-transactions .table-section .empty-state .empty-state-content,
+.admin-users .table-card .empty-state .empty-state-content,
+.admin-withdraw-requests .table-section .empty-state .empty-state-content,
+.admin-wallets .wallets-list .empty-state .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-transactions .table-section .empty-state .empty-state-title,
+.admin-users .table-card .empty-state .empty-state-title,
+.admin-withdraw-requests .table-section .empty-state .empty-state-title,
+.admin-wallets .wallets-list .empty-state .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+.admin-transactions .table-section .empty-state .empty-state-description,
+.admin-users .table-card .empty-state .empty-state-description,
+.admin-withdraw-requests .table-section .empty-state .empty-state-description,
+.admin-wallets .wallets-list .empty-state .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.admin-transactions .table-section .empty-state .empty-state-icon,
+.admin-users .table-card .empty-state .empty-state-icon,
+.admin-withdraw-requests .table-section .empty-state .empty-state-icon,
+.admin-wallets .wallets-list .empty-state .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* =========================
    Global Ant Design Overrides
 ========================= */
 .ant-typography {
@@ -382,6 +513,144 @@ a:hover {
 
 .ant-typography.ant-typography-secondary {
   color: var(--color-text-secondary) !important;
+}
+
+/* Force typography colors in empty states */
+.empty-state .ant-typography,
+.empty-state .ant-typography *,
+[class*="empty-state"] .ant-typography,
+[class*="empty-state"] .ant-typography * {
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state .ant-typography.ant-typography-secondary,
+[class*="empty-state"] .ant-typography.ant-typography-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Force all text elements in empty states */
+.empty-state h1,
+.empty-state h2,
+.empty-state h3,
+.empty-state h4,
+.empty-state h5,
+.empty-state h6,
+.empty-state p,
+.empty-state span,
+.empty-state div,
+[class*="empty-state"] h1,
+[class*="empty-state"] h2,
+[class*="empty-state"] h3,
+[class*="empty-state"] h4,
+[class*="empty-state"] h5,
+[class*="empty-state"] h6,
+[class*="empty-state"] p,
+[class*="empty-state"] span,
+[class*="empty-state"] div {
+  color: var(--color-text-primary) !important;
+}
+
+/* Mobile cards empty state overrides */
+.mobile-cards-container .empty-state,
+.mobile-cards-container .empty-state * {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.mobile-cards-container .empty-state .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.mobile-cards-container .empty-state .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+.mobile-cards-container .empty-state .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.mobile-cards-container .empty-state .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* Maximum specificity overrides */
+body .admin-transactions .table-section .empty-state,
+body .admin-users .table-card .empty-state,
+body .admin-withdraw-requests .table-section .empty-state,
+body .admin-wallets .wallets-list .empty-state {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+body .admin-transactions .table-section .empty-state .empty-state-content,
+body .admin-users .table-card .empty-state .empty-state-content,
+body .admin-withdraw-requests .table-section .empty-state .empty-state-content,
+body .admin-wallets .wallets-list .empty-state .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+body .admin-transactions .table-section .empty-state .empty-state-title,
+body .admin-users .table-card .empty-state .empty-state-title,
+body .admin-withdraw-requests .table-section .empty-state .empty-state-title,
+body .admin-wallets .wallets-list .empty-state .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+body .admin-transactions .table-section .empty-state .empty-state-description,
+body .admin-users .table-card .empty-state .empty-state-description,
+body .admin-withdraw-requests .table-section .empty-state .empty-state-description,
+body .admin-wallets .wallets-list .empty-state .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+body .admin-transactions .table-section .empty-state .empty-state-icon,
+body .admin-users .table-card .empty-state .empty-state-icon,
+body .admin-withdraw-requests .table-section .empty-state .empty-state-icon,
+body .admin-wallets .wallets-list .empty-state .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* Nuclear option - highest possible specificity */
+html body .admin-transactions .table-section .empty-state,
+html body .admin-users .table-card .empty-state,
+html body .admin-withdraw-requests .table-section .empty-state,
+html body .admin-wallets .wallets-list .empty-state {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+html body .admin-transactions .table-section .empty-state .empty-state-content,
+html body .admin-users .table-card .empty-state .empty-state-content,
+html body .admin-withdraw-requests .table-section .empty-state .empty-state-content,
+html body .admin-wallets .wallets-list .empty-state .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+html body .admin-transactions .table-section .empty-state .empty-state-title,
+html body .admin-users .table-card .empty-state .empty-state-title,
+html body .admin-withdraw-requests .table-section .empty-state .empty-state-title,
+html body .admin-wallets .wallets-list .empty-state .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+html body .admin-transactions .table-section .empty-state .empty-state-description,
+html body .admin-users .table-card .empty-state .empty-state-description,
+html body .admin-withdraw-requests .table-section .empty-state .empty-state-description,
+html body .admin-wallets .wallets-list .empty-state .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+html body .admin-transactions .table-section .empty-state .empty-state-icon,
+html body .admin-users .table-card .empty-state .empty-state-icon,
+html body .admin-withdraw-requests .table-section .empty-state .empty-state-icon,
+html body .admin-wallets .wallets-list .empty-state .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
 }
 
 .ant-card {

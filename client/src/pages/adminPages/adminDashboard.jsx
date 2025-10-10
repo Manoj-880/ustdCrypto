@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Card, Row, Col, Statistic, Typography, Table, Tag, Button, Space } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Typography,
+  Table,
+  Tag,
+  Button,
+  Space,
+} from "antd";
 import {
   UserOutlined,
   SwapOutlined,
@@ -14,69 +24,46 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import "../../styles/pages/adminPages/adminDashboard.css";
+import { adminDashboard } from "../../api_calls/dashboard";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState({});
   const navigate = useNavigate();
 
   // Mock data - replace with actual API calls
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    fetchDashboardData();
   }, []);
 
-  const recentTransactions = [
-    {
-      key: "1",
-      id: "TXN001",
-      user: "john.doe@example.com",
-      amount: 1000.0,
-    },
-    {
-      key: "2",
-      id: "TXN002",
-      user: "jane.smith@example.com",
-      amount: 500.0,
-    },
-    {
-      key: "3",
-      id: "TXN003",
-      user: "bob.wilson@example.com",
-      amount: 2500.0,
-    },
-  ];
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    let response = await adminDashboard();
+    if (response.success) {
+      setDashboardData(response.data);
+    } else {
+      toast.error(response.message);
+    }
+    setLoading(false);
+  };
 
-  const recentUsers = [
-    {
-      key: "1",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      joinDate: "2024-01-10",
-    },
-    {
-      key: "2",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      joinDate: "2024-01-12",
-    },
-    {
-      key: "3",
-      name: "Bob Wilson",
-      email: "bob.wilson@example.com",
-      joinDate: "2024-01-14",
-    },
-  ];
+  const recentTransactions = dashboardData.recentTransactions;
+
+  const recentUsers = dashboardData.recentUsers;
 
   const transactionColumns = [
     {
       title: "Transaction ID",
-      dataIndex: "id",
-      key: "id",
-      render: (text) => <Text copyable={{ text }} className="transaction-id">{text}</Text>,
+      dataIndex: "_id",
+      key: "_id",
+      render: (text) => (
+        <Text copyable={{ text }} className="transaction-id">
+          {text}
+        </Text>
+      ),
     },
     {
       title: "User",
@@ -87,15 +74,15 @@ const AdminDashboard = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => `${amount.toFixed(2)} USDT`,
+      render: (amount) => amount ? `${parseFloat(amount).toFixed(2)} USDT` : '0.00 USDT',
     },
   ];
 
   const userColumns = [
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "firstName",
+      key: "firstName",
     },
     {
       title: "Email",
@@ -128,7 +115,7 @@ const AdminDashboard = () => {
               <div className="stat-icon">
                 <UserOutlined />
               </div>
-              <div className="stat-value">1,250</div>
+              <div className="stat-value">{dashboardData.usersCount}</div>
               <div className="stat-title">Total Users</div>
             </div>
           </Card>
@@ -139,7 +126,9 @@ const AdminDashboard = () => {
               <div className="stat-icon">
                 <DollarOutlined />
               </div>
-              <div className="stat-value">2,000.00 USDT</div>
+              <div className="stat-value">
+                {dashboardData.adminBalance} USDT
+              </div>
               <div className="stat-title">Admin Wallet Balance</div>
             </div>
           </Card>
@@ -150,7 +139,7 @@ const AdminDashboard = () => {
               <div className="stat-icon">
                 <LogoutOutlined />
               </div>
-              <div className="stat-value">23</div>
+              <div className="stat-value">{dashboardData.totalRequests}</div>
               <div className="stat-title">Withdrawal Requests</div>
             </div>
           </Card>
@@ -161,7 +150,9 @@ const AdminDashboard = () => {
               <div className="stat-icon">
                 <SwapOutlined />
               </div>
-              <div className="stat-value">15,420</div>
+              <div className="stat-value">
+                {dashboardData.totalTransactions}
+              </div>
               <div className="stat-title">Total Transactions</div>
             </div>
           </Card>
@@ -173,16 +164,29 @@ const AdminDashboard = () => {
         <Col xs={24}>
           <Card title="Quick Actions" className="actions-card">
             <Space wrap>
-              <Button type="primary" icon={<UserOutlined />} onClick={() => navigate('/admin/users')}>
+              <Button
+                type="primary"
+                icon={<UserOutlined />}
+                onClick={() => navigate("/admin/users")}
+              >
                 Manage Users
               </Button>
-              <Button icon={<SwapOutlined />} onClick={() => navigate('/admin/transactions')}>
+              <Button
+                icon={<SwapOutlined />}
+                onClick={() => navigate("/admin/transactions")}
+              >
                 View Transactions
               </Button>
-              <Button icon={<LogoutOutlined />} onClick={() => navigate('/admin/withdraw-requests')}>
+              <Button
+                icon={<LogoutOutlined />}
+                onClick={() => navigate("/admin/withdraw-requests")}
+              >
                 Process Withdrawals
               </Button>
-              <Button icon={<WalletOutlined />} onClick={() => navigate('/admin/wallets')}>
+              <Button
+                icon={<WalletOutlined />}
+                onClick={() => navigate("/admin/wallets")}
+              >
                 Wallet Management
               </Button>
             </Space>
@@ -193,11 +197,15 @@ const AdminDashboard = () => {
       {/* Recent Activity */}
       <Row gutter={[16, 16]} className="activity-section">
         <Col xs={24} lg={12}>
-          <Card 
-            title="Recent Transactions" 
+          <Card
+            title="Recent Transactions"
             className="activity-card"
             extra={
-              <Button type="link" onClick={() => navigate('/admin/transactions')} className="view-all-btn">
+              <Button
+                type="link"
+                onClick={() => navigate("/admin/transactions")}
+                className="view-all-btn"
+              >
                 View All
               </Button>
             }
@@ -213,11 +221,15 @@ const AdminDashboard = () => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card 
-            title="Recent Users" 
+          <Card
+            title="Recent Users"
             className="activity-card"
             extra={
-              <Button type="link" onClick={() => navigate('/admin/users')} className="view-all-btn">
+              <Button
+                type="link"
+                onClick={() => navigate("/admin/users")}
+                className="view-all-btn"
+              >
                 View All
               </Button>
             }

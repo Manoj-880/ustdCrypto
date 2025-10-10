@@ -2,6 +2,113 @@
    Admin Withdraw Requests Styles
 ========================= */
 
+/* Pagination Container */
+.pagination-container {
+  padding: var(--space-6);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-primary);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.withdrawals-pagination {
+  background: transparent !important;
+}
+
+.withdrawals-pagination .ant-pagination {
+  background: transparent !important;
+}
+
+/* Pagination Items */
+.withdrawals-pagination .ant-pagination-item {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawals-pagination .ant-pagination-item a {
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawals-pagination .ant-pagination-item:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.withdrawals-pagination .ant-pagination-item:hover a {
+  color: var(--color-primary) !important;
+}
+
+.withdrawals-pagination .ant-pagination-item-active {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.3);
+}
+
+.withdrawals-pagination .ant-pagination-item-active a {
+  color: var(--color-text-white) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Pagination Navigation Buttons */
+.withdrawals-pagination .ant-pagination-prev,
+.withdrawals-pagination .ant-pagination-next {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawals-pagination .ant-pagination-prev:hover,
+.withdrawals-pagination .ant-pagination-next:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.withdrawals-pagination .ant-pagination-prev:disabled,
+.withdrawals-pagination .ant-pagination-next:disabled {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-border-secondary) !important;
+  color: var(--color-text-disabled) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Pagination Options */
+.withdrawals-pagination .ant-pagination-options {
+  color: var(--color-text-primary) !important;
+}
+
+.withdrawals-pagination .ant-pagination-options .ant-select-selector {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawals-pagination .ant-pagination-options .ant-select-selector:hover {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg);
+}
+
+.withdrawals-pagination .ant-pagination-options .ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg) !important;
+}
+
+/* Pagination Total */
+.withdrawals-pagination .ant-pagination-total-text {
+  color: var(--color-text-secondary) !important;
+}
+
 .admin-withdraw-requests {
   padding: 0;
   background: var(--color-bg-primary);
@@ -141,6 +248,12 @@
 
 .withdrawals-table .ant-table {
   background: var(--color-bg-card) !important;
+  table-layout: fixed;
+}
+
+.withdrawals-table .ant-table table {
+  table-layout: fixed;
+  width: 100%;
 }
 
 .withdrawals-table .ant-table-thead > tr > th {
@@ -160,6 +273,111 @@
 
 .withdrawals-table .ant-table-tbody > tr:hover > td {
   background: var(--color-bg-tertiary) !important;
+}
+
+/* Actions column styling */
+.withdrawals-table .ant-table-tbody > tr > td:last-child {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.withdrawals-table .ant-table-thead > tr > th:last-child {
+  text-align: center;
+}
+
+/* Table content fitting */
+.withdrawals-table .ant-table-tbody > tr > td {
+  padding: var(--space-2) var(--space-3) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.withdrawals-table .ant-table-thead > tr > th {
+  padding: var(--space-2) var(--space-3) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Specific column styling */
+.withdrawals-table .user-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.withdrawals-table .user-email {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.withdrawals-table .wallet-address {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.withdrawals-table .amount,
+.withdrawals-table .balance {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.withdrawals-table .date-cell {
+  text-align: center;
+}
+
+.withdrawals-table .date {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.withdrawals-table .time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Action buttons styling */
+.withdrawals-table .approve-btn,
+.withdrawals-table .reject-btn,
+.withdrawals-table .verify-btn {
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  background: var(--color-bg-card) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawals-table .approve-btn:hover {
+  color: var(--color-success) !important;
+  border-color: var(--color-success) !important;
+  background: var(--color-success-bg) !important;
+}
+
+.withdrawals-table .reject-btn:hover {
+  color: var(--color-error) !important;
+  border-color: var(--color-error) !important;
+  background: var(--color-error-bg) !important;
+}
+
+.withdrawals-table .verify-btn:hover {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background: var(--color-primary-bg) !important;
 }
 
 .withdrawals-table .ant-table-tbody > tr {
@@ -751,6 +969,75 @@
 }
 
 /* =========================
+   Empty State
+========================= */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--space-8);
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-content {
+  text-align: center;
+  max-width: 500px;
+  padding: var(--space-8);
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: var(--color-text-tertiary) !important;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.empty-state-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-3) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+.empty-state-description {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-relaxed) !important;
+  margin-bottom: var(--space-6) !important;
+  display: block;
+}
+
+/* Force dark theme for empty states */
+.admin-withdraw-requests .empty-state,
+.admin-withdraw-requests .empty-state * {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-withdraw-requests .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border-color: var(--color-border-primary) !important;
+}
+
+.admin-withdraw-requests .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+.admin-withdraw-requests .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.admin-withdraw-requests .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* =========================
    Responsive Design
 ========================= */
 
@@ -774,7 +1061,22 @@
 
   .withdrawals-table .ant-table-thead > tr > th,
   .withdrawals-table .ant-table-tbody > tr > td {
-    padding: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .withdrawals-table .user-name,
+  .withdrawals-table .user-email {
+    font-size: var(--font-size-xs);
+  }
+
+  .withdrawals-table .wallet-address {
+    font-size: var(--font-size-xs);
+    max-width: 120px;
+  }
+
+  .withdrawals-table .amount,
+  .withdrawals-table .balance {
     font-size: var(--font-size-xs);
   }
 

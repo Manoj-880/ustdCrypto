@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import dayjs from 'dayjs';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import {
   Card,
   Row,
@@ -20,8 +21,8 @@ import {
   Tag,
   Avatar,
   Descriptions,
-  Spin
-} from 'antd';
+  Spin,
+} from "antd";
 import {
   UserOutlined,
   EditOutlined,
@@ -34,9 +35,11 @@ import {
   TrophyOutlined,
   PhoneOutlined,
   EnvironmentOutlined,
-  IdcardOutlined
-} from '@ant-design/icons';
-import '../../styles/pages/adminPages/adminUserDetails.css';
+  IdcardOutlined,
+} from "@ant-design/icons";
+import "../../styles/pages/adminPages/adminUserDetails.css";
+import { getUserById } from "../../api_calls/userApi";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -50,43 +53,21 @@ const AdminUserDetails = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  // Mock user data - in real app, fetch from API
-  const mockUser = {
-    id: id,
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    balance: 1250.75,
-    profit: 450.25,
-    joinDate: '2024-01-15',
-    lastLogin: '2024-01-20',
-    status: 'active',
-    country: 'United States',
-    city: 'New York',
-    address: '123 Main St, New York, NY 10001',
-    kycStatus: 'verified',
-    totalDeposits: 5000.00,
-    totalWithdrawals: 3750.00,
-    totalTrades: 127,
-    winRate: 78.5,
-    referralCode: 'JOHN2024',
-    referredBy: 'REF123456'
-  };
-
   useEffect(() => {
-    // Simulate API call
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setUserData(mockUser);
-      // Convert date string to dayjs object for DatePicker
-      const formData = {
-        ...mockUser,
-        joinDate: dayjs(mockUser.joinDate)
-      };
-      form.setFieldsValue(formData);
-      setLoading(false);
-    }, 1000);
-  }, [id, form]);
+    let response = await getUserById(id);
+    if (response.success) {
+      setUserData(response.data);
+      form.setFieldValue(response.data);
+    } else {
+      toast.error(response.message);
+    }
+    setLoading(false);
+  };
 
   const handleEdit = () => {
     setEditing(true);
@@ -96,16 +77,16 @@ const AdminUserDetails = () => {
     try {
       const values = await form.validateFields();
       setLoading(true);
-      
+
       // Simulate API call
       setTimeout(() => {
         setUserData({ ...userData, ...values });
         setEditing(false);
         setLoading(false);
-        message.success('User updated successfully!');
+        message.success("User updated successfully!");
       }, 1000);
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error("Validation failed:", error);
     }
   };
 
@@ -113,7 +94,7 @@ const AdminUserDetails = () => {
     // Convert date string to dayjs object for DatePicker
     const formData = {
       ...userData,
-      joinDate: dayjs(userData.joinDate)
+      joinDate: dayjs(userData.joinDate),
     };
     form.setFieldsValue(formData);
     setEditing(false);
@@ -129,26 +110,21 @@ const AdminUserDetails = () => {
     setTimeout(() => {
       setLoading(false);
       setDeleteModalVisible(false);
-      message.success('User deleted successfully!');
-      navigate('/admin/users');
+      message.success("User deleted successfully!");
+      navigate("/admin/users");
     }, 1000);
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'green';
-      case 'inactive': return 'red';
-      case 'suspended': return 'orange';
-      default: return 'blue';
-    }
-  };
-
-  const getKycStatusColor = (status) => {
-    switch (status) {
-      case 'verified': return 'green';
-      case 'pending': return 'orange';
-      case 'rejected': return 'red';
-      default: return 'blue';
+      case "active":
+        return "green";
+      case "inactive":
+        return "red";
+      case "suspended":
+        return "orange";
+      default:
+        return "blue";
     }
   };
 
@@ -169,9 +145,15 @@ const AdminUserDetails = () => {
       <Card className="profile-card">
         <div className="profile-header">
           <div className="profile-main">
-            <Avatar size={100} icon={<UserOutlined />} className="user-avatar" />
+            <Avatar
+              size={100}
+              icon={<UserOutlined />}
+              className="user-avatar"
+            />
             <div className="profile-info">
-              <Title level={2} className="user-name">{userData?.name}</Title>
+              <Title level={2} className="user-name">
+                {userData?.name}
+              </Title>
               <Text className="user-email">{userData?.email}</Text>
               <Text className="user-id">ID: {userData?.id}</Text>
             </div>
@@ -232,7 +214,7 @@ const AdminUserDetails = () => {
               title="Balance"
               value={userData?.balance}
               prefix="USDT"
-              valueStyle={{ color: 'var(--color-primary)' }}
+              valueStyle={{ color: "var(--color-primary)" }}
             />
           </Card>
         </Col>
@@ -242,7 +224,7 @@ const AdminUserDetails = () => {
               title="Profit"
               value={userData?.profit}
               prefix="USDT"
-              valueStyle={{ color: 'var(--color-success)' }}
+              valueStyle={{ color: "var(--color-success)" }}
             />
           </Card>
         </Col>
@@ -251,7 +233,7 @@ const AdminUserDetails = () => {
             <Statistic
               title="Total Trades"
               value={userData?.totalTrades}
-              valueStyle={{ color: 'var(--color-info)' }}
+              valueStyle={{ color: "var(--color-info)" }}
             />
           </Card>
         </Col>
@@ -261,7 +243,7 @@ const AdminUserDetails = () => {
               title="Win Rate"
               value={userData?.winRate}
               suffix="%"
-              valueStyle={{ color: 'var(--color-warning)' }}
+              valueStyle={{ color: "var(--color-warning)" }}
             />
           </Card>
         </Col>
@@ -269,7 +251,9 @@ const AdminUserDetails = () => {
 
       {/* User Information Card */}
       <Card className="info-card">
-        <Title level={4} className="card-title">User Information</Title>
+        <Title level={4} className="card-title">
+          User Information
+        </Title>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8}>
             <div className="info-item">
@@ -323,7 +307,10 @@ const AdminUserDetails = () => {
                 Status
               </div>
               <div className="info-value">
-                <Tag color={getStatusColor(userData?.status)} className="status-tag">
+                <Tag
+                  color={getStatusColor(userData?.status)}
+                  className="status-tag"
+                >
                   {userData?.status?.toUpperCase()}
                 </Tag>
               </div>
@@ -372,24 +359,32 @@ const AdminUserDetails = () => {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
           <Card className="info-card">
-            <Title level={4} className="card-title">Account Details</Title>
+            <Title level={4} className="card-title">
+              Account Details
+            </Title>
             <div className="details-grid">
               <div className="detail-item">
                 <div className="detail-label">User ID</div>
                 <div className="detail-value">
-                  <Text code className="code-text">{userData?.id}</Text>
+                  <Text code className="code-text">
+                    {userData?.id}
+                  </Text>
                 </div>
               </div>
               <div className="detail-item">
                 <div className="detail-label">Referral Code</div>
                 <div className="detail-value">
-                  <Text code className="code-text">{userData?.referralCode}</Text>
+                  <Text code className="code-text">
+                    {userData?.referralCode}
+                  </Text>
                 </div>
               </div>
               <div className="detail-item">
                 <div className="detail-label">Referred By</div>
                 <div className="detail-value">
-                  <Text code className="code-text">{userData?.referredBy}</Text>
+                  <Text code className="code-text">
+                    {userData?.referredBy}
+                  </Text>
                 </div>
               </div>
             </div>
@@ -397,7 +392,9 @@ const AdminUserDetails = () => {
         </Col>
         <Col xs={24} lg={12}>
           <Card className="info-card">
-            <Title level={4} className="card-title">Financial Summary</Title>
+            <Title level={4} className="card-title">
+              Financial Summary
+            </Title>
             <div className="details-grid">
               <div className="detail-item">
                 <div className="detail-label">Total Deposits</div>
@@ -439,7 +436,8 @@ const AdminUserDetails = () => {
           </div>
           <Title level={4}>Are you sure you want to delete this user?</Title>
           <Text type="secondary">
-            This action cannot be undone. All user data, transactions, and account information will be permanently deleted.
+            This action cannot be undone. All user data, transactions, and
+            account information will be permanently deleted.
           </Text>
           <div className="user-preview">
             <Text strong>User: {userData?.name}</Text>

@@ -6,7 +6,9 @@ import {
   UserOutlined,
   SwapOutlined,
   SendOutlined,
-  WalletOutlined
+  WalletOutlined,
+  QuestionCircleOutlined,
+  ClockCircleOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../../../contexts/AuthContext";
 import "../../../styles/pages/adminPages/components/adminSideNav.css";
@@ -22,6 +24,8 @@ const AdminSideNav = ({ collapsed, isMobile }) => {
     { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/admin/transactions" },
     { key: "withdraw-requests", label: "Withdrawals", icon: <SendOutlined />, path: "/admin/withdraw-requests" },
     { key: "wallets", label: "Admin Wallets", icon: <WalletOutlined />, path: "/admin/wallets" },
+    { key: "lockin-plans", label: "Lock-In Plans", icon: <ClockCircleOutlined />, path: "/admin/lockin-plans" },
+    { key: "faq", label: "FAQ Management", icon: <QuestionCircleOutlined />, path: "/admin/faq" },
   ];
 
   return (

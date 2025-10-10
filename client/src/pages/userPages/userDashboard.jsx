@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import usdtIcon from '../../assets/usdt-icon.png';
 import { 
   Card, 
   Row, 
@@ -12,7 +11,12 @@ import {
   Tag,
   Avatar,
   Button,
-  Tooltip
+  Tooltip,
+  Modal,
+  Form,
+  Input,
+  Select,
+  message
 } from 'antd';
 import { useAuth } from '../../contexts/AuthContext';
 import AddFundsModal from '../../components/AddFundsModal';
@@ -26,18 +30,26 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   PlusOutlined,
-  MinusOutlined
+  MinusOutlined,
+  LockOutlined
 } from '@ant-design/icons';
+import { getAllLockinPlans, createLockin, getLockinsByUserId } from '../../api_calls/lockinApi';
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 const UserDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [showAddFundsModal, setShowAddFundsModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const { user } = useAuth();
+  const [showLockinModal, setShowLockinModal] = useState(false);
+  const [lockinPlans, setLockinPlans] = useState([]);
+  const [lockinLoading, setLockinLoading] = useState(false);
+  const [form] = Form.useForm();
+  const { user, login } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     walletBalance: 0,
+    totalLockinBalance: 0,
     monthlyProfit: 0,
     totalProfit: 0,
     monthlyGrowth: 0,
@@ -45,22 +57,64 @@ const UserDashboard = () => {
     profitPercentage: 0
   });
 
-  // Mock data - replace with actual API calls
+  // Load dashboard data
   useEffect(() => {
-    // Simulate API call
+    if (user) {
+      loadDashboardData();
+    }
+  }, [user]);
+
+  // Update balance when user data changes
+  useEffect(() => {
+    if (user?.balance) {
+      setDashboardData(prevData => ({
+        ...prevData,
+        walletBalance: parseFloat(user.balance)
+      }));
+    }
+  }, [user?.balance]);
+
+  const loadDashboardData = async () => {
+    if (!user || !user._id) {
+      console.error('User not authenticated');
+      return;
+    }
+    
     setLoading(true);
-    setTimeout(() => {
+    try {
+      // Use balance from user data in localStorage
+      const walletBalance = user?.balance ? parseFloat(user.balance) : 0;
+      
+      // Load lock-in balance from backend
+      const lockinResponse = await getLockinsByUserId(user._id);
+      const lockinData = lockinResponse;
+      
+      // Calculate total lock-in balance
+      const totalLockinBalance = lockinData.success 
+        ? lockinData.data.reduce((sum, lockin) => sum + parseFloat(lockin.amount), 0)
+        : 0;
+
       setDashboardData({
-        walletBalance: 15420.50,
-        monthlyProfit: 2840.75,
-        totalProfit: 45680.25,
-        monthlyGrowth: 12.5,
-        totalGrowth: 8.3,
-        profitPercentage: 75
+        walletBalance: walletBalance,
+        totalLockinBalance: totalLockinBalance,
+        monthlyProfit: 2840.75, // Mock data - replace with actual API
+        totalProfit: 45680.25,  // Mock data - replace with actual API
+        monthlyGrowth: 12.5,    // Mock data - replace with actual API
+        totalGrowth: 8.3,       // Mock data - replace with actual API
+        profitPercentage: 75    // Mock data - replace with actual API
       });
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+      // Fallback to user data from localStorage
+      setDashboardData(prevData => ({
+        ...prevData,
+        walletBalance: user?.balance ? parseFloat(user.balance) : 0,
+        totalLockinBalance: 0
+      }));
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
 
 
@@ -87,6 +141,69 @@ const UserDashboard = () => {
     setShowWithdrawModal(true);
   };
 
+  const handleLockin = () => {
+    setShowLockinModal(true);
+    loadLockinPlans();
+  };
+
+  const loadLockinPlans = async () => {
+    try {
+      const response = await getAllLockinPlans();
+      if (response.success) {
+        setLockinPlans(response.data);
+      } else {
+        message.error(response.message || 'Failed to load lock-in plans');
+      }
+    } catch (error) {
+      console.error('Error loading lock-in plans:', error);
+      message.error('Failed to load lock-in plans');
+    }
+  };
+
+  const handleLockinSubmit = async (values) => {
+    setLockinLoading(true);
+    console.log({
+      userId: user._id,
+        planId: values.planId,
+        amount: parseFloat(values.amount)
+    })
+    try {
+      const response = await createLockin({
+        userId: user._id,
+        planId: values.planId,
+        amount: parseFloat(values.amount)
+      });
+      
+      if (response.success) {
+        // Update user data in localStorage with new balance
+        if (response.data.user) {
+          const updatedUser = response.data.user;
+          const sessionData = {
+            user: updatedUser,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          
+          // Update the user context
+          login(updatedUser);
+        }
+        
+        message.success('Lock-in created successfully!');
+        setShowLockinModal(false);
+        form.resetFields();
+        // Refresh dashboard data
+        loadDashboardData();
+      } else {
+        message.error(response.message || 'Failed to create lock-in');
+      }
+    } catch (error) {
+      console.error('Error creating lock-in:', error);
+      message.error('Failed to create lock-in');
+    } finally {
+      setLockinLoading(false);
+    }
+  };
+
   return (
     <div className="user-dashboard">
       <div className="dashboard-header">
@@ -105,7 +222,7 @@ const UserDashboard = () => {
             {/* Wallet Balance Card */}
       <Card className="wallet-card" loading={loading}>
         <Row gutter={[16, 16]} align="middle">
-          <Col xs={24} sm={16}>
+          <Col xs={24} sm={12}>
             <Space direction="vertical" size="small">
               <Text type="secondary" className="card-label">
                 Current Wallet Balance
@@ -123,10 +240,23 @@ const UserDashboard = () => {
               />
             </Space>
           </Col>
-          <Col xs={24} sm={8} className="wallet-icon-col">
-            <div className="usdt-icon-wrapper">
-              <img src={usdtIcon} alt="USDT" className="usdt-icon" />
-            </div>
+          <Col xs={24} sm={12}>
+            <Space direction="vertical" size="small">
+              <Text type="secondary" className="card-label">
+                Total Lock-In Balance
+              </Text>
+              <Statistic
+                title=""
+                value={dashboardData.totalLockinBalance}
+                precision={2}
+                valueStyle={{ 
+                  color: '#52c41a', 
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold'
+                }}
+                formatter={(value) => formatCurrency(value)}
+              />
+            </Space>
           </Col>
         </Row>
         
@@ -149,6 +279,14 @@ const UserDashboard = () => {
               className="withdraw-btn"
             >
               Withdraw
+            </Button>
+            <Button
+              size="large"
+              icon={<LockOutlined />}
+              onClick={handleLockin}
+              className="lockin-btn"
+            >
+              Lock-In
             </Button>
           </Space>
         </div>
@@ -310,6 +448,103 @@ const UserDashboard = () => {
               onClose={() => setShowWithdrawModal(false)}
               user={user}
             />
+
+            {/* Lock-In Modal */}
+            <Modal
+              className="lockin-modal"
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <LockOutlined style={{ color: '#1677ff' }} />
+                  Lock-In Funds
+                </div>
+              }
+              open={showLockinModal}
+              onCancel={() => {
+                setShowLockinModal(false);
+                form.resetFields();
+              }}
+              footer={null}
+              width={500}
+              destroyOnClose
+            >
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleLockinSubmit}
+                style={{ marginTop: '20px' }}
+              >
+                <Form.Item
+                  name="amount"
+                  label="USDT Amount"
+                  rules={[
+                    { required: true, message: 'Please enter the amount' },
+                    { 
+                      pattern: /^\d+(\.\d{1,2})?$/, 
+                      message: 'Please enter a valid amount (e.g., 100.50)' 
+                    },
+                    { 
+                      validator: (_, value) => {
+                        if (value && parseFloat(value) <= 0) {
+                          return Promise.reject('Amount must be greater than 0');
+                        }
+                        return Promise.resolve();
+                      }
+                    }
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter USDT amount"
+                    size="large"
+                    prefix="$"
+                    suffix="USDT"
+                    className="form-input"
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="planId"
+                  label="Lock-In Duration"
+                  rules={[{ required: true, message: 'Please select a lock-in duration' }]}
+                >
+                  <Select
+                    placeholder="Select lock-in duration"
+                    size="large"
+                    loading={lockinPlans.length === 0}
+                    className="form-select"
+                  >
+                    {lockinPlans.map((plan) => (
+                      <Option key={plan._id} value={plan._id}>
+                        {plan.duration} days - {plan.interestRate}% interest
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
+                <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+                  <Space>
+                    <Button
+                      onClick={() => {
+                        setShowLockinModal(false);
+                        form.resetFields();
+                      }}
+                      size="large"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      size="large"
+                      loading={lockinLoading}
+                      icon={<LockOutlined />}
+                    >
+                      Lock-In Funds
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </Modal>
           </div>
         );
       };

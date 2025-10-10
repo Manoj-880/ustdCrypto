@@ -1,4 +1,6 @@
 const lockinRepo = require("../repos/lockinRepo");
+const lockinPlanRepo = require("../repos/lockinPlanRepo");
+const userRepo = require("../repos/userRepo");
 
 const getAllLockins = async (req, res) => {
   try {
@@ -20,6 +22,15 @@ const getAllLockins = async (req, res) => {
 const getLockinsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
+    
+    // Validate userId
+    if (!userId || userId === 'undefined') {
+      return res.status(400).send({
+        success: false,
+        message: "Valid user ID is required",
+      });
+    }
+    
     const lockins = await lockinRepo.getLockinsByUserId(userId);
     res.status(200).send({
       success: true,
@@ -36,25 +47,83 @@ const getLockinsByUserId = async (req, res) => {
 };
 
 const createLockin = async (req, res) => {
+  console.log(req.body);
   try {
-    const { userId, planId, amount, startDate, endDate } = req.body;
-    if (!userId || !planId || !amount || !startDate || !endDate) {
+    const { userId, planId, amount } = req.body;
+    if (!userId || !planId || !amount) {
       return res.status(400).send({
         success: false,
-        message: "All fields are required",
+        message: "User ID, plan ID, and amount are required",
       });
     }
+
+    // Get user details and validate balance
+    const user = await userRepo.getUserById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const userBalance = parseFloat(user.balance) || 0;
+    const lockinAmount = parseFloat(amount);
+    
+    if (userBalance < lockinAmount) {
+      return res.status(400).send({
+        success: false,
+        message: "Insufficient balance for lock-in",
+        currentBalance: userBalance,
+        requiredAmount: lockinAmount,
+      });
+    }
+
+    // Get the lock-in plan from selected plan ID
+    const plan = await lockinPlanRepo.getLockinPlanById(planId);
+    if (!plan) {
+      return res.status(404).send({
+        success: false,
+        message: "Lock-in plan not found",
+      });
+    }
+
+    // Calculate start date as Date.now() and end date based on plan duration
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + plan.duration);
+
+    // Create the lockin
     const newLockin = await lockinRepo.createLockin({
       userId,
-      duration: planId,
-      amount,
-      startDate,
-      endDate,
+      duration: planId, // Keep planId for reference
+      planDuration: plan.duration, // Store actual duration in days
+      amount: amount.toString(),
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      intrestRate: plan.interestRate.toString(),
     });
+
+    // Subtract amount from user balance
+    const newBalance = userBalance - lockinAmount;
+    const updatedUser = await userRepo.updateUser(userId, {
+      balance: newBalance.toFixed(2).toString(),
+    });
+
     res.status(201).send({
       success: true,
       message: "Lock-in created successfully",
-      data: newLockin,
+      data: {
+        lockin: newLockin,
+        user: {
+          _id: updatedUser._id,
+          balance: updatedUser.balance,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          walletId: updatedUser.walletId,
+          profit: updatedUser.profit,
+        },
+      },
     });
   } catch (error) {
     console.log(error);

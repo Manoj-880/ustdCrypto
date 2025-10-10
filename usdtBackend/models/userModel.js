@@ -12,7 +12,8 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     mobile: {
         type: String,
@@ -22,9 +23,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    walletKey: {
+    walletId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     balance: {
         type: String,

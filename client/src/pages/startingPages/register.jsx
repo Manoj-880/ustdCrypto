@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import logo from "../../assets/logo.svg";
 import "../../styles/pages/startingPages/register.css";
+import { createUser } from "../../api_calls/userApi";
 
 const { Title, Text, Link } = Typography;
 
@@ -62,40 +63,17 @@ const Register = () => {
         }
 
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            // Create user data for session storage
-            const userData = {
-                id: Date.now().toString(),
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                mobile: formData.mobile,
-                walletId: formData.walletId,
-                name: `${formData.firstName} ${formData.lastName}`,
-                loginTime: new Date().toISOString(),
-                role: 'user'
-            };
-            
-            // Store user data in session storage
-            login(userData);
-            
-            console.log(formData);
+
+        let response = await createUser(formData);
+        if(response.success) {
             toast.success("Registration successful!", { position: "top-right" });
-            setFormData({
-                firstName: "",
-                lastName: "",
-                email: "",
-                mobile: "",
-                walletId: "",
-                password: "",
-                confirmPassword: "",
-            });
-            setIsLoading(false);
-            
-            // Redirect to dashboard
+            login(response.data);
             navigate("/", { replace: true });
-        }, 1500);
+        } else {
+            toast.error(response.message, { position: "top-right" });
+        }
+
+        setIsLoading(false);
     };
 
     return (

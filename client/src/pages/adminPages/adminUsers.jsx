@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -28,6 +29,8 @@ import {
   SortAscendingOutlined,
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminUsers.css";
+import { getAllUsers } from "../../api_calls/userApi";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -51,94 +54,41 @@ const AdminUsers = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Mock data - replace with actual API calls
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      const mockUsers = [
-        {
-          key: "1",
-          id: "U001",
-          name: "John Doe",
-          email: "john.doe@example.com",
-          joinDate: "2024-01-10",
-          status: "active",
-          balance: 1500.0,
-          profit: 250.0,
-          lastLogin: "2024-01-15 14:30:00",
-          totalTransactions: 25,
-        },
-        {
-          key: "2",
-          id: "U002",
-          name: "Jane Smith",
-          email: "jane.smith@example.com",
-          joinDate: "2024-01-12",
-          status: "active",
-          balance: 750.0,
-          profit: 150.0,
-          lastLogin: "2024-01-15 13:45:00",
-          totalTransactions: 18,
-        },
-        {
-          key: "3",
-          id: "U003",
-          name: "Bob Wilson",
-          email: "bob.wilson@example.com",
-          joinDate: "2024-01-14",
-          status: "pending",
-          balance: 0.0,
-          profit: 0.0,
-          lastLogin: "Never",
-          totalTransactions: 0,
-        },
-        {
-          key: "4",
-          id: "U004",
-          name: "Alice Johnson",
-          email: "alice.johnson@example.com",
-          joinDate: "2024-01-08",
-          status: "suspended",
-          balance: 200.0,
-          profit: 50.0,
-          lastLogin: "2024-01-12 10:20:00",
-          totalTransactions: 12,
-        },
-        {
-          key: "5",
-          id: "U005",
-          name: "Charlie Brown",
-          email: "charlie.brown@example.com",
-          joinDate: "2024-01-05",
-          status: "active",
-          balance: 3200.0,
-          profit: 500.0,
-          lastLogin: "2024-01-15 16:15:00",
-          totalTransactions: 45,
-        },
-      ];
-      setUsers(mockUsers);
-      setFilteredUsers(mockUsers);
-      setLoading(false);
-    }, 1000);
+    fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    let response = await getAllUsers();
+    if (response.success) {
+      setUsers(response.data);
+      setFilteredUsers(response.data);
+    } else {
+      toast.error(response.message);
+    }
+    setLoading(false);
+  };
 
   // Sort users function
   const sortUsers = (users, sortBy) => {
     return [...users].sort((a, b) => {
       switch (sortBy) {
         case "profit":
-          return b.profit - a.profit; // Descending order
+          return (b.profit || 0) - (a.profit || 0); // Descending order
         case "joinDate":
-          return new Date(b.joinDate) - new Date(a.joinDate); // Descending order (newest first)
+          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0); // Descending order (newest first)
         case "name":
-          return a.name.localeCompare(b.name); // Alphabetical order
+          const nameA = (a.firstName || '').toString();
+          const nameB = (b.firstName || '').toString();
+          return nameA.localeCompare(nameB); // Alphabetical order
         case "balance":
-          return b.balance - a.balance; // Descending order
+          return (b.balance || 0) - (a.balance || 0); // Descending order
         default:
           return 0;
       }
@@ -169,13 +119,7 @@ const AdminUsers = () => {
   }, [users, searchText, statusFilter, sortBy]);
 
   const handleViewUser = (user) => {
-    navigate(`/admin/user/${user.id}`);
-  };
-
-  const handleEditUser = (user) => {
-    setEditingUser(user);
-    // Handle edit user logic here
-    console.log("Edit user:", user);
+    navigate(`/admin/user/${user._id}`);
   };
 
   const handleDeleteUser = (user) => {
@@ -196,12 +140,11 @@ const AdminUsers = () => {
     setUserToDelete(null);
   };
 
-
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "firstName",
+      key: "firstName",
       width: 120,
       render: (text) => <Text className="user-name">{text}</Text>,
     },
@@ -217,26 +160,20 @@ const AdminUsers = () => {
       dataIndex: "balance",
       key: "balance",
       width: 100,
-      render: (balance) => (
-        <Text className="balance-cell">{balance.toFixed(2)} USDT</Text>
-      ),
-    },
-    {
-      title: "Join Date",
-      dataIndex: "joinDate",
-      key: "joinDate",
-      width: 100,
+      render: (balance) => {
+        const value = Number(balance) || 0;
+        return <Text className="balance-cell">{value.toFixed(2)} USDT</Text>;
+      },
     },
     {
       title: "Profit",
       dataIndex: "profit",
       key: "profit",
       width: 100,
-      render: (profit) => (
-        <Text className={profit >= 0 ? "profit-positive" : "profit-negative"}>
-          {profit.toFixed(2)} USDT
-        </Text>
-      ),
+      render: (profit) => {
+        const value = Number(profit) || 0;
+        return <Text className="balance-cell">{value.toFixed(2)} USDT</Text>;
+      },
     },
     {
       title: "Actions",
@@ -271,71 +208,93 @@ const AdminUsers = () => {
   const usersThisMonth = users.filter((user) => {
     const joinDate = new Date(user.joinDate);
     const currentDate = new Date();
-    return joinDate.getMonth() === currentDate.getMonth() && 
-           joinDate.getFullYear() === currentDate.getFullYear();
+    return (
+      joinDate.getMonth() === currentDate.getMonth() &&
+      joinDate.getFullYear() === currentDate.getFullYear()
+    );
   }).length;
 
   // Mobile Card Component
   const renderMobileCard = (user) => (
-    <Card key={user.id} className="mobile-user-card" hoverable>
+    <Card key={user._id} className="mobile-user-card" hoverable>
       <div className="mobile-card-header">
         <div className="user-avatar-section">
-          <Avatar 
-            size={48} 
-            icon={<UserOutlined />} 
+          <Avatar
+            size={48}
+            icon={<UserOutlined />}
             className="user-avatar"
-            style={{ backgroundColor: user.status === 'active' ? '#52c41a' : '#f5222d' }}
+            style={{
+              backgroundColor: user.status === "active" ? "#52c41a" : "#f5222d",
+            }}
           />
           <div className="user-info">
-            <Title level={5} className="user-name">{user.name}</Title>
-            <Text type="secondary" className="user-email">{user.email}</Text>
+            <Title level={5} className="user-name">
+              {user.name}
+            </Title>
+            <Text type="secondary" className="user-email">
+              {user.email}
+            </Text>
           </div>
         </div>
-        <Tag color={user.status === 'active' ? 'green' : 'red'} className="status-tag">
+        <Tag
+          color={user.status === "active" ? "green" : "red"}
+          className="status-tag"
+        >
           {user.status.toUpperCase()}
         </Tag>
       </div>
-      
+
       <Divider className="mobile-divider" />
-      
+
       <div className="mobile-card-content">
         <Row gutter={[16, 8]}>
           <Col span={12}>
             <div className="stat-item">
-              <Text type="secondary" className="stat-label">Balance</Text>
+              <Text type="secondary" className="stat-label">
+                Balance
+              </Text>
               <Text strong className="stat-value balance-value">
-                {user.balance.toFixed(2)} USDT
+                {user.balance ? parseFloat(user.balance).toFixed(2) : '0.00'} USDT
               </Text>
             </div>
           </Col>
           <Col span={12}>
             <div className="stat-item">
-              <Text type="secondary" className="stat-label">Profit</Text>
-              <Text 
-                strong 
-                className={`stat-value ${user.profit >= 0 ? 'profit-positive' : 'profit-negative'}`}
+              <Text type="secondary" className="stat-label">
+                Profit
+              </Text>
+              <Text
+                strong
+                className={`stat-value ${
+                  user.profit >= 0 ? "profit-positive" : "profit-negative"
+                }`}
               >
-                {user.profit >= 0 ? '+' : ''}{user.profit.toFixed(2)} USDT
+                {user.profit >= 0 ? "+" : ""}
+                {user.profit ? parseFloat(user.profit).toFixed(2) : '0.00'} USDT
               </Text>
             </div>
           </Col>
           <Col span={12}>
             <div className="stat-item">
-              <Text type="secondary" className="stat-label">Join Date</Text>
+              <Text type="secondary" className="stat-label">
+                Join Date
+              </Text>
               <Text className="stat-value">{user.joinDate}</Text>
             </div>
           </Col>
           <Col span={12}>
             <div className="stat-item">
-              <Text type="secondary" className="stat-label">User ID</Text>
+              <Text type="secondary" className="stat-label">
+                User ID
+              </Text>
               <Text className="stat-value user-id">{user.id}</Text>
             </div>
           </Col>
         </Row>
       </div>
-      
+
       <Divider className="mobile-divider" />
-      
+
       <div className="mobile-card-actions">
         <div className="action-buttons">
           <Button
@@ -440,7 +399,23 @@ const AdminUsers = () => {
       <Card className="table-card">
         {isMobile ? (
           <div className="mobile-cards-container">
-            {filteredUsers.map(renderMobileCard)}
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map(renderMobileCard)
+            ) : (
+              <div className="empty-state">
+                <div className="empty-state-content">
+                  <div className="empty-state-icon">
+                    <UserOutlined />
+                  </div>
+                  <Title level={3} className="empty-state-title">
+                    No Users Found
+                  </Title>
+                  <Text className="empty-state-description">
+                    {searchText ? 'No users match your search criteria.' : 'No users have been registered yet.'}
+                  </Text>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <Table
@@ -456,6 +431,19 @@ const AdminUsers = () => {
               className: "users-pagination",
             }}
             className="users-table"
+            locale={{
+              emptyText: (
+                <div className="table-empty-state">
+                  <div className="empty-state-icon">
+                    <UserOutlined />
+                  </div>
+                  <div className="empty-state-title">No Users Found</div>
+                  <div className="empty-state-description">
+                    {searchText ? 'No users match your search criteria.' : 'No users have been registered yet.'}
+                  </div>
+                </div>
+              )
+            }}
           />
         )}
       </Card>
@@ -477,7 +465,8 @@ const AdminUsers = () => {
           </div>
           <Title level={4}>Are you sure you want to delete this user?</Title>
           <Text type="secondary">
-            This action cannot be undone. All user data, transactions, and account information will be permanently deleted.
+            This action cannot be undone. All user data, transactions, and
+            account information will be permanently deleted.
           </Text>
           {userToDelete && (
             <div className="user-preview">

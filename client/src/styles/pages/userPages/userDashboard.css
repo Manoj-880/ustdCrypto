@@ -6,8 +6,6 @@
   padding: var(--space-8) var(--space-6);
   width: 100%;
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-sizing: border-box;
   background-color: var(--color-bg-primary);
 }
@@ -192,6 +190,143 @@
 .withdraw-btn:focus {
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+.lockin-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  border: none;
+  border-radius: var(--radius-xl);
+  height: 48px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  padding: 0 var(--space-8);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-normal);
+  color: white;
+  min-width: 140px;
+}
+
+.lockin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary-light) 100%);
+  color: white;
+}
+
+.lockin-btn:focus {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: white;
+}
+
+/* =========================
+   Lock-In Modal Form
+========================= */
+.lockin-modal .ant-modal-content {
+  background: var(--color-bg-card) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.lockin-modal .ant-modal-header {
+  background: var(--color-bg-secondary) !important;
+  border-bottom: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0 !important;
+  padding: var(--space-6) !important;
+}
+
+.lockin-modal .ant-modal-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold) !important;
+  font-size: var(--font-size-xl) !important;
+}
+
+.lockin-modal .ant-modal-body {
+  background: var(--color-bg-card) !important;
+  padding: var(--space-8) !important;
+}
+
+.lockin-modal .ant-modal-close {
+  color: var(--color-text-secondary) !important;
+}
+
+.lockin-modal .ant-modal-close:hover {
+  color: var(--color-text-primary) !important;
+}
+.lockin-modal .form-input {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-base) !important;
+  padding: var(--space-4) var(--space-5) !important;
+  height: 48px !important;
+}
+
+.lockin-modal .form-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+  outline: none !important;
+}
+
+.lockin-modal .form-input:hover {
+  border-color: var(--color-primary-hover) !important;
+}
+
+.lockin-modal .form-input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.lockin-modal .form-select .ant-select-selector {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-base) !important;
+  padding: var(--space-2) var(--space-5) !important;
+  height: 48px !important;
+  min-height: 48px !important;
+}
+
+.lockin-modal .form-select .ant-select-selector:hover {
+  border-color: var(--color-primary-hover) !important;
+}
+
+.lockin-modal .form-select.ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.lockin-modal .form-select .ant-select-selection-placeholder {
+  color: var(--color-text-tertiary) !important;
+  line-height: 44px !important;
+}
+
+.lockin-modal .form-select .ant-select-selection-item {
+  color: var(--color-text-primary) !important;
+  line-height: 44px !important;
+}
+
+.lockin-modal .ant-form-item-label > label {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+.lockin-modal .ant-form-item-explain-error {
+  color: var(--color-error) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.lockin-modal .ant-input-prefix {
+  color: var(--color-text-secondary) !important;
+  margin-right: var(--space-2);
+}
+
+.lockin-modal .ant-input-suffix {
+  color: var(--color-text-secondary) !important;
 }
 
 /* =========================
@@ -451,7 +586,8 @@
   }
 
   .add-funds-btn,
-  .withdraw-btn {
+  .withdraw-btn,
+  .lockin-btn {
     height: 44px;
     font-size: var(--font-size-sm);
     padding: 0 var(--space-6);
@@ -499,7 +635,8 @@
   }
 
   .add-funds-btn,
-  .withdraw-btn {
+  .withdraw-btn,
+  .lockin-btn {
     height: 46px;
     min-width: 130px;
   }

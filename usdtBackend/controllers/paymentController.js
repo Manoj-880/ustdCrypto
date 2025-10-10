@@ -186,7 +186,7 @@ const addProfit = async () => {
         date: new Date(),
         userId: user._id,
         activeWalleteId: MY_WALLET,
-        userWalletId: user.walletKey || null,
+        userWalletId: user.walletId || null,
         transactionId: `PROFIT-${Date.now()}-${user._id}`,
         type: "DAILY_PROFIT",
       });
@@ -215,7 +215,7 @@ const addProfit = async () => {
 //         let data = {
 //           userId: userid,
 //           amount: amount,
-//           walltAddress: user.walletKey,
+//           walltAddress: user.walletId,
 //           userBalance: user.balance,
 //         };
 //         await withdrawalRepo.createRequest(data);

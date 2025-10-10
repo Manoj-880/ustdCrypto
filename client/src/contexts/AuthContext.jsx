@@ -25,47 +25,47 @@ export const AuthProvider = ({ children }) => {
     return (now - sessionTime) < twentyFourHours;
   };
 
-  // Get user from session storage
+  // Get user from local storage
   const getUserFromSession = () => {
     try {
-      const sessionData = sessionStorage.getItem('userSession');
+      const sessionData = localStorage.getItem('userSession');
       if (sessionData) {
         const parsedData = JSON.parse(sessionData);
         if (isSessionValid(parsedData)) {
           return parsedData.user;
         } else {
           // Session expired, clear it
-          sessionStorage.removeItem('userSession');
+          localStorage.removeItem('userSession');
         }
       }
     } catch (error) {
-      console.error('Error reading from session storage:', error);
-      sessionStorage.removeItem('userSession');
+      console.error('Error reading from local storage:', error);
+      localStorage.removeItem('userSession');
     }
     return null;
   };
 
-  // Set user in session storage
+  // Set user in local storage
   const setUserInSession = (userData) => {
     try {
       const sessionData = {
         user: userData,
         timestamp: new Date().toISOString()
       };
-      sessionStorage.setItem('userSession', JSON.stringify(sessionData));
+      localStorage.setItem('userSession', JSON.stringify(sessionData));
       setUser(userData);
     } catch (error) {
-      console.error('Error saving to session storage:', error);
+      console.error('Error saving to local storage:', error);
     }
   };
 
   // Clear user session
   const clearUserSession = () => {
     try {
-      sessionStorage.removeItem('userSession');
+      localStorage.removeItem('userSession');
       setUser(null);
     } catch (error) {
-      console.error('Error clearing session storage:', error);
+      console.error('Error clearing local storage:', error);
     }
   };
 
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       const checkSessionExpiry = () => {
-        const sessionData = sessionStorage.getItem('userSession');
+        const sessionData = localStorage.getItem('userSession');
         if (sessionData) {
           const parsedData = JSON.parse(sessionData);
           if (!isSessionValid(parsedData)) {

@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import ForgotPassword from "./components/forgotPassword";
 import logo from "../../assets/logo.svg";
 import "../../styles/pages/startingPages/loginPage.css";
+import { userLogin } from "../../api_calls/loginApi";
 
 const { Title, Text, Link } = Typography;
 
@@ -39,27 +40,16 @@ const LoginPage = () => {
         }
         
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            // Create user data for session storage
-            const userData = {
-                id: Date.now().toString(),
-                email: formData.email,
-                name: formData.email.split('@')[0], // Extract name from email
-                loginTime: new Date().toISOString(),
-                role: 'user'
-            };
-            
-            // Store user data in session storage
-            login(userData);
-            
+
+        let response = await userLogin(formData);
+        if(response.success) {
             toast.success("Login successful!", { position: "top-right" });
-            setFormData({ email: "", password: "" });
-            setIsLoading(false);
-            
-            // Redirect to dashboard
+            login(response.data);
             navigate("/", { replace: true });
-        }, 1500);
+        } else {
+            toast.error(response.message, { position: "top-right" });
+        }
+        setIsLoading(false);
     };
 
     return (

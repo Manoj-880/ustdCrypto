@@ -14,7 +14,59 @@ const constants = require("./constants");
 const paymentController = require("./controllers/paymentController");
 
 const app = express();
-app.use(cors());
+
+// Trust proxy for accurate IP addresses
+app.set('trust proxy', 1);
+
+// CORS Configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173'
+    ];
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+
+// Morgan logging - Place BEFORE rate limiting to log all requests
+const filePath = path.join(__dirname, "logs", "request.log");
+const accessLogStream = fs.createWriteStream(filePath, { flags: "a" });
+
+// Custom Morgan format for better logging
+morgan.token('timestamp', () => {
+  return new Date().toISOString();
+});
+
+morgan.token('ip', (req) => {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip;
+});
+
+// Log to both console and file
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan(':timestamp :ip :method :url :status :res[content-length] :response-time ms')); // Console output
+
+// Additional debugging middleware to catch all requests
+app.use((req, res, next) => {
+  console.log(`🔍 Request received: ${req.method} ${req.url} from ${req.ip}`);
+  console.log(`📋 Headers:`, req.headers);
+  next();
+});
 
 // Rate limiter per IP range (/24 subnet)
 const limiter = rateLimit({
@@ -52,16 +104,7 @@ corn.schedule("* * * * *", async () => {
   }
 });
 
-// Logging API calls
-const filePath = path.join(__dirname, "logs", "request.log");
-const accessLogStream = fs.createWriteStream(filePath, { flags: "a" });
-
-app.use(
-  morgan(":method :url :status :res[content-length] :response-time ms", {
-    stream: accessLogStream,
-  })
-);
-app.use(morgan(":method :url :status :res[content-length] :response-time ms"));
+// Morgan logging is now configured above before rate limiting
 
 app.use(bodyParser.json());
 
@@ -74,8 +117,24 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
+// Test endpoint to verify logging
 app.get("/test", (req, res) => {
-  res.send("API working with IP range rate limit");
+  console.log("Test endpoint hit - this should appear in logs");
+  res.json({ 
+    message: "API working with IP range rate limit",
+    timestamp: new Date().toISOString(),
+    ip: req.ip
+  });
+});
+
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({
+    success: true,
+    message: 'Server is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
 });
 
 // routes
@@ -90,6 +149,8 @@ let admin = require("./routes/adminRoute");
 let dashboard = require("./routes/dashboardRoute");
 let withdrawalRequests = require("./routes/withdrawalRequestsRoute");
 let faq = require("./routes/faqRoute");
+let profit = require("./routes/profitRoute");
+let transfer = require("./routes/transferRoute");
 
 // end points
 app.use("/api/users", user);
@@ -103,6 +164,8 @@ app.use("/api/admin", admin);
 app.use("/api/dashboard", dashboard);
 app.use("/api/withdrawal-requests", withdrawalRequests);
 app.use("/api/faq", faq);
+app.use("/api/profits", profit);
+app.use("/api/transfers", transfer);
 
 const PORT = constants.PORT;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
