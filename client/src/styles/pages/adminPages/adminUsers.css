@@ -673,6 +673,75 @@
 }
 
 /* =========================
+   Empty State
+========================= */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--space-8);
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-content {
+  text-align: center;
+  max-width: 500px;
+  padding: var(--space-8);
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: var(--color-text-tertiary) !important;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.empty-state-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-3) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+.empty-state-description {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-relaxed) !important;
+  margin-bottom: var(--space-6) !important;
+  display: block;
+}
+
+/* Force dark theme for empty states */
+.admin-users .empty-state,
+.admin-users .empty-state * {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-users .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border-color: var(--color-border-primary) !important;
+}
+
+.admin-users .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+.admin-users .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.admin-users .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
+}
+
+/* =========================
    Responsive Design
 ========================= */
 

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Button, Statistic, Tag, Progress, Typography, Space, Divider, Row, Col, message } from 'antd'
+import { Card, Button, Statistic, Tag, Progress, Typography, Space, Divider, Row, Col, message, Spin } from 'antd'
 import { ClockCircleOutlined, CheckCircleOutlined, DollarOutlined, TrophyOutlined, HistoryOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
+import { useAuth } from '../../contexts/AuthContext'
+import { getProfitsByUserId, claimProfit } from '../../api_calls/profitApi'
 import '../../styles/pages/userPages/profits.css'
 
 const { Title, Text } = Typography
@@ -12,31 +14,52 @@ const Profits = () => {
   const [claimedProfits, setClaimedProfits] = useState([])
   const [totalProfits, setTotalProfits] = useState(0)
   const [currentProfit, setCurrentProfit] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [claiming, setClaiming] = useState(false)
+  const [nextClaimTime, setNextClaimTime] = useState(null)
+  const [lastClaimedTime, setLastClaimedTime] = useState(null)
+  
+  const { user } = useAuth()
 
-  // Mock data - in real app, this would come from API
-  const mockData = {
-    lastClaimedTime: dayjs().subtract(20, 'hours'), // 20 hours ago
-    currentProfit: 125.50,
-    claimedProfits: [
-      { id: 1, amount: 98.75, claimedAt: dayjs().subtract(2, 'days'), status: 'claimed' },
-      { id: 2, amount: 87.25, claimedAt: dayjs().subtract(3, 'days'), status: 'claimed' },
-      { id: 3, amount: 112.30, claimedAt: dayjs().subtract(4, 'days'), status: 'claimed' },
-      { id: 4, amount: 95.80, claimedAt: dayjs().subtract(5, 'days'), status: 'claimed' },
-      { id: 5, amount: 103.45, claimedAt: dayjs().subtract(6, 'days'), status: 'claimed' },
-    ]
+  const loadProfitsData = async () => {
+    if (!user || !user._id) {
+      message.error('User not authenticated')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await getProfitsByUserId(user._id)
+      if (response.success) {
+        const { profits, currentProfit, totalClaimed, nextClaimTime, lastClaimed, canClaim } = response.data
+        
+        setClaimedProfits(profits.filter(profit => profit.status === 'CLAIMED'))
+        setCurrentProfit(currentProfit)
+        setTotalProfits(totalClaimed)
+        setNextClaimTime(nextClaimTime ? dayjs(nextClaimTime) : null)
+        setLastClaimedTime(lastClaimed ? dayjs(lastClaimed.claimedAt) : null)
+        setCanClaim(canClaim)
+      } else {
+        message.error(response.message || 'Failed to load profits data')
+      }
+    } catch (error) {
+      console.error('Error loading profits data:', error)
+      message.error('Failed to load profits data')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    // Initialize data
-    setClaimedProfits(mockData.claimedProfits)
-    setCurrentProfit(mockData.currentProfit)
-    setTotalProfits(mockData.claimedProfits.reduce((sum, profit) => sum + profit.amount, 0))
+    loadProfitsData()
+  }, [user])
+
+  useEffect(() => {
+    if (!nextClaimTime) return
 
     // Calculate time left
     const calculateTimeLeft = () => {
       const now = dayjs()
-      const lastClaimed = mockData.lastClaimedTime
-      const nextClaimTime = lastClaimed.add(24, 'hours')
       const timeDiff = nextClaimTime.diff(now)
 
       if (timeDiff <= 0) {
@@ -55,25 +78,27 @@ const Profits = () => {
     const timer = setInterval(calculateTimeLeft, 1000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [nextClaimTime])
 
-  const handleClaimProfit = () => {
-    if (!canClaim) return
+  const handleClaimProfit = async () => {
+    if (!canClaim || !user || !user._id) return
 
-    // Add current profit to claimed list
-    const newClaimedProfit = {
-      id: Date.now(),
-      amount: currentProfit,
-      claimedAt: dayjs(),
-      status: 'claimed'
+    setClaiming(true)
+    try {
+      const response = await claimProfit(user._id)
+      if (response.success) {
+        message.success(`Successfully claimed $${parseFloat(response.data.amount).toFixed(2)} profit!`)
+        // Reload profits data to get updated information
+        await loadProfitsData()
+      } else {
+        message.error(response.message || 'Failed to claim profit')
+      }
+    } catch (error) {
+      console.error('Error claiming profit:', error)
+      message.error('Failed to claim profit')
+    } finally {
+      setClaiming(false)
     }
-
-    setClaimedProfits(prev => [newClaimedProfit, ...prev])
-    setTotalProfits(prev => prev + currentProfit)
-    setCurrentProfit(0)
-    setCanClaim(false)
-    
-    message.success(`Successfully claimed $${currentProfit.toFixed(2)} profit!`)
   }
 
   const formatTimeLeft = () => {
@@ -86,6 +111,23 @@ const Profits = () => {
     const totalSeconds = 24 * 60 * 60
     const remainingSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds
     return ((totalSeconds - remainingSeconds) / totalSeconds) * 100
+  }
+
+  if (loading) {
+    return (
+      <div className="profits-page">
+        <div className="profits-header">
+          <Title level={1} className="page-title">Profits</Title>
+          <Text className="page-subtitle">Track your profit performance and earnings</Text>
+        </div>
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <Spin size="large" />
+          <div style={{ marginTop: '20px' }}>
+            <Text>Loading profits data...</Text>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -148,7 +190,7 @@ const Profits = () => {
                     '100%': '#52c41a',
                   }}
                   trailColor="#2a2a2a"
-                  strokeWidth={8}
+                  size={8}
                   showInfo={false}
                 />
               </div>
@@ -158,11 +200,12 @@ const Profits = () => {
               type="primary"
               size="large"
               className="claim-button"
-              disabled={!canClaim}
+              disabled={!canClaim || claiming}
+              loading={claiming}
               onClick={handleClaimProfit}
               icon={<DollarOutlined />}
             >
-              {canClaim ? 'Claim Profit' : 'Wait for Timer'}
+              {claiming ? 'Claiming...' : canClaim ? 'Claim Profit' : 'Wait for Timer'}
             </Button>
           </div>
         </Card>
@@ -226,9 +269,9 @@ const Profits = () => {
                 <div key={profit.id} className="profit-item">
                   <div className="profit-item-content">
                     <div className="profit-item-info">
-                      <Text className="profit-amount">${profit.amount.toFixed(2)}</Text>
+                      <Text className="profit-amount">${parseFloat(profit.amount).toFixed(2)}</Text>
                       <Text className="profit-date">
-                        {profit.claimedAt.format('MMM DD, YYYY [at] HH:mm')}
+                        {dayjs(profit.claimedAt).format('MMM DD, YYYY [at] HH:mm')}
                       </Text>
                     </div>
                     <div className="profit-status">

@@ -10,10 +10,6 @@ const faqModel = new Schema({
         type: String,
         required: true,
     },
-    order: {
-        type: Number,
-        required: true,
-    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("faq", faqModel);

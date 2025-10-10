@@ -43,17 +43,18 @@ const getLockinPlanById = async (req, res) => {
 
 const createLockinPlan = async (req, res) => {
   try {
-    const { planName, duration, interestRate } = req.body;
+    const { planName, duration, interestRate, description } = req.body;
     if (!planName || !duration || !interestRate) {
       return res.status(400).send({
         success: false,
-        message: "All fields are required",
+        message: "Plan name, duration, and interest rate are required",
       });
     }
     const newPlan = await lockinPlanRepo.createLockinPlan({
       planName,
       duration,
       interestRate,
+      description,
     });
     res.status(201).send({
       success: true,
@@ -72,11 +73,12 @@ const createLockinPlan = async (req, res) => {
 const updateLockinPlan = async (req, res) => {
   try {
     const { id } = req.params;
-    const { planName, duration, interestRate } = req.body;
+    const { planName, duration, interestRate, description } = req.body;
     const updatedPlan = await lockinPlanRepo.updateLockinPlan(id, {
       planName,
       duration,
       interestRate,
+      description,
     });
     if (!updatedPlan) {
       return res.status(404).send({

@@ -17,6 +17,10 @@ const lockinSchema = new Schema(
       ref: "LockinPlans",
       required: true,
     },
+    planDuration: {
+      type: Number,
+      required: true,
+    },
     startDate: {
       type: String,
       required: true,

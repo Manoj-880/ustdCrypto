@@ -1,0 +1,540 @@
+/* =========================
+   User Withdrawal Requests Styles
+========================= */
+
+.withdrawal-requests-page {
+  padding: var(--space-6);
+  background: var(--color-bg-primary);
+  min-height: 100vh;
+  width: 100% !important;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: var(--space-6);
+}
+
+.page-title {
+  margin: 0 0 var(--space-2) 0 !important;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+/* Card Styles */
+.withdrawal-requests-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  width: 100% !important;
+}
+
+.card-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-border-primary);
+  margin-bottom: var(--space-4);
+}
+
+.card-title {
+  margin: 0 0 var(--space-1) 0 !important;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.card-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* Table Container */
+.table-container {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  text-align: center;
+}
+
+.loading-text {
+  margin-top: var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* Empty State */
+.empty-state {
+  padding: var(--space-12);
+  background: transparent !important;
+}
+
+.empty-state .ant-empty-description {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Table Styles */
+.withdrawal-requests-table {
+  background: transparent !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table {
+  background: transparent !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-container {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-content {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-tbody {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-thead {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-wrapper {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table-scroll {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.withdrawal-requests-table .ant-table table {
+  width: 100% !important;
+  min-width: 100% !important;
+  table-layout: auto;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr,
+.withdrawal-requests-table .ant-table-tbody > tr {
+  width: 100% !important;
+  min-width: 100% !important;
+  display: table;
+  table-layout: auto;
+}
+
+/* Column Width Distribution */
+.withdrawal-requests-table .ant-table-thead > tr > th:first-child,
+.withdrawal-requests-table .ant-table-tbody > tr > td:first-child {
+  width: 18%; /* Request ID */
+  min-width: 120px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(2),
+.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(2) {
+  width: 18%; /* Amount */
+  min-width: 100px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(3),
+.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(3) {
+  width: 30%; /* Wallet Address */
+  min-width: 200px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(4),
+.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(4) {
+  width: 18%; /* Status */
+  min-width: 100px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(5),
+.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(5) {
+  width: 18%; /* Requested At */
+  min-width: 150px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th:last-child,
+.withdrawal-requests-table .ant-table-tbody > tr > td:last-child {
+  width: 8%; /* Actions */
+  min-width: 80px;
+}
+
+.withdrawal-requests-table .ant-table-thead > tr > th {
+  background: var(--color-bg-secondary) !important;
+  border-bottom: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-sm) !important;
+  padding: var(--space-4) var(--space-5) !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.withdrawal-requests-table .ant-table-tbody > tr > td {
+  background: var(--color-bg-card) !important;
+  border-bottom: 1px solid var(--color-border-secondary) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--space-4) var(--space-5) !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.withdrawal-requests-table .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-tertiary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+/* Table Cell Styles */
+.request-id {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  background: var(--color-bg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+}
+
+.amount {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+.wallet-address {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  background: var(--color-bg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  word-break: break-all;
+}
+
+.status-tag {
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.date {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.time {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.view-button {
+  color: var(--color-primary);
+  border: none;
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.view-button:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-primary-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* Pagination Container */
+.pagination-container {
+  padding: var(--space-6);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-primary);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.withdrawal-requests-pagination {
+  background: transparent !important;
+}
+
+.withdrawal-requests-pagination .ant-pagination {
+  background: transparent !important;
+}
+
+/* Pagination Items */
+.withdrawal-requests-pagination .ant-pagination-item {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawal-requests-pagination .ant-pagination-item a {
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawal-requests-pagination .ant-pagination-item:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.withdrawal-requests-pagination .ant-pagination-item:hover a {
+  color: var(--color-primary) !important;
+}
+
+.withdrawal-requests-pagination .ant-pagination-item-active {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.3);
+}
+
+.withdrawal-requests-pagination .ant-pagination-item-active a {
+  color: var(--color-text-white) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Pagination Navigation Buttons */
+.withdrawal-requests-pagination .ant-pagination-prev,
+.withdrawal-requests-pagination .ant-pagination-next {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawal-requests-pagination .ant-pagination-prev:hover,
+.withdrawal-requests-pagination .ant-pagination-next:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.withdrawal-requests-pagination .ant-pagination-prev:disabled,
+.withdrawal-requests-pagination .ant-pagination-next:disabled {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-border-secondary) !important;
+  color: var(--color-text-disabled) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Pagination Options */
+.withdrawal-requests-pagination .ant-pagination-options {
+  color: var(--color-text-primary) !important;
+}
+
+.withdrawal-requests-pagination .ant-pagination-options .ant-select-selector {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.withdrawal-requests-pagination .ant-pagination-options .ant-select-selector:hover {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg);
+}
+
+.withdrawal-requests-pagination .ant-pagination-options .ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg) !important;
+}
+
+/* Pagination Total */
+.withdrawal-requests-pagination .ant-pagination-total-text {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Modal Styles */
+.request-details-modal .ant-modal-content {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+}
+
+.request-details-modal .ant-modal-header {
+  background: var(--color-bg-card) !important;
+  border-bottom: 1px solid var(--color-border-primary) !important;
+}
+
+.request-details-modal .ant-modal-title {
+  color: var(--color-text-primary) !important;
+}
+
+.request-details-modal .ant-modal-body {
+  background: var(--color-bg-card) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.request-details {
+  padding: var(--space-4);
+}
+
+.detail-section {
+  margin-bottom: var(--space-6);
+}
+
+.section-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-4) !important;
+  font-size: var(--font-size-base) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-bottom: 1px solid var(--color-border-secondary);
+  padding-bottom: var(--space-2);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row > span:first-child {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  min-width: 120px;
+}
+
+.detail-row > span:last-child {
+  color: var(--color-text-primary);
+  text-align: right;
+  flex: 1;
+}
+
+.notes-text {
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-primary);
+  display: block;
+  margin-top: var(--space-2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .withdrawal-requests-page {
+    padding: var(--space-4);
+  }
+
+  .page-title {
+    font-size: var(--font-size-xl) !important;
+  }
+
+  .card-header {
+    padding: var(--space-4);
+  }
+
+  .table-container {
+    padding: 0 var(--space-4) var(--space-4);
+    overflow-x: auto;
+  }
+
+  .withdrawal-requests-table {
+    font-size: var(--font-size-sm);
+    min-width: 600px;
+  }
+
+  .withdrawal-requests-table .ant-table-thead > tr > th,
+  .withdrawal-requests-table .ant-table-tbody > tr > td {
+    padding: var(--space-2) !important;
+  }
+
+  .withdrawal-requests-table .ant-table-thead > tr,
+  .withdrawal-requests-table .ant-table-tbody > tr {
+    table-layout: auto;
+    width: auto;
+  }
+
+  .withdrawal-requests-table .ant-table-thead > tr > th,
+  .withdrawal-requests-table .ant-table-tbody > tr > td {
+    width: auto;
+    min-width: 80px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .detail-row > span:last-child {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .withdrawal-requests-page {
+    padding: var(--space-2);
+  }
+
+  .page-title {
+    font-size: var(--font-size-lg) !important;
+  }
+
+  .card-header {
+    padding: var(--space-3);
+  }
+
+  .table-container {
+    padding: 0 var(--space-3) var(--space-3);
+    overflow-x: auto;
+  }
+
+  .withdrawal-requests-table {
+    min-width: 500px;
+    font-size: var(--font-size-xs);
+  }
+
+  .withdrawal-requests-table .ant-table-thead > tr > th,
+  .withdrawal-requests-table .ant-table-tbody > tr > td {
+    padding: var(--space-1) !important;
+  }
+
+  .pagination-container {
+    padding: var(--space-4);
+  }
+}

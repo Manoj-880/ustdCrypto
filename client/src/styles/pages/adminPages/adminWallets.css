@@ -271,22 +271,55 @@
   font-size: var(--font-size-sm) !important;
 }
 
-.wallet-modal .ant-input {
-  background: var(--color-bg-secondary) !important;
-  border: 2px solid var(--color-border) !important;
+.wallet-modal .ant-form-item-label > label.ant-form-item-required::before {
+  color: var(--color-error) !important;
+}
+
+.wallet-modal .ant-form-item-explain-error {
+  color: var(--color-error) !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.wallet-modal .ant-input,
+.wallet-modal .form-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
   color: var(--color-text-primary) !important;
-  border-radius: var(--radius-md) !important;
-  height: 40px !important;
+  border-radius: 10px !important;
+  height: 48px !important;
   font-size: var(--font-size-sm) !important;
+  font-weight: var(--font-weight-medium) !important;
+  transition: all var(--transition-normal) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-.wallet-modal .ant-input:focus {
+.wallet-modal .ant-input:hover,
+.wallet-modal .form-input:hover {
+  border-color: rgba(22, 119, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.wallet-modal .ant-input:focus,
+.wallet-modal .ant-input-focused,
+.wallet-modal .form-input:focus {
+  outline: none !important;
   border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 2px var(--color-primary-bg) !important;
+  box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-text-primary) !important;
 }
 
-.wallet-modal .ant-input::placeholder {
-  color: var(--color-text-tertiary) !important;
+.wallet-modal .ant-input::placeholder,
+.wallet-modal .form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: var(--font-weight-normal) !important;
+  opacity: 1 !important;
+}
+
+.wallet-modal .ant-input:focus::placeholder,
+.wallet-modal .form-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+  opacity: 0.7 !important;
 }
 
 .wallet-modal .ant-modal-footer {
@@ -301,19 +334,127 @@
   border: none !important;
   color: var(--color-text-white) !important;
   font-weight: var(--font-weight-semibold) !important;
-  height: 36px !important;
-  padding: 0 var(--space-5) !important;
-  border-radius: var(--radius-md) !important;
+  height: 48px !important;
+  padding: 0 var(--space-6) !important;
+  border-radius: 10px !important;
+  transition: all var(--transition-normal) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.wallet-modal .ant-btn-primary:hover {
+  background: var(--color-primary-hover) !important;
+  color: var(--color-text-white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(22, 119, 255, 0.3) !important;
 }
 
 .wallet-modal .ant-btn-default {
-  background: var(--color-bg-tertiary) !important;
-  border: 1px solid var(--color-border) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
   color: var(--color-text-primary) !important;
   font-weight: var(--font-weight-medium) !important;
-  height: 36px !important;
-  padding: 0 var(--space-5) !important;
-  border-radius: var(--radius-md) !important;
+  height: 48px !important;
+  padding: 0 var(--space-6) !important;
+  border-radius: 10px !important;
+  transition: all var(--transition-normal) !important;
+  font-size: var(--font-size-sm) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.wallet-modal .ant-btn-default:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(22, 119, 255, 0.3) !important;
+  color: var(--color-text-primary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* =========================
+   Empty State
+========================= */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--space-8);
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-content {
+  text-align: center;
+  max-width: 500px;
+  padding: var(--space-8);
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary) !important;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: var(--color-text-tertiary) !important;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.empty-state-title {
+  color: var(--color-text-primary) !important;
+  margin-bottom: var(--space-3) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+.empty-state-description {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-relaxed) !important;
+  margin-bottom: var(--space-6) !important;
+  display: block;
+}
+
+.empty-state-button {
+  background: var(--color-primary) !important;
+  border: none !important;
+  color: var(--color-text-white) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  height: 48px !important;
+  padding: 0 var(--space-6) !important;
+  border-radius: 10px !important;
+  transition: all var(--transition-normal) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+.empty-state-button:hover {
+  background: var(--color-primary-hover) !important;
+  color: var(--color-text-white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(22, 119, 255, 0.3) !important;
+}
+
+/* Force dark theme for empty states */
+.admin-wallets .empty-state,
+.admin-wallets .empty-state * {
+  background: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-wallets .empty-state-content {
+  background: var(--color-bg-card) !important;
+  border-color: var(--color-border-primary) !important;
+}
+
+.admin-wallets .empty-state-title {
+  color: var(--color-text-primary) !important;
+}
+
+.admin-wallets .empty-state-description {
+  color: var(--color-text-secondary) !important;
+}
+
+.admin-wallets .empty-state-icon {
+  color: var(--color-text-tertiary) !important;
 }
 
 /* =========================

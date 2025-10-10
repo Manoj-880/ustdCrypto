@@ -19,6 +19,35 @@ const withdrawRequestSchema = new Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED", "COMPLETED"],
+    default: "PENDING",
+  },
+  remarks: {
+    type: String,
+    default: null,
+  },
+  transactionId: {
+    type: String,
+    default: null,
+  },
+  requestDate: {
+    type: Date,
+    default: Date.now,
+  },
+  approvedAt: {
+    type: Date,
+    default: null,
+  },
+  rejectedAt: {
+    type: Date,
+    default: null,
+  },
+  completedAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("withdrawRequest", withdrawRequestSchema);

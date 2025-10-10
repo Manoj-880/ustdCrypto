@@ -8,12 +8,18 @@ import {
   PieChartOutlined,
   SwapOutlined,
   RiseOutlined,
+  QuestionCircleOutlined,
+  LockOutlined,
   LogoutOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import UserDashboard from "../userPages/userDashboard";
 import Transactions from "../userPages/transactions";
 import Profits from "../userPages/profits";
+import FAQ from "../userPages/faq";
+import Lockins from "../userPages/lockins";
+import WithdrawalRequests from "../userPages/withdrawalRequests";
 import logo from "../../assets/logo.svg";
 import "../../styles/layouts/userLayout.css";
 
@@ -56,6 +62,9 @@ const UserLayout = () => {
     { key: "dashboard", label: "Dashboard", icon: <PieChartOutlined />, path: "/" },
     { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/transaction" },
     { key: "profits", label: "Profits", icon: <RiseOutlined />, path: "/profit" },
+    { key: "lockins", label: "Lock-Ins", icon: <LockOutlined />, path: "/lockins" },
+    { key: "withdrawals", label: "Withdrawals", icon: <SendOutlined />, path: "/withdrawals" },
+    { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/faq" },
   ];
 
   return (
@@ -123,6 +132,9 @@ const UserLayout = () => {
             <Route path="/" element={<UserDashboard />} />
             <Route path="/transaction" element={<Transactions />} />
             <Route path="/profit" element={<Profits />} />
+            <Route path="/lockins" element={<Lockins />} />
+            <Route path="/withdrawals" element={<WithdrawalRequests />} />
+            <Route path="/faq" element={<FAQ />} />
           </Routes>
         </div>
       </div>

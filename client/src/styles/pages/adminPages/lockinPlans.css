@@ -1,0 +1,536 @@
+/* =========================
+   Admin Lock-In Plans Page Styles
+========================= */
+.lockin-plans-page {
+  padding: var(--space-8) var(--space-6);
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+}
+
+/* =========================
+   Page Header
+========================= */
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-header .ant-typography {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary) !important;
+}
+
+.page-header .ant-typography.ant-typography-h1 {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header .ant-typography.ant-typography-secondary {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   Summary Cards
+========================= */
+.summary-cards {
+  margin-bottom: var(--space-8);
+}
+
+.summary-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+  height: 100%;
+}
+
+.summary-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.summary-card .ant-card-body {
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.summary-card .ant-statistic-title {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+}
+
+.summary-card .ant-statistic-content {
+  color: var(--color-text-primary) !important;
+}
+
+.summary-card .ant-statistic-content-value {
+  font-size: var(--font-size-2xl) !important;
+  font-weight: var(--font-weight-bold) !important;
+}
+
+/* =========================
+   Table Card
+========================= */
+.table-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  width: 100%;
+}
+
+.table-card .ant-card-body {
+  padding: 0;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-header {
+  padding: var(--space-6);
+  border-bottom: 2px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+}
+
+.table-header .ant-typography {
+  margin: 0;
+  color: var(--color-text-primary) !important;
+}
+
+.table-header .ant-typography.ant-typography-h4 {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-1);
+}
+
+.add-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  height: 48px !important;
+  font-weight: var(--font-weight-semibold) !important;
+  padding: 0 var(--space-6) !important;
+  box-shadow: var(--shadow-md) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary-light) 100%) !important;
+}
+
+/* =========================
+   Table Styling
+========================= */
+.plans-table {
+  background: transparent;
+  width: 100%;
+}
+
+.plans-table .ant-table {
+  background: transparent;
+  width: 100%;
+}
+
+.plans-table .ant-table-container {
+  width: 100%;
+}
+
+.plans-table .ant-table-content {
+  width: 100%;
+}
+
+.plans-table .ant-table-tbody {
+  width: 100%;
+}
+
+.plans-table .ant-table-thead {
+  width: 100%;
+}
+
+.plans-table .ant-table-wrapper {
+  width: 100%;
+}
+
+.plans-table .ant-table-scroll {
+  width: 100%;
+}
+
+.plans-table .ant-table table {
+  table-layout: auto;
+  width: 100%;
+  min-width: 100%;
+}
+
+.plans-table .ant-table-thead > tr,
+.plans-table .ant-table-tbody > tr {
+  width: 100%;
+}
+
+.plans-table .ant-table-thead > tr > th {
+  background: var(--color-bg-secondary);
+  border-bottom: 2px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  padding: var(--space-4) var(--space-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.plans-table .ant-table-tbody > tr > td {
+  background: var(--color-bg-card);
+  border-bottom: 1px solid var(--color-border-secondary);
+  color: var(--color-text-primary);
+  padding: var(--space-4) var(--space-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.plans-table .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-tertiary);
+}
+
+.plans-table .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: var(--color-primary-bg);
+}
+
+/* =========================
+   Action Buttons
+========================= */
+.action-btn {
+  color: var(--color-primary) !important;
+  border: none !important;
+  background: transparent !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.action-btn:hover {
+  color: var(--color-primary-hover) !important;
+  background: var(--color-primary-bg) !important;
+  transform: scale(1.1) !important;
+}
+
+.delete-btn {
+  color: var(--color-error) !important;
+  border: none !important;
+  background: transparent !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.delete-btn:hover {
+  color: #ff4d4f !important;
+  background: var(--color-error-bg) !important;
+  transform: scale(1.1) !important;
+}
+
+/* =========================
+   Pagination Container
+========================= */
+.pagination-container {
+  padding: var(--space-6);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-primary);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+}
+
+.plans-pagination .ant-pagination-item {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.plans-pagination .ant-pagination-item a {
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.plans-pagination .ant-pagination-item:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.plans-pagination .ant-pagination-item:hover a {
+  color: var(--color-primary) !important;
+}
+
+.plans-pagination .ant-pagination-item-active {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.3);
+}
+
+.plans-pagination .ant-pagination-item-active a {
+  color: var(--color-text-white) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.plans-pagination .ant-pagination-prev,
+.plans-pagination .ant-pagination-next {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  transition: all var(--transition-fast);
+}
+
+.plans-pagination .ant-pagination-prev:hover,
+.plans-pagination .ant-pagination-next:hover {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.plans-pagination .ant-pagination-prev.ant-pagination-disabled,
+.plans-pagination .ant-pagination-next.ant-pagination-disabled {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-border-secondary) !important;
+  color: var(--color-text-tertiary) !important;
+  cursor: not-allowed;
+}
+
+.plans-pagination .ant-pagination-options {
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-select {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-select:hover {
+  border-color: var(--color-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-select .ant-select-selector {
+  background: var(--color-bg-card) !important;
+  border: none !important;
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-select .ant-select-selection-item {
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-pagination-options-quick-jumper {
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-pagination-options-quick-jumper input {
+  background: var(--color-bg-card) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.plans-pagination .ant-pagination-options .ant-pagination-options-quick-jumper input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-bg) !important;
+}
+
+.plans-pagination .ant-pagination-total-text {
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   Modal Styling
+========================= */
+.admin-modal .ant-modal-content {
+  background: var(--color-bg-card) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-2xl) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.admin-modal .ant-modal-header {
+  background: var(--color-bg-secondary) !important;
+  border-bottom: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0 !important;
+  padding: var(--space-6) !important;
+}
+
+.admin-modal .ant-modal-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold) !important;
+  font-size: var(--font-size-xl) !important;
+}
+
+.admin-modal .ant-modal-body {
+  background: var(--color-bg-card) !important;
+  padding: var(--space-8) !important;
+}
+
+.admin-modal .ant-modal-close {
+  color: var(--color-text-secondary) !important;
+}
+
+.admin-modal .ant-modal-close:hover {
+  color: var(--color-text-primary) !important;
+}
+
+/* =========================
+   Form Styling
+========================= */
+.admin-modal .form-input,
+.admin-modal .form-textarea {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-base) !important;
+  padding: var(--space-4) var(--space-5) !important;
+}
+
+.admin-modal .form-textarea {
+  resize: vertical !important;
+  min-height: 120px !important;
+}
+
+.admin-modal .form-input:focus,
+.admin-modal .form-textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+  outline: none !important;
+}
+
+.admin-modal .form-input:hover,
+.admin-modal .form-textarea:hover {
+  border-color: var(--color-primary-hover) !important;
+}
+
+.admin-modal .form-input::placeholder,
+.admin-modal .form-textarea::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.admin-modal .ant-form-item-label > label {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+.admin-modal .ant-form-item-explain-error {
+  color: var(--color-error) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.admin-modal .ant-btn-primary {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text-inverse) !important;
+}
+
+.admin-modal .ant-btn-primary:hover {
+  background: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+  color: var(--color-text-inverse) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-modal .ant-btn-default {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.admin-modal .ant-btn-default:hover {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   Responsive Design
+========================= */
+@media (max-width: 768px) {
+  .lockin-plans-page {
+    padding: var(--space-4);
+  }
+  
+  .page-header {
+    margin-bottom: var(--space-6);
+  }
+  
+  .summary-cards {
+    margin-bottom: var(--space-6);
+  }
+  
+  .summary-card .ant-card-body {
+    padding: var(--space-4);
+  }
+  
+  .summary-card .ant-statistic-content-value {
+    font-size: var(--font-size-xl) !important;
+  }
+  
+  .table-header {
+    padding: var(--space-4);
+  }
+  
+  .plans-table .ant-table-thead > tr > th,
+  .plans-table .ant-table-tbody > tr > td {
+    padding: var(--space-2) var(--space-1);
+    font-size: var(--font-size-sm);
+  }
+  
+  .pagination-container {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 576px) {
+  .lockin-plans-page {
+    padding: var(--space-3);
+  }
+  
+  .summary-cards .ant-col {
+    margin-bottom: var(--space-4);
+  }
+  
+  .summary-card .ant-statistic-content-value {
+    font-size: var(--font-size-lg) !important;
+  }
+  
+  .plans-table .ant-table-thead > tr > th,
+  .plans-table .ant-table-tbody > tr > td {
+    padding: var(--space-1);
+    font-size: var(--font-size-xs);
+  }
+  
+  .pagination-container {
+    padding: var(--space-3);
+  }
+  
+  .plans-pagination .ant-pagination-options {
+    display: none;
+  }
+}

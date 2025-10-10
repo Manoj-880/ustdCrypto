@@ -3,7 +3,7 @@ const { TronWeb } = require("tronweb");
 
 const tronWeb = new TronWeb({
   fullHost: "https://api.trongrid.io",
-  headers: { "TRON-PRO-API-KEY": "21503d89-f582-4167-82eb-a16da6104342" },
+  headers: { "TRON-PRO-API-KEY": "911e0d91-689f-454b-896d-4881f12e7128" },
 });
 
 const getAllWallets = async (req, res) => {

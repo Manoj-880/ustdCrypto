@@ -9,6 +9,8 @@ import {
   DollarOutlined
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
+import { useAuth } from '../contexts/AuthContext';
+import { verifyPayment } from '../api_calls/paymentApi';
 import '../styles/components/AddFundsModal.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -18,6 +20,7 @@ const AddFundsModal = ({ visible, onClose, user }) => {
   const [transactionId, setTransactionId] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const { login } = useAuth();
 
   // Reset modal state when opened
   useEffect(() => {
@@ -45,20 +48,32 @@ const AddFundsModal = ({ visible, onClose, user }) => {
 
     setIsVerifying(true);
     
-    // Simulate API call for verification
-    setTimeout(() => {
-      // Mock verification logic
-      const isVerified = Math.random() > 0.3; // 70% success rate for demo
+    try {
+      // Call the payment verification API
+      const result = await verifyPayment({
+        txId: transactionId,
+        userId: user.id
+      });
       
-      if (isVerified) {
-        toast.success('Payment verified successfully! Funds will be added to your account shortly.', { position: 'top-right' });
+      if (result.success) {
+        toast.success('Payment verified successfully! Funds have been added to your account.', { position: 'top-right' });
         setIsVerified(true);
+        
+        // Update user data in localStorage with new balance
+        const updatedUser = {
+          ...user,
+          balance: result.data.updatedBalance
+        };
+        login(updatedUser);
       } else {
-        toast.error('Transaction verification failed. Please check your transaction ID and try again.', { position: 'top-right' });
+        toast.error(result.message || 'Transaction verification failed. Please check your transaction ID and try again.', { position: 'top-right' });
       }
-      
+    } catch (error) {
+      console.error('Payment verification error:', error);
+      toast.error('Network error. Please try again.', { position: 'top-right' });
+    } finally {
       setIsVerifying(false);
-    }, 2000);
+    }
   };
 
 

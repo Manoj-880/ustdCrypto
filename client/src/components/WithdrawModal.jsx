@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Row, Col, Typography, Input, Button, Select, Space, Divider, Alert, Card } from 'antd';
-import { MinusOutlined, SwapOutlined, DollarOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Modal, Row, Col, Typography, Input, Button, Select, Space, Divider, Alert, Card, Form, message } from 'antd';
+import { MinusOutlined, SwapOutlined, DollarOutlined, InfoCircleOutlined, MailOutlined } from '@ant-design/icons';
+import { useAuth } from '../contexts/AuthContext';
+import { createWithdrawalRequest, transferToWallet } from '../api_calls/withdrawalApi';
 import '../styles/components/WithdrawModal.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -9,44 +11,97 @@ const { Option } = Select;
 const WithdrawModal = ({ visible, onClose, user }) => {
   const [withdrawType, setWithdrawType] = useState('withdraw');
   const [amount, setAmount] = useState('');
-  const [selectedUser, setSelectedUser] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Mock user list - replace with actual API call
-  const userList = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', walletId: 'WLT001' },
-    { id: '2', name: 'Jane Smith', email: 'jane@example.com', walletId: 'WLT002' },
-    { id: '3', name: 'Mike Johnson', email: 'mike@example.com', walletId: 'WLT003' },
-    { id: '4', name: 'Sarah Wilson', email: 'sarah@example.com', walletId: 'WLT004' },
-    { id: '5', name: 'David Brown', email: 'david@example.com', walletId: 'WLT005' },
-  ];
+  const [form] = Form.useForm();
+  const { login } = useAuth();
 
   const handleWithdraw = async () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      return;
-    }
-
-    if (withdrawType === 'transfer' && !selectedUser) {
-      return;
-    }
-
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      const transferData = withdrawType === 'transfer' 
-        ? { amount, fromUser: user?.walletId, toUser: selectedUser }
-        : { amount, user: user?.walletId };
+    try {
+      const values = await form.validateFields();
       
-      console.log(`${withdrawType} request:`, transferData);
+      if (!values.amount || parseFloat(values.amount) <= 0) {
+        message.error('Please enter a valid amount');
+        return;
+      }
+
+      if (withdrawType === 'transfer' && !values.recipientEmail) {
+        message.error('Please enter recipient email');
+        return;
+      }
+
+      if (parseFloat(values.amount) > parseFloat(user.balance)) {
+        message.error('Insufficient balance');
+        return;
+      }
+
+      setLoading(true);
+      
+      if (withdrawType === 'withdraw') {
+        // Create withdrawal request
+        const result = await createWithdrawalRequest({
+          userId: user._id,
+          amount: parseFloat(values.amount),
+          walletAddress: user.walletId || 'N/A',
+          remarks: values.remarks || null
+        });
+        
+        if (result.success) {
+          message.success('Withdrawal request submitted successfully');
+          // Update user balance in localStorage (subtract the withdrawn amount)
+          const updatedUser = {
+            ...user,
+            balance: (parseFloat(user.balance) - parseFloat(values.amount)).toFixed(2)
+          };
+          const sessionData = {
+            user: updatedUser,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          login(updatedUser);
+        } else {
+          message.error(result.message || 'Withdrawal request failed');
+        }
+      } else {
+        // Transfer to wallet
+        const result = await transferToWallet({
+          fromUserId: user._id,
+          recipientEmail: values.recipientEmail,
+          amount: parseFloat(values.amount)
+        });
+        
+        if (result.success) {
+          message.success('Transfer completed successfully');
+          // Update user balance in localStorage (subtract the transferred amount)
+          const updatedUser = {
+            ...user,
+            balance: (parseFloat(user.balance) - parseFloat(values.amount)).toFixed(2)
+          };
+          const sessionData = {
+            user: updatedUser,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          login(updatedUser);
+        } else {
+          message.error(result.message || 'Transfer failed');
+        }
+      }
+      
+      handleClose();
+    } catch (error) {
+      console.error('Transaction error:', error);
+      message.error('Transaction failed. Please try again.');
+    } finally {
       setLoading(false);
-      onClose();
-    }, 1500);
+    }
   };
 
   const handleClose = () => {
     setWithdrawType('withdraw');
     setAmount('');
-    setSelectedUser('');
+    setRecipientEmail('');
+    form.resetFields();
     onClose();
   };
 
@@ -73,9 +128,17 @@ const WithdrawModal = ({ visible, onClose, user }) => {
             <DollarOutlined /> Transaction Details
           </Title>
 
-          <div className="withdraw-form">
-            <div className="form-group">
-              <Text className="form-label">Transaction Type</Text>
+          <Form
+            form={form}
+            layout="vertical"
+            className="withdraw-form"
+            onFinish={handleWithdraw}
+          >
+            <Form.Item
+              label="Transaction Type"
+              name="transactionType"
+              initialValue="withdraw"
+            >
               <Select
                 value={withdrawType}
                 onChange={setWithdrawType}
@@ -95,15 +158,29 @@ const WithdrawModal = ({ visible, onClose, user }) => {
                   </Space>
                 </Option>
               </Select>
-            </div>
+            </Form.Item>
 
-            <div className="form-group">
-              <Text className="form-label">Amount (USDT)</Text>
+            <Form.Item
+              label="Amount (USDT)"
+              name="amount"
+              rules={[
+                { required: true, message: 'Please enter amount' },
+                { 
+                  validator: (_, value) => {
+                    if (value && parseFloat(value) <= 0) {
+                      return Promise.reject('Amount must be greater than 0');
+                    }
+                    if (value && parseFloat(value) > parseFloat(user.balance)) {
+                      return Promise.reject('Insufficient balance');
+                    }
+                    return Promise.resolve();
+                  }
+                }
+              ]}
+            >
               <Input
                 type="number"
                 placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
                 className="amount-input"
                 size="large"
                 prefix={<DollarOutlined />}
@@ -111,35 +188,48 @@ const WithdrawModal = ({ visible, onClose, user }) => {
                 min="0"
                 step="0.01"
               />
-            </div>
+            </Form.Item>
 
             {withdrawType === 'transfer' && (
-              <div className="form-group">
-                <Text className="form-label">Select Recipient</Text>
-                <Select
-                  value={selectedUser}
-                  onChange={setSelectedUser}
-                  placeholder="Choose a user to transfer to"
-                  className="user-select"
+              <Form.Item
+                label="Recipient Email"
+                name="recipientEmail"
+                rules={[
+                  { required: true, message: 'Please enter recipient email' },
+                  { type: 'email', message: 'Please enter a valid email' }
+                ]}
+              >
+                <Input
+                  placeholder="Enter recipient email address"
+                  className="email-input"
                   size="large"
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {userList.map((user) => (
-                    <Option key={user.id} value={user.walletId}>
-                      {user.name}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
+                  prefix={<MailOutlined />}
+                />
+              </Form.Item>
             )}
+
+            <Form.Item
+              label="Remarks (Optional)"
+              name="remarks"
+            >
+              <Input.TextArea
+                placeholder="Add any additional notes or remarks..."
+                className="remarks-input"
+                size="large"
+                rows={3}
+                maxLength={500}
+                showCount
+              />
+            </Form.Item>
 
             <div className="balance-info">
               <Text type="secondary">Available Balance: </Text>
-              <Text strong className="balance-amount">15,420.50 USDT</Text>
+              <Text strong className="balance-amount">
+                {user?.balance ? parseFloat(user.balance).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }) : '0.00'} USDT
+              </Text>
             </div>
 
             <Alert
@@ -162,16 +252,15 @@ const WithdrawModal = ({ visible, onClose, user }) => {
               <Button
                 type="primary"
                 size="large"
-                onClick={handleWithdraw}
+                htmlType="submit"
                 loading={loading}
-                disabled={!amount || parseFloat(amount) <= 0 || (withdrawType === 'transfer' && !selectedUser)}
                 className="withdraw-button"
                 block
               >
                 {loading ? 'Processing...' : `${withdrawType === 'withdraw' ? 'Withdraw' : 'Transfer'} Funds`}
               </Button>
             </div>
-          </div>
+          </Form>
         </Card>
       </div>
     </Modal>

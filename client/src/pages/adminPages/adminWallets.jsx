@@ -7,9 +7,9 @@ import {
   Modal,
   Form,
   Input,
-  message,
   Row,
   Col,
+  Space,
 } from "antd";
 import {
   PlusOutlined,
@@ -17,48 +17,37 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminWallets.css";
+import {
+  addWalletId,
+  getAllWallets,
+  updateWallet,
+} from "../../api_calls/walletApi";
+import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 
 const AdminWallets = () => {
   const [wallets, setWallets] = useState([]);
   const [filteredWallets, setFilteredWallets] = useState([]);
-  const [activeWalletId, setActiveWalletId] = useState("");
+  // const [activeWalletId, setActiveWalletId] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [form] = Form.useForm();
 
   // Mock data - replace with actual API calls
   useEffect(() => {
-    const mockWallets = [
-      {
-        id: "W001",
-        name: "Main USDT Wallet",
-      },
-      {
-        id: "W002", 
-        name: "Cold Storage Wallet",
-      },
-      {
-        id: "W003",
-        name: "Trading Wallet",
-      },
-      {
-        id: "W004",
-        name: "Backup Wallet",
-      },
-      {
-        id: "W005",
-        name: "Test Wallet",
-      },
-    ];
-    setWallets(mockWallets);
-    setFilteredWallets(mockWallets);
-    // Set first wallet as active by default
-    if (mockWallets.length > 0) {
-      setActiveWalletId(mockWallets[0].id);
-    }
+    fetchWallets();
   }, []);
+
+  const fetchWallets = async () => {
+    const response = await getAllWallets();
+    if (response.success) {
+      setWallets(response.data);
+      setFilteredWallets(response.data);
+    } else {
+      toast.error(response.message);
+    }
+  };
 
   // Filter wallets based on search
   useEffect(() => {
@@ -80,16 +69,17 @@ const AdminWallets = () => {
     setIsModalVisible(true);
   };
 
-  const handleModalOk = () => {
-    form.validateFields().then((values) => {
-      const newWallet = {
-        id: `W${String(wallets.length + 1).padStart(3, "0")}`,
-        name: values.name,
-      };
-      setWallets([...wallets, newWallet]);
-      message.success("Wallet added successfully!");
-      setIsModalVisible(false);
-      form.resetFields();
+  const handleModalOk = async () => {
+    form.validateFields().then(async (values) => {
+      console.log("Form data:", values);
+      const response = await addWalletId(values);
+      if (response.success) {
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchWallets();
+      } else {
+        toast.error(response.message);
+      }
     });
   };
 
@@ -98,9 +88,19 @@ const AdminWallets = () => {
     form.resetFields();
   };
 
-  const handleWalletSelect = (e) => {
-    setActiveWalletId(e.target.value);
+  const handleChangeActive = async (id) => {
+    const response = await updateWallet(id);
+    if (response.success) {
+      toast.success("wallet set active");
+      fetchWallets();
+    } else {
+      toast.error(response.message);
+    }
   };
+
+  // const handleWalletSelect = (e) => {
+  //   setActiveWalletId(e.target.value);
+  // };
 
   return (
     <div className="admin-wallets">
@@ -142,53 +142,103 @@ const AdminWallets = () => {
 
       {/* Wallets List */}
       <div className="wallets-list">
-        {filteredWallets.map((wallet) => (
-          <Card key={wallet.id} className="wallet-card">
-            <div className="wallet-content">
-              <div className="wallet-left">
-                <div className="wallet-name">{wallet.name}</div>
-                <div className="wallet-id">ID: {wallet.id}</div>
-              </div>
-              <div className="wallet-right">
-                <div className="wallet-balance">0.00 USDT</div>
-                <div className="wallet-actions">
-                  {activeWalletId === wallet.id ? (
-                    <div className="active-status">
-                      <div className="status-dot"></div>
-                      <span>Active</span>
-                    </div>
-                  ) : (
-                    <Button
-                      type="primary"
-                      onClick={() => setActiveWalletId(wallet.id)}
-                      className="activate-btn"
-                    >
-                      Set Active
-                    </Button>
-                  )}
+        {filteredWallets.length > 0 ? (
+          filteredWallets.map((wallet) => (
+            <Card key={wallet.id} className="wallet-card">
+              <div className="wallet-content">
+                <div className="wallet-left">
+                  <div className="wallet-name">{wallet.title}</div>
+                  <div className="wallet-id">ID: {wallet.walletId}</div>
+                </div>
+                <div className="wallet-right">
+                  <div className="wallet-balance">{wallet.balance} USDT</div>
+                  <div className="wallet-actions">
+                    {wallet.status === "active" ? (
+                      <div className="active-status">
+                        <div className="status-dot"></div>
+                        <span>Active</span>
+                      </div>
+                    ) : (
+                      <Button
+                        type="primary"
+                        onClick={() => handleChangeActive(wallet._id)}
+                        className="activate-btn"
+                      >
+                        Set Active
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
+            </Card>
+          ))
+        ) : (
+          <div className="empty-state">
+            <div className="empty-state-content">
+              <div className="empty-state-icon">
+                <WalletOutlined />
+              </div>
+              <Title level={3} className="empty-state-title">
+                No Wallets Added
+              </Title>
+              <Text className="empty-state-description">
+                You haven't added any wallets yet. Click the "Add Wallet" button
+                above to create your first wallet.
+              </Text>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleAddWallet}
+                className="empty-state-button"
+                size="large"
+              >
+                Add Your First Wallet
+              </Button>
             </div>
-          </Card>
-        ))}
+          </div>
+        )}
       </div>
 
       {/* Add Wallet Modal */}
       <Modal
         title="Add New Wallet"
         open={isModalVisible}
-        onOk={handleModalOk}
         onCancel={handleModalCancel}
         width={400}
         className="wallet-modal"
+        footer={null}
       >
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" onFinish={handleModalOk}>
           <Form.Item
-            name="name"
-            label="Wallet Name"
-            rules={[{ required: true, message: "Please enter wallet name" }]}
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Please enter title" }]}
           >
-            <Input placeholder="Enter wallet name" />
+            <Input
+              placeholder="Enter title"
+              size="large"
+              className="form-input"
+            />
+          </Form.Item>
+          <Form.Item
+            name="walletId"
+            label="Wallet ID"
+            rules={[{ required: true, message: "Please enter wallet ID" }]}
+          >
+            <Input
+              placeholder="Enter wallet ID"
+              size="large"
+              className="form-input"
+            />
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
+            <Space>
+              <Button onClick={handleModalCancel}>Cancel</Button>
+              <Button type="primary" htmlType="submit">
+                Add Wallet
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
       </Modal>

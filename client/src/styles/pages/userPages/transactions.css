@@ -6,8 +6,6 @@
   padding: var(--space-8) var(--space-6);
   width: 100%;
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-sizing: border-box;
   background-color: var(--color-bg-primary);
 }

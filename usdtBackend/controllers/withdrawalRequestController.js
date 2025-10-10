@@ -1,12 +1,28 @@
 const withdrawalRequestRepo = require("../repos/withdrawRepo");
+const userRepo = require("../repos/userRepo");
+const transactionRepo = require("../repos/transactionRepo");
 
 const getAllWithdrawalRequests = async (req, res) => {
   try {
     let requests = await withdrawalRequestRepo.getAllRequests();
+    
+    // Transform data to match frontend expectations
+    const transformedRequests = requests.map(request => ({
+      id: request._id,
+      userName: request.userId ? `${request.userId.firstName} ${request.userId.lastName}` : 'Unknown User',
+      userEmail: request.userId ? request.userId.email : 'N/A',
+      usdtQuantity: parseFloat(request.amount),
+      walletBalance: request.userId ? parseFloat(request.userId.balance) : 0,
+      requestedAt: request.requestDate || request.createdAt,
+      walletAddress: request.walletAddress,
+      status: request.status || 'PENDING',
+      originalData: request // Keep original data for reference
+    }));
+    
     res.status(200).send({
       success: true,
       message: "Withdrawal requests retrieved successfully",
-      data: requests,
+      data: transformedRequests,
     });
   } catch (error) {
     console.log(error);
@@ -35,9 +51,49 @@ const getWithdrawalRequestById = async (req, res) => {
   }
 };
 
+const getWithdrawalRequestsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    if (!userId) {
+      return res.status(400).send({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    let requests = await withdrawalRequestRepo.getRequestsByUserId(userId);
+    
+    // Transform data to match frontend expectations
+    const transformedRequests = requests.map(request => ({
+      id: request._id,
+      amount: request.amount,
+      walletAddress: request.walletAddress,
+      status: request.status || 'PENDING',
+      requestDate: request.requestDate || request.createdAt,
+      approvedAt: request.approvedAt || null,
+      rejectedAt: request.rejectedAt || null,
+      notes: request.notes || null,
+      originalData: request // Keep original data for reference
+    }));
+    
+    res.status(200).send({
+      success: true,
+      message: "User withdrawal requests retrieved successfully",
+      data: transformedRequests,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 const createWithdrawalRequest = async (req, res) => {
   try {
-    const { userId, amount, walletAddress } = req.body;
+    const { userId, amount, walletAddress, remarks } = req.body;
     if (!userId || !amount || !walletAddress) {
       return res.status(400).send({
         success: false,
@@ -45,18 +101,71 @@ const createWithdrawalRequest = async (req, res) => {
       });
     }
 
+    // Validate amount
+    const withdrawalAmount = parseFloat(amount);
+    if (isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid amount",
+      });
+    }
+
+    // Get user and check balance
+    const user = await userRepo.getUserById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const userBalance = parseFloat(user.balance);
+    if (userBalance < withdrawalAmount) {
+      return res.status(400).send({
+        success: false,
+        message: "Insufficient balance",
+        currentBalance: userBalance,
+        requiredAmount: withdrawalAmount,
+      });
+    }
+
+    // Update user balance (subtract withdrawal amount)
+    const newBalance = (userBalance - withdrawalAmount).toFixed(2);
+    await userRepo.updateUser(userId, { balance: newBalance });
+
+    // Create withdrawal request
     let requestData = {
       userId,
-      amount,
+      amount: withdrawalAmount.toFixed(2),
       walletAddress,
+      userBalance: newBalance,
       requestDate: new Date(),
+      remarks: remarks || null,
     };
 
     let newRequest = await withdrawalRequestRepo.createRequest(requestData);
+
+    // Create transaction record
+    await transactionRepo.createTransaction({
+      quantity: withdrawalAmount.toFixed(2),
+      date: new Date(),
+      userId: userId,
+      activeWalleteId: "WITHDRAWAL_REQUEST",
+      userWalletId: user.walletId || null,
+      transactionId: `WITHDRAWAL-${Date.now()}-${userId}`,
+      type: "WITHDRAWAL",
+    });
+
+    // Get updated user data
+    const updatedUser = await userRepo.getUserById(userId);
+
     res.status(201).send({
       success: true,
       message: "Withdrawal request created successfully",
-      data: newRequest,
+      data: {
+        request: newRequest,
+        updatedUser: updatedUser,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -90,9 +199,171 @@ const deleteWithdrawalRequest = async (req, res) => {
   }
 };
 
+const rejectWithdrawalRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { remarks } = req.body;
+
+    if (!remarks || remarks.trim() === '') {
+      return res.status(400).send({
+        success: false,
+        message: "Remarks are required for rejection",
+      });
+    }
+
+    const request = await withdrawalRequestRepo.getRequestById(id);
+    if (!request) {
+      return res.status(404).send({
+        success: false,
+        message: "Withdrawal request not found",
+      });
+    }
+
+    if (request.status !== 'PENDING') {
+      return res.status(400).send({
+        success: false,
+        message: "Only pending requests can be rejected",
+      });
+    }
+
+    // Update request status to rejected
+    const updatedRequest = await withdrawalRequestRepo.updateRequest(id, {
+      status: 'REJECTED',
+      remarks: remarks,
+      rejectedAt: new Date(),
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Withdrawal request rejected successfully",
+      data: updatedRequest,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const approveWithdrawalRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { transactionId } = req.body;
+
+    if (!transactionId || transactionId.trim() === '') {
+      return res.status(400).send({
+        success: false,
+        message: "Transaction ID is required for approval",
+      });
+    }
+
+    const request = await withdrawalRequestRepo.getRequestById(id);
+    if (!request) {
+      return res.status(404).send({
+        success: false,
+        message: "Withdrawal request not found",
+      });
+    }
+
+    if (request.status !== 'PENDING') {
+      return res.status(400).send({
+        success: false,
+        message: "Only pending requests can be approved",
+      });
+    }
+
+    // Update request status to approved
+    const updatedRequest = await withdrawalRequestRepo.updateRequest(id, {
+      status: 'APPROVED',
+      transactionId: transactionId,
+      approvedAt: new Date(),
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Withdrawal request approved successfully",
+      data: updatedRequest,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const verifyTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { transactionId } = req.body;
+
+    if (!transactionId || transactionId.trim() === '') {
+      return res.status(400).send({
+        success: false,
+        message: "Transaction ID is required",
+      });
+    }
+
+    const request = await withdrawalRequestRepo.getRequestById(id);
+    if (!request) {
+      return res.status(404).send({
+        success: false,
+        message: "Withdrawal request not found",
+      });
+    }
+
+    if (request.status !== 'APPROVED') {
+      return res.status(400).send({
+        success: false,
+        message: "Only approved requests can be verified",
+      });
+    }
+
+    // Check if transaction exists in user's transaction history
+    const userTransactions = await transactionRepo.getTransactionsByUserId(request.userId);
+    const matchingTransaction = userTransactions.find(tx => 
+      tx.transactionId === transactionId || 
+      tx.activeWalleteId === transactionId ||
+      tx.userWalletId === transactionId
+    );
+
+    if (matchingTransaction) {
+      // Update request status to completed
+      const updatedRequest = await withdrawalRequestRepo.updateRequest(id, {
+        status: 'COMPLETED',
+        completedAt: new Date(),
+      });
+
+      res.status(200).send({
+        success: true,
+        message: "Transaction verified successfully",
+        data: updatedRequest,
+      });
+    } else {
+      res.status(400).send({
+        success: false,
+        message: "Transaction ID not found in user's transaction history",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getAllWithdrawalRequests,
   getWithdrawalRequestById,
+  getWithdrawalRequestsByUserId,
   createWithdrawalRequest,
   deleteWithdrawalRequest,
+  rejectWithdrawalRequest,
+  approveWithdrawalRequest,
+  verifyTransaction,
 };
