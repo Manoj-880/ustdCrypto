@@ -72,15 +72,14 @@ const UserLayout = () => {
   };
 
   const menuItems = [
-    { key: "dashboard", label: "Dashboard", icon: <PieChartOutlined />, path: "/" },
-    { key: "profile", label: "Profile", icon: <UserOutlined />, path: "/profile" },
-    { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/transaction" },
-    { key: "profits", label: "Profits", icon: <RiseOutlined />, path: "/profit" },
-    { key: "lockins", label: "Lock-Ins", icon: <LockOutlined />, path: "/lockins" },
-    { key: "withdrawals", label: "Withdrawals", icon: <SendOutlined />, path: "/withdrawals" },
-    { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/faq" },
-    { key: "terms", label: "Terms & Conditions", icon: <FileTextOutlined />, path: "/terms" },
-    { key: "privacy-policy", label: "Privacy Policy", icon: <SafetyOutlined />, path: "/privacy-policy" },
+    { key: "dashboard", label: "Dashboard", icon: <PieChartOutlined />, path: "/app" },
+    { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/app/transaction" },
+    { key: "profits", label: "Profits", icon: <RiseOutlined />, path: "/app/profit" },
+    { key: "lockins", label: "Lock-Ins", icon: <LockOutlined />, path: "/app/lockins" },
+    { key: "withdrawals", label: "Withdrawals", icon: <SendOutlined />, path: "/app/withdrawals" },
+    { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/app/faq" },
+    { key: "terms", label: "Terms & Conditions", icon: <FileTextOutlined />, path: "/app/terms" },
+    { key: "privacy-policy", label: "Privacy Policy", icon: <SafetyOutlined />, path: "/app/privacy-policy" },
   ];
 
   return (
@@ -108,7 +107,7 @@ const UserLayout = () => {
                 }
               </h4>
               <p className="user-email">{user?.email || 'user@example.com'}</p>
-              <button className="view-profile" onClick={() => navigate('/profile')}>View Profile</button>
+              <button className="view-profile" onClick={() => navigate('/app/profile')}>View Profile</button>
             </div>
           )}
         </div>
