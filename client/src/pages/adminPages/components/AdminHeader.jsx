@@ -30,8 +30,8 @@ const AdminHeader = ({ collapsed, setCollapsed, isMobile }) => {
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </button>
         <div className="admin-platform-brand">
-          <img src={logo} alt="Alpha Wave Logo" className="admin-header-logo" />
-          <h2 className="admin-platform-name">Alpha Wave Admin</h2>
+          <img src={logo} alt="Secure USDT Logo" className="admin-header-logo" />
+          <h2 className="admin-platform-name">Secure USDT Admin</h2>
         </div>
       </div>
       <button className="admin-logout-btn" onClick={handleLogout}>

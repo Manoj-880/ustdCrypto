@@ -137,7 +137,7 @@
 .withdrawal-requests-table .ant-table table {
   width: 100% !important;
   min-width: 100% !important;
-  table-layout: auto;
+  table-layout: fixed; /* ensure columns stretch evenly */
 }
 
 .withdrawal-requests-table .ant-table-thead > tr,
@@ -149,40 +149,16 @@
 }
 
 /* Column Width Distribution */
-.withdrawal-requests-table .ant-table-thead > tr > th:first-child,
-.withdrawal-requests-table .ant-table-tbody > tr > td:first-child {
-  width: 18%; /* Request ID */
-  min-width: 120px;
+.withdrawal-requests-table .ant-table-thead > tr > th,
+.withdrawal-requests-table .ant-table-tbody > tr > td {
+  width: auto !important; /* allow flexing */
 }
 
+/* Widen Wallet Address column (2nd column) */
 .withdrawal-requests-table .ant-table-thead > tr > th:nth-child(2),
 .withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(2) {
-  width: 18%; /* Amount */
-  min-width: 100px;
-}
-
-.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(3),
-.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(3) {
-  width: 30%; /* Wallet Address */
-  min-width: 200px;
-}
-
-.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(4),
-.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(4) {
-  width: 18%; /* Status */
-  min-width: 100px;
-}
-
-.withdrawal-requests-table .ant-table-thead > tr > th:nth-child(5),
-.withdrawal-requests-table .ant-table-tbody > tr > td:nth-child(5) {
-  width: 18%; /* Requested At */
-  min-width: 150px;
-}
-
-.withdrawal-requests-table .ant-table-thead > tr > th:last-child,
-.withdrawal-requests-table .ant-table-tbody > tr > td:last-child {
-  width: 8%; /* Actions */
-  min-width: 80px;
+  width: 40% !important;
+  min-width: 320px;
 }
 
 .withdrawal-requests-table .ant-table-thead > tr > th {

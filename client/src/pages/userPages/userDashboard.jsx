@@ -34,6 +34,8 @@ import {
   LockOutlined
 } from '@ant-design/icons';
 import { getAllLockinPlans, createLockin, getLockinsByUserId } from '../../api_calls/lockinApi';
+import { userDashboard as getUserDashboard } from '../../api_calls/dashboard';
+import { getUserById } from '../../api_calls/userApi';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -54,7 +56,11 @@ const UserDashboard = () => {
     totalProfit: 0,
     monthlyGrowth: 0,
     totalGrowth: 0,
-    profitPercentage: 0
+    profitPercentage: 0,
+    activeDays: 0,
+    successRate: 0,
+    totalTransactions: 0,
+    avgDailyProfit: 0,
   });
 
   // Load dashboard data
@@ -63,6 +69,45 @@ const UserDashboard = () => {
       loadDashboardData();
     }
   }, [user]);
+
+  // On mount and when user id changes, refresh latest user from backend and update session
+  useEffect(() => {
+    const refreshUser = async () => {
+      if (!user?._id) return;
+      try {
+        const response = await getUserById(user._id);
+        if (response?.success && response.data) {
+          const updatedUser = response.data;
+          // Also refresh lock-in total and store alongside session
+          let totalLockinBalance = 0;
+          try {
+            const lockinResp = await getLockinsByUserId(updatedUser._id);
+            if (lockinResp?.success && Array.isArray(lockinResp.data)) {
+              totalLockinBalance = lockinResp.data.reduce((sum, l) => sum + parseFloat(l.amount || 0), 0);
+            }
+          } catch (e) {
+            totalLockinBalance = 0;
+          }
+
+          const sessionData = {
+            user: updatedUser,
+            lockinTotal: totalLockinBalance,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          login(updatedUser);
+          setDashboardData(prev => ({
+            ...prev,
+            walletBalance: updatedUser?.balance ? parseFloat(updatedUser.balance) : 0,
+            totalLockinBalance
+          }));
+        }
+      } catch (err) {
+        // noop: keep existing session if network fails
+      }
+    };
+    refreshUser();
+  }, [user?._id]);
 
   // Update balance when user data changes
   useEffect(() => {
@@ -82,7 +127,7 @@ const UserDashboard = () => {
     
     setLoading(true);
     try {
-      // Use balance from user data in localStorage
+      // Use balance from refreshed user in session
       const walletBalance = user?.balance ? parseFloat(user.balance) : 0;
       
       // Load lock-in balance from backend
@@ -94,14 +139,22 @@ const UserDashboard = () => {
         ? lockinData.data.reduce((sum, lockin) => sum + parseFloat(lockin.amount), 0)
         : 0;
 
+      // Load computed KPIs from backend
+      const dashboardResp = await getUserDashboard(user._id);
+      const kpis = dashboardResp?.success ? dashboardResp.data : null;
+
       setDashboardData({
         walletBalance: walletBalance,
         totalLockinBalance: totalLockinBalance,
-        monthlyProfit: 2840.75, // Mock data - replace with actual API
-        totalProfit: 45680.25,  // Mock data - replace with actual API
-        monthlyGrowth: 12.5,    // Mock data - replace with actual API
-        totalGrowth: 8.3,       // Mock data - replace with actual API
-        profitPercentage: 75    // Mock data - replace with actual API
+        monthlyProfit: kpis?.monthlyProfit || 0,
+        totalProfit: kpis?.totalProfit || (user?.profit ? parseFloat(user.profit) : 0),
+        monthlyGrowth: 0,
+        totalGrowth: 0,
+        profitPercentage: 0,
+        activeDays: kpis?.activeDays || 0,
+        successRate: kpis?.successRate || 0,
+        totalTransactions: kpis?.totalTransactions || 0,
+        avgDailyProfit: kpis?.avgDailyProfit || 0,
       });
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -209,7 +262,7 @@ const UserDashboard = () => {
       <div className="dashboard-header">
         <Space direction="vertical" size="small">
           <Title level={2} className="dashboard-title">
-            Welcome back to Alpha Wave!
+            Welcome back to Secure USDT!
           </Title>
           <Text type="secondary" className="dashboard-subtitle">
             Here's an overview of your financial performance
@@ -397,7 +450,7 @@ const UserDashboard = () => {
           <Card size="small" className="stat-card">
             <Statistic
               title="Active Days"
-              value={28}
+              value={dashboardData.activeDays}
               suffix="days"
               valueStyle={{ fontSize: '1.5rem' }}
             />
@@ -407,7 +460,8 @@ const UserDashboard = () => {
           <Card size="small" className="stat-card">
             <Statistic
               title="Success Rate"
-              value={94.2}
+              value={dashboardData.successRate}
+              precision={1}
               suffix="%"
               valueStyle={{ fontSize: '1.5rem', color: '#52c41a' }}
             />
@@ -417,7 +471,7 @@ const UserDashboard = () => {
           <Card size="small" className="stat-card">
             <Statistic
               title="Total Transactions"
-              value={156}
+              value={dashboardData.totalTransactions}
               valueStyle={{ fontSize: '1.5rem' }}
             />
           </Card>
@@ -426,7 +480,7 @@ const UserDashboard = () => {
           <Card size="small" className="stat-card">
             <Statistic
               title="Avg. Daily Profit"
-              value={101.45}
+              value={dashboardData.avgDailyProfit}
               precision={2}
               suffix=" USDT"
               valueStyle={{ fontSize: '1.5rem' }}

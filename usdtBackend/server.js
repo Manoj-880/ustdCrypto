@@ -96,13 +96,19 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-corn.schedule("* * * * *", async () => {
-  try {
-    await paymentController.addProfit();
-  } catch (error) {
-    console.error("Error running addProfit cron:", error);
+corn.schedule(
+  "0 8 * * *",
+  async () => {
+    try {
+      await paymentController.addProfit();
+    } catch (error) {
+      console.error("Error running addProfit cron:", error);
+    }
+  },
+  {
+    timezone: "Asia/Kolkata", // IST
   }
-});
+);
 
 // Morgan logging is now configured above before rate limiting
 
@@ -151,6 +157,9 @@ let withdrawalRequests = require("./routes/withdrawalRequestsRoute");
 let faq = require("./routes/faqRoute");
 let profit = require("./routes/profitRoute");
 let transfer = require("./routes/transferRoute");
+let terms = require("./routes/termsRoute");
+let privacyPolicy = require("./routes/privacyPolicyRoute");
+let contact = require("./routes/contactRoute");
 
 // end points
 app.use("/api/users", user);
@@ -166,6 +175,9 @@ app.use("/api/withdrawal-requests", withdrawalRequests);
 app.use("/api/faq", faq);
 app.use("/api/profits", profit);
 app.use("/api/transfers", transfer);
+app.use("/api/terms", terms);
+app.use("/api/privacy-policy", privacyPolicy);
+app.use("/api/contact", contact);
 
 const PORT = constants.PORT;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));

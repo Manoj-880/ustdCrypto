@@ -154,17 +154,49 @@ const addProfit = async () => {
     for (let user of users) {
       const userLockins = await lockinRepo.getLockinsByUserId(user._id);
 
+      // Helper to parse dates as IST if no timezone is present
+      const parseIstDate = (dateString) => {
+        if (!dateString) return null;
+        // If string already has timezone/Z, rely on native parsing
+        if (/[zZ]|[+-]\d{2}:?\d{2}$/.test(dateString)) {
+          return new Date(dateString);
+        }
+        // ISO-like without TZ
+        if (/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2})?)?$/.test(dateString)) {
+          const base = dateString.replace(' ', 'T');
+          if (base.length <= 10) {
+            // Date only: treat end of day IST
+            return new Date(`${base}T23:59:59+05:30`);
+          }
+          return new Date(`${base}+05:30`);
+        }
+        // Fallback: append IST offset
+        return new Date(`${dateString} GMT+0530`);
+      };
+
+      // Check and mark expired lockins as COMPLETED if endDate has passed (IST-aware)
+      const nowUtc = new Date();
+      for (const lockin of userLockins) {
+        try {
+          const endIst = parseIstDate(lockin.endDate);
+          if (lockin.status === "ACTIVE" && endIst instanceof Date && !isNaN(endIst.getTime()) && nowUtc > endIst) {
+            await lockinRepo.updateLockin(lockin._id, { status: "COMPLETED" });
+          }
+        } catch (e) {
+          console.error("Error updating lockin status:", lockin._id, e);
+        }
+      }
+
       let userLockinTotal = userLockins
         .map((lockin) => parseFloat(lockin.amount) || 0)
         .reduce((sum, amount) => sum + amount, 0);
 
       let userLockinProfit = userLockins
         .filter((lockin) => lockin.status === "ACTIVE") // consider only ACTIVE lockins
-        .map(
-          (lockin) =>
-            (parseFloat(lockin.amount) || 0) *
-            (parseFloat(lockin.intrestRate) || 0)
-        )
+        .map((lockin) => {
+          const dailyRate = parseFloat(lockin.intrestRate) / 100; // Convert percentage to decimal
+          return (parseFloat(lockin.amount) || 0) * dailyRate;
+        })
         .reduce((sum, profit) => sum + profit, 0);
 
       const balance = parseFloat(user.balance);
@@ -190,6 +222,35 @@ const addProfit = async () => {
         transactionId: `PROFIT-${Date.now()}-${user._id}`,
         type: "DAILY_PROFIT",
       });
+
+      // Referral bonus: if this user was referred, credit 10% of this user's profit to the referrer
+      if (user.referredBy && userLockinProfit > 0) {
+        try {
+          const referrer = await userRepo.getUserByReferralCode(user.referredBy);
+          if (referrer) {
+            const referralBonus = (userLockinProfit * 0.10);
+            const referrerBalance = parseFloat(referrer.balance) || 0;
+            const newReferrerBalance = referrerBalance + referralBonus;
+
+            await userRepo.updateUser(referrer._id, {
+              balance: newReferrerBalance.toFixed(2).toString(),
+            });
+
+            // Log referral bonus transaction for the referrer
+            await transactionRepo.createTransaction({
+              quantity: referralBonus.toFixed(2).toString(),
+              date: new Date(),
+              userId: referrer._id,
+              activeWalleteId: MY_WALLET,
+              userWalletId: referrer.walletId || null,
+              transactionId: `REFERRAL-BONUS-${Date.now()}-${referrer._id}`,
+              type: "REFERRAL_BONUS",
+            });
+          }
+        } catch (referralErr) {
+          console.error("Referral bonus error for user:", user._id, referralErr);
+        }
+      }
     }
   } catch (error) {
     console.error("Error in addProfit:", error);

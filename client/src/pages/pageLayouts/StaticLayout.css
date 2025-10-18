@@ -1,0 +1,25 @@
+/* StaticLayout.css */
+.static-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+}
+
+.static-main {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .static-main {
+    min-height: calc(100vh - 70px);
+  }
+}
+
+@media (max-width: 480px) {
+  .static-main {
+    min-height: calc(100vh - 65px);
+  }
+}

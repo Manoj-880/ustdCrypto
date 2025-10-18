@@ -22,9 +22,11 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  // If not authenticated, redirect to login with current location
+  // If not authenticated, redirect to appropriate login page
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const isAdminRoute = location.pathname.startsWith('/admin');
+    const loginPath = isAdminRoute ? '/admin-login' : '/login';
+    return <Navigate to={loginPath} state={{ from: location }} replace />;
   }
 
   // If authenticated, render the protected component

@@ -27,6 +27,7 @@ const Register = () => {
         email: "",
         mobile: "",
         walletId: "",
+        referralCode: "",
         password: "",
         confirmPassword: "",
     });
@@ -40,7 +41,7 @@ const Register = () => {
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/", { replace: true });
+            navigate("/app", { replace: true });
         }
     }, [isAuthenticated, navigate]);
 
@@ -68,7 +69,7 @@ const Register = () => {
         if(response.success) {
             toast.success("Registration successful!", { position: "top-right" });
             login(response.data);
-            navigate("/", { replace: true });
+            navigate("/app", { replace: true });
         } else {
             toast.error(response.message, { position: "top-right" });
         }
@@ -90,11 +91,11 @@ const Register = () => {
                        {/* Logo and Brand Section */}
                        <div className="register-header">
                            <div className="register-logo">
-                               <img src={logo} alt="Alpha Wave Logo" className="logo-image" />
+                               <img src={logo} alt="SecureUSDT Logo" className="logo-image" />
                                <div className="logo-glow"></div>
                            </div>
                            <Title level={1} className="register-title">
-                               Join Alpha Wave
+                               SecureUSDT
                            </Title>
                            <Text className="register-subtitle">
                                Create your account to start trading
@@ -169,6 +170,19 @@ const Register = () => {
                                 className="form-input"
                                 size="large"
                                 prefix={<WalletOutlined className="input-icon" />}
+                                disabled={isLoading}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <Input
+                                id="referralCode"
+                                placeholder="Referral code (optional)"
+                                value={formData.referralCode}
+                                onChange={handleChange}
+                                className="form-input"
+                                size="large"
+                                prefix={<CheckCircleOutlined className="input-icon" />}
                                 disabled={isLoading}
                             />
                         </div>

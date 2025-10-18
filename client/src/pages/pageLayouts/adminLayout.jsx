@@ -9,8 +9,11 @@ import AdminWithdrawRequests from "../adminPages/adminWithdrawRequests";
 import AdminWallets from "../adminPages/adminWallets";
 import FAQManagement from "../adminPages/faqManagement";
 import LockinPlans from "../adminPages/lockinPlans";
+import TermsManagement from "../adminPages/termsManagement";
+import PrivacyPolicyManagement from "../adminPages/privacyPolicyManagement";
 import AdminSideNav from "../adminPages/components/AdminSideNav";
 import AdminHeader from "../adminPages/components/AdminHeader";
+import ScrollToTop from "../../components/ScrollToTop";
 import "../../styles/layouts/adminLayout.css";
 
 const AdminLayout = () => {
@@ -71,9 +74,12 @@ const AdminLayout = () => {
             <Route path="/wallets" element={<AdminWallets />} />
             <Route path="/faq" element={<FAQManagement />} />
             <Route path="/lockin-plans" element={<LockinPlans />} />
+            <Route path="/terms" element={<TermsManagement />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyManagement />} />
           </Routes>
         </div>
       </div>
+      <ScrollToTop />
     </div>
   );
 };

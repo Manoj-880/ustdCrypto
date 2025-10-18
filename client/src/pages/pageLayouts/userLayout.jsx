@@ -6,20 +6,27 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   PieChartOutlined,
+  UserOutlined,
   SwapOutlined,
   RiseOutlined,
   QuestionCircleOutlined,
   LockOutlined,
   LogoutOutlined,
   SendOutlined,
+  FileTextOutlined,
+  SafetyOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
+import ScrollToTop from "../../components/ScrollToTop";
 import UserDashboard from "../userPages/userDashboard";
 import Transactions from "../userPages/transactions";
 import Profits from "../userPages/profits";
 import FAQ from "../userPages/faq";
+import Profile from "../userPages/profile";
 import Lockins from "../userPages/lockins";
 import WithdrawalRequests from "../userPages/withdrawalRequests";
+import Terms from "../userPages/terms";
+import PrivacyPolicy from "../userPages/privacyPolicy";
 import logo from "../../assets/logo.svg";
 import "../../styles/layouts/userLayout.css";
 
@@ -33,6 +40,12 @@ const UserLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  // Helper function to strip HTML tags and clean text
+  const stripHtmlTags = (text) => {
+    if (!text) return '';
+    return text.replace(/<[^>]*>/g, '').trim();
+  };
 
   // Handle window resize
   useEffect(() => {
@@ -60,11 +73,14 @@ const UserLayout = () => {
 
   const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <PieChartOutlined />, path: "/" },
+    { key: "profile", label: "Profile", icon: <UserOutlined />, path: "/profile" },
     { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/transaction" },
     { key: "profits", label: "Profits", icon: <RiseOutlined />, path: "/profit" },
     { key: "lockins", label: "Lock-Ins", icon: <LockOutlined />, path: "/lockins" },
     { key: "withdrawals", label: "Withdrawals", icon: <SendOutlined />, path: "/withdrawals" },
     { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/faq" },
+    { key: "terms", label: "Terms & Conditions", icon: <FileTextOutlined />, path: "/terms" },
+    { key: "privacy-policy", label: "Privacy Policy", icon: <SafetyOutlined />, path: "/privacy-policy" },
   ];
 
   return (
@@ -80,13 +96,19 @@ const UserLayout = () => {
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="profile-card">
-          <div className="avatar">{user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
+          <div className="avatar">
+            {stripHtmlTags(user?.firstName)?.charAt(0)?.toUpperCase() || stripHtmlTags(user?.name)?.charAt(0)?.toUpperCase() || 'U'}
+          </div>
           {(!collapsed && !isMobile) && (
             <div className="profile-info">
-              <h4>{
-            'User'}</h4>
+              <h4 className="user-name">
+                {user?.firstName && user?.lastName 
+                  ? `${stripHtmlTags(user.firstName)} ${stripHtmlTags(user.lastName)}`
+                  : stripHtmlTags(user?.name) || 'User'
+                }
+              </h4>
               <p className="user-email">{user?.email || 'user@example.com'}</p>
-              <button className="view-profile">View Profile</button>
+              <button className="view-profile" onClick={() => navigate('/profile')}>View Profile</button>
             </div>
           )}
         </div>
@@ -99,7 +121,7 @@ const UserLayout = () => {
               onClick={() => navigate(item.path)}
             >
               {item.icon}
-              {(!collapsed && !isMobile) && <span>{item.label}</span>}
+              {(!collapsed && !isMobile) && item.label}
             </button>
           ))}
         </nav>
@@ -116,13 +138,13 @@ const UserLayout = () => {
               {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </button>
             <div className="platform-brand">
-              <img src={logo} alt="Alpha Wave Logo" className="header-logo" />
-              <h2 className="platform-name">Alpha Wave</h2>
+              <img src={logo} alt="Secure USDT Logo" className="header-logo" />
+              <h2 className="platform-name">Secure USDT</h2>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             <LogoutOutlined />
-            {!isMobile && <span>Logout</span>}
+            {!isMobile && "Logout"}
           </button>
         </header>
 
@@ -130,14 +152,18 @@ const UserLayout = () => {
           {/* Nested Routes Rendering */}
           <Routes>
             <Route path="/" element={<UserDashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/transaction" element={<Transactions />} />
             <Route path="/profit" element={<Profits />} />
             <Route path="/lockins" element={<Lockins />} />
             <Route path="/withdrawals" element={<WithdrawalRequests />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           </Routes>
         </div>
       </div>
+      <ScrollToTop />
     </div>
   );
 };

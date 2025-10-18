@@ -10,4 +10,13 @@ const adminDashboard = async () => {
   }
 };
 
-export { adminDashboard };
+const userDashboard = async (userId) => {
+  try {
+    const response = await axios.get(`${url}/dashboard/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { adminDashboard, userDashboard };

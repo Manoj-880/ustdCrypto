@@ -36,6 +36,15 @@ const userSchema = new Schema({
         type: String,
         default: "0",
     },
+    referralCode: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
+    referredBy: {
+        type: String, // stores referralCode of the referrer
+        default: null,
+    },
     joinDate: {
         type: Date,
         default: Date.now

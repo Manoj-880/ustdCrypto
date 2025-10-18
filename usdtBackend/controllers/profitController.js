@@ -152,7 +152,7 @@ const generateDailyProfit = async (req, res) => {
       const userLockinProfit = userLockins
         .filter((lockin) => lockin.status === "ACTIVE")
         .map((lockin) => {
-          const dailyRate = parseFloat(lockin.intrestRate) / 100 / 365; // Convert annual rate to daily
+          const dailyRate = parseFloat(lockin.intrestRate) / 100; // Convert percentage to decimal
           return (parseFloat(lockin.amount) || 0) * dailyRate;
         })
         .reduce((sum, profit) => sum + profit, 0);

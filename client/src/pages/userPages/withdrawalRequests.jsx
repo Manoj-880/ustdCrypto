@@ -114,21 +114,9 @@ const WithdrawalRequests = () => {
 
   const columns = [
     {
-      title: 'Request ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 120,
-      render: (id) => (
-        <Text code className="request-id">
-          {id.slice(-8)}
-        </Text>
-      ),
-    },
-    {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: 120,
       render: (amount) => (
         <Text strong className="amount">
           {formatCurrency(amount)}
@@ -140,7 +128,6 @@ const WithdrawalRequests = () => {
       title: 'Wallet Address',
       dataIndex: 'walletAddress',
       key: 'walletAddress',
-      width: 200,
       render: (address) => (
         <Text code className="wallet-address">
           {address}
@@ -151,7 +138,6 @@ const WithdrawalRequests = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 120,
       render: (status) => (
         <Tag 
           color={getStatusColor(status)} 
@@ -172,7 +158,6 @@ const WithdrawalRequests = () => {
       title: 'Requested At',
       dataIndex: 'requestDate',
       key: 'requestDate',
-      width: 150,
       render: (date) => (
         <div className="date-cell">
           <div className="date">{dayjs(date).format('MMM DD, YYYY')}</div>
@@ -180,21 +165,6 @@ const WithdrawalRequests = () => {
         </div>
       ),
       sorter: (a, b) => dayjs(a.requestDate).unix() - dayjs(b.requestDate).unix(),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: 80,
-      render: (_, record) => (
-        <Tooltip title="View Details">
-          <Button
-            type="text"
-            icon={<EyeOutlined />}
-            onClick={() => showRequestDetails(record)}
-            className="view-button"
-          />
-        </Tooltip>
-      ),
     },
   ];
 
@@ -242,6 +212,8 @@ const WithdrawalRequests = () => {
                 dataSource={paginatedData}
                 rowKey="id"
                 pagination={false}
+                tableLayout="fixed"
+                style={{ width: '100%' }}
                 className="withdrawal-requests-table"
                 size="middle"
               />

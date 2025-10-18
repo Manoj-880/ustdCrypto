@@ -28,9 +28,10 @@ const LoginPage = () => {
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/", { replace: true });
+            const from = location.state?.from?.pathname || '/app';
+            navigate(from, { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, location.state]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,7 +46,8 @@ const LoginPage = () => {
         if(response.success) {
             toast.success("Login successful!", { position: "top-right" });
             login(response.data);
-            navigate("/", { replace: true });
+            const from = location.state?.from?.pathname || '/app';
+            navigate(from, { replace: true });
         } else {
             toast.error(response.message, { position: "top-right" });
         }
@@ -66,11 +68,11 @@ const LoginPage = () => {
                        {/* Logo and Brand Section */}
                        <div className="login-header">
                            <div className="login-logo">
-                               <img src={logo} alt="Alpha Wave Logo" className="logo-image" />
+                               <img src={logo} alt="Secure USDT Logo" className="logo-image" />
                                <div className="logo-glow"></div>
                            </div>
                            <Title level={1} className="login-title">
-                               Welcome to Alpha Wave
+                               Welcome to Secure USDT
                            </Title>
                            <Text className="login-subtitle">
                                Sign in to your account to continue trading

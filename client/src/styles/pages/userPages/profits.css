@@ -283,7 +283,7 @@
   padding: var(--space-6);
 }
 
-.section-header {
+.claimed-profits-card .section-header {
   display: flex;
   align-items: center;
   gap: var(--space-3);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, Typography, Space, Divider } from "antd";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   UserOutlined,
   LockOutlined,
@@ -23,6 +23,7 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated } = useAuth();
 
   const handleChange = (e) => {
@@ -33,9 +34,10 @@ const AdminLogin = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/admin", { replace: true });
+      const from = location.state?.from?.pathname || '/admin';
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,7 +63,8 @@ const AdminLogin = () => {
       setIsLoading(false);
 
       // Redirect to admin dashboard
-      navigate("/admin", { replace: true });
+      const from = location.state?.from?.pathname || '/admin';
+      navigate(from, { replace: true });
     } else {
       toast.error(response.message);
     }
@@ -81,7 +84,7 @@ const AdminLogin = () => {
         {/* Logo and Brand Section */}
         <div className="admin-login-header">
           <div className="admin-login-logo">
-            <img src={logo} alt="Alpha Wave Logo" className="logo-image" />
+            <img src={logo} alt="Secure USDT Logo" className="logo-image" />
             <div className="logo-glow"></div>
             <div className="admin-crown">
               <CrownOutlined />

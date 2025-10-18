@@ -21,6 +21,11 @@ const getUserByMail = async (email) => {
     return user;
 };
 
+const getUserByReferralCode = async (referralCode) => {
+    const user = await userModel.findOne({ referralCode });
+    return user;
+};
+
 const updateUser = async (id, data) => {
     const user = await userModel.findByIdAndUpdate(id, data);
     return user;
@@ -36,6 +41,7 @@ module.exports = {
     addUser,
     getUserById,
     getUserByMail,
+    getUserByReferralCode,
     updateUser,
     deleteUser,
 };

@@ -1,0 +1,604 @@
+/* =========================
+   Terms Management Page
+========================= */
+.terms-management {
+  padding: 8px 4px !important;
+  width: 100% !important;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+}
+
+/* Force minimal padding - highest specificity */
+.admin-layout .admin-content .terms-management {
+  padding: 4px 2px !important;
+  margin: 0 !important;
+}
+
+/* =========================
+   Page Header
+========================= */
+.page-header {
+  margin-bottom: var(--space-8);
+  text-align: center;
+}
+
+.page-header .ant-typography {
+  margin-bottom: var(--space-2);
+}
+
+.page-header .ant-typography.ant-typography-h2 {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-3xl);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header .ant-typography.ant-typography-secondary {
+  color: var(--color-text-secondary) !important;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   Table Card
+========================= */
+.table-card {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: visible;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.table-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-hover));
+}
+
+.table-card .ant-card-body {
+  padding: 0;
+}
+
+/* =========================
+   Table Header
+========================= */
+.table-header {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-bottom: 2px solid var(--color-border-primary);
+}
+
+.table-header .ant-typography {
+  margin: 0;
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+}
+
+/* =========================
+   Terms List
+========================= */
+.terms-list-container {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.terms-list {
+  background: transparent !important;
+  border: none !important;
+}
+
+.terms-item {
+  background: var(--color-bg-card) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  margin-bottom: 16px !important;
+  box-shadow: var(--shadow-md) !important;
+  padding: 20px !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.terms-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.terms-item:hover {
+  box-shadow: var(--shadow-lg) !important;
+  transform: translateY(-2px) !important;
+}
+
+.terms-content {
+  flex: 1 !important;
+  margin-right: 16px !important;
+}
+
+.terms-header {
+  margin-bottom: 12px !important;
+}
+
+.terms-title {
+  color: var(--color-text-primary) !important;
+  font-size: 18px !important;
+  font-weight: var(--font-weight-bold) !important;
+  margin-bottom: 4px !important;
+}
+
+.terms-date {
+  color: var(--color-text-secondary) !important;
+  font-size: 14px !important;
+}
+
+.terms-preview {
+  color: var(--color-text-secondary) !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+.terms-paragraphs-count {
+  color: var(--color-text-tertiary) !important;
+  font-size: 13px !important;
+  font-style: italic !important;
+}
+
+.terms-actions {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.loading-container {
+  text-align: center !important;
+  padding: 40px !important;
+  color: var(--color-text-secondary) !important;
+  font-size: 16px !important;
+}
+
+/* =========================
+   Action Buttons
+========================= */
+.action-btn {
+  color: var(--color-primary) !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.action-btn:hover {
+  color: var(--color-primary-hover) !important;
+  background-color: var(--color-primary-bg) !important;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  color: var(--color-error) !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.delete-btn:hover {
+  color: #d32f2f !important;
+  background-color: var(--color-error-bg) !important;
+  transform: scale(1.1);
+}
+
+.add-btn {
+  background: var(--color-primary) !important;
+  border: none !important;
+  color: var(--color-text-inverse) !important;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+}
+
+.add-btn:hover {
+  background: var(--color-primary-hover) !important;
+  color: var(--color-text-inverse) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* =========================
+   Modals
+========================= */
+.terms-modal .ant-modal-content {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(20px);
+}
+
+.terms-modal .ant-modal-header {
+  background: transparent;
+  border-bottom: 1px solid var(--color-border-primary);
+  padding: var(--space-6);
+}
+
+.terms-modal .ant-modal-title {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+}
+
+.terms-modal .ant-modal-body {
+  background: transparent;
+  color: var(--color-text-primary) !important;
+  padding: var(--space-6);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.terms-modal .ant-form-item-label > label {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.terms-modal .ant-input,
+.terms-modal .ant-select-selector,
+.terms-modal .ant-input-number,
+.terms-modal .form-input,
+.terms-modal .form-textarea {
+  background-color: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  transition: all var(--transition-fast);
+  font-size: 16px !important;
+  padding: 12px 16px !important;
+}
+
+.terms-modal .form-textarea {
+  resize: vertical !important;
+  min-height: 120px !important;
+}
+
+.terms-modal .ant-input:focus,
+.terms-modal .ant-input-focused,
+.terms-modal .ant-select-focused .ant-select-selector,
+.terms-modal .form-input:focus,
+.terms-modal .form-textarea:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+}
+
+.terms-modal .ant-input::placeholder,
+.terms-modal .form-input::placeholder,
+.terms-modal .form-textarea::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.terms-modal .ant-btn {
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-fast);
+}
+
+.terms-modal .ant-btn-primary {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text-inverse) !important;
+}
+
+.terms-modal .ant-btn-primary:hover {
+  background: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+  color: var(--color-text-inverse) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.terms-modal .ant-btn-default {
+  background: var(--color-bg-tertiary) !important;
+  border-color: var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.terms-modal .ant-btn-default:hover {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* =========================
+   Section Cards
+========================= */
+.section-card {
+  background: var(--color-bg-secondary) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  margin-bottom: 16px !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.section-card .ant-card-body {
+  padding: 16px !important;
+}
+
+.section-card .ant-form-item {
+  margin-bottom: 16px !important;
+}
+
+.section-card .ant-form-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* =========================
+   Points List
+========================= */
+.paragraph-points .ant-list-item {
+  border: none !important;
+  padding: 8px 0 !important;
+}
+
+.point-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+}
+
+.point-number {
+  color: var(--color-primary) !important;
+  font-weight: var(--font-weight-bold) !important;
+  min-width: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+.point-content {
+  color: var(--color-text-primary) !important;
+  flex: 1 !important;
+}
+
+/* =========================
+   Responsive Design
+========================= */
+
+/* Extra Small Devices (phones, less than 400px) */
+@media (max-width: 399px) {
+  .terms-management {
+    padding: 4px;
+  }
+
+  .page-header .ant-typography.ant-typography-h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .page-header .ant-typography.ant-typography-secondary {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-4);
+  }
+
+  .table-header {
+    padding: 8px;
+  }
+
+  .table-header .ant-typography {
+    font-size: var(--font-size-base);
+  }
+
+  .terms-item {
+    padding: 12px !important;
+  }
+
+  .terms-title {
+    font-size: 16px !important;
+  }
+
+  .terms-preview {
+    font-size: 14px !important;
+  }
+
+  .action-btn,
+  .delete-btn {
+    font-size: var(--font-size-xs) !important;
+    padding: var(--space-1) !important;
+    min-width: 24px !important;
+    height: 24px !important;
+  }
+
+  .add-btn {
+    height: 32px !important;
+    font-size: var(--font-size-xs) !important;
+    padding: 0 var(--space-2) !important;
+  }
+
+  .terms-modal {
+    margin: var(--space-2);
+  }
+
+  .terms-modal .ant-modal-header,
+  .terms-modal .ant-modal-body {
+    padding: var(--space-3);
+  }
+}
+
+/* Small Devices (phones, 400px and up) */
+@media (min-width: 400px) and (max-width: 575px) {
+  .terms-management {
+    padding: 8px;
+  }
+
+  .page-header .ant-typography.ant-typography-h2 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-header .ant-typography.ant-typography-secondary {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-5);
+  }
+
+  .table-header {
+    padding: 10px;
+  }
+
+  .terms-item {
+    padding: 16px !important;
+  }
+
+  .terms-title {
+    font-size: 17px !important;
+  }
+
+  .terms-preview {
+    font-size: 14px !important;
+  }
+
+  .action-btn,
+  .delete-btn {
+    font-size: var(--font-size-sm) !important;
+    padding: var(--space-1) var(--space-2) !important;
+    min-width: 28px !important;
+    height: 28px !important;
+  }
+
+  .add-btn {
+    height: 36px !important;
+    font-size: var(--font-size-sm) !important;
+    padding: 0 var(--space-3) !important;
+  }
+
+  .terms-modal {
+    margin: var(--space-3);
+  }
+}
+
+/* Medium Devices (tablets, 576px and up) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .terms-management {
+    padding: 12px;
+  }
+
+  .page-header .ant-typography.ant-typography-h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-header .ant-typography.ant-typography-secondary {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-6);
+  }
+
+  .table-header {
+    padding: 10px;
+  }
+
+  .terms-item {
+    padding: 18px !important;
+  }
+
+  .action-btn,
+  .delete-btn {
+    font-size: var(--font-size-sm) !important;
+    padding: var(--space-1) var(--space-2) !important;
+    min-width: 32px !important;
+    height: 32px !important;
+  }
+
+  .add-btn {
+    height: 40px !important;
+    font-size: var(--font-size-sm) !important;
+    padding: 0 var(--space-4) !important;
+  }
+}
+
+/* Large Devices (laptops, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .terms-management {
+    padding: 16px;
+  }
+
+  .page-header .ant-typography.ant-typography-h2 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .page-header .ant-typography.ant-typography-secondary {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-6);
+  }
+
+  .table-header {
+    padding: 12px;
+  }
+
+  .terms-item {
+    padding: 20px !important;
+  }
+
+  .action-btn,
+  .delete-btn {
+    font-size: var(--font-size-sm) !important;
+    padding: var(--space-2) var(--space-3) !important;
+    min-width: 36px !important;
+    height: 36px !important;
+  }
+
+  .add-btn {
+    height: 44px !important;
+    font-size: var(--font-size-base) !important;
+    padding: 0 var(--space-5) !important;
+  }
+}
+
+/* Extra Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .terms-management {
+    padding: 16px 8px;
+  }
+
+  .page-header .ant-typography.ant-typography-h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--space-5);
+  }
+
+  .page-header .ant-typography.ant-typography-secondary {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-7);
+  }
+
+  .table-header {
+    padding: 12px;
+  }
+
+  .terms-item {
+    padding: 20px !important;
+  }
+
+  .action-btn,
+  .delete-btn {
+    font-size: var(--font-size-base) !important;
+    padding: var(--space-2) var(--space-4) !important;
+    min-width: 40px !important;
+    height: 40px !important;
+  }
+
+  .add-btn {
+    height: 48px !important;
+    font-size: var(--font-size-base) !important;
+    padding: 0 var(--space-6) !important;
+  }
+}

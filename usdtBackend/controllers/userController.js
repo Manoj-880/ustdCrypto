@@ -52,6 +52,45 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         let user = req.body;
+
+        // Generate unique referral code for the new user
+        const makeCode = () => {
+            const base = (user.firstName || 'USER').slice(0, 3).toUpperCase();
+            const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+            return `${base}${rand}`;
+        };
+
+        let referralCode = makeCode();
+        // ensure uniqueness (retry a few times)
+        for (let i = 0; i < 5; i++) {
+            const existing = await userRepo.getUserByReferralCode(referralCode);
+            if (!existing) break;
+            referralCode = makeCode();
+        }
+        user.referralCode = referralCode;
+
+        // Validate referredBy if provided
+        if (user.referredBy) {
+            const referrer = await userRepo.getUserByReferralCode(user.referredBy);
+            if (!referrer) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Invalid referral code'
+                });
+            }
+        } else if (user.referredByCode) {
+            // allow alternate field name from client
+            const referrer = await userRepo.getUserByReferralCode(user.referredByCode);
+            if (!referrer) {
+                return res.status(200).send({
+                    success: false,
+                    message: 'Invalid referral code'
+                });
+            }
+            user.referredBy = user.referredByCode;
+            delete user.referredByCode;
+        }
+
         let createUserStatus = await userRepo.addUser(user);
         if(createUserStatus) {
             res.status(200).send({

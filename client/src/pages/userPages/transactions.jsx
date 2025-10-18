@@ -19,6 +19,8 @@ import {
 } from "antd";
 import { SearchOutlined, ReloadOutlined, EyeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useAuth } from "../../contexts/AuthContext";
+import { getTransactionsByUserId } from "../../api_calls/transactionsApi";
 import TransactionDetails from "./components/transactionDetails";
 import "../../styles/pages/userPages/transactions.css";
 
@@ -42,120 +44,46 @@ const Transactions = () => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
+  const { user } = useAuth();
 
-  // Mock data - replace with actual API calls
+  // Load transactions from backend
   useEffect(() => {
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      const mockData = [
-        {
-          id: "TXN001",
-          type: "deposit",
-          amount: 1000.0,
-          status: "completed",
-          date: "2024-01-15 14:30:00",
-          description: "Deposit from User Wallet to Company Wallet",
-          fee: 0.0,
-          balance: 1000.0,
-        },
-        {
-          id: "TXN002",
-          type: "claimed_profit",
-          amount: 2.5,
-          status: "completed",
-          date: "2024-01-14 09:15:00",
-          description: "Claimed Profit (0.25% of balance)",
-          fee: 0.0,
-          balance: 1002.5,
-        },
-        {
-          id: "TXN003",
-          type: "withdraw",
-          amount: 500.0,
-          status: "pending",
-          date: "2024-01-13 16:45:00",
-          description: "Withdraw from Company Wallet to User Wallet",
-          fee: 1.0,
-          balance: 501.5,
-        },
-        {
-          id: "TXN004",
-          type: "deposit",
-          amount: 2000.0,
-          status: "completed",
-          date: "2024-01-12 11:20:00",
-          description: "Deposit from User Wallet to Company Wallet",
-          fee: 0.0,
-          balance: 2501.5,
-        },
-        {
-          id: "TXN005",
-          type: "transfer",
-          amount: 300.0,
-          status: "completed",
-          date: "2024-01-11 13:10:00",
-          description: "Transfer to User ID: U12345",
-          fee: 0.0,
-          balance: 2201.5,
-        },
-        {
-          id: "TXN006",
-          type: "claimed_profit",
-          amount: 5.5,
-          status: "completed",
-          date: "2024-01-10 10:30:00",
-          description: "Claimed Profit (0.25% of balance)",
-          fee: 0.0,
-          balance: 2207.0,
-        },
-        {
-          id: "TXN007",
-          type: "deposit",
-          amount: 750.0,
-          status: "completed",
-          date: "2024-01-09 15:45:00",
-          description: "Deposit from User Wallet to Company Wallet",
-          fee: 0.0,
-          balance: 2957.0,
-        },
-        {
-          id: "TXN008",
-          type: "withdraw",
-          amount: 1000.0,
-          status: "failed",
-          date: "2024-01-08 08:20:00",
-          description: "Withdraw from Company Wallet to User Wallet",
-          fee: 0.0,
-          balance: 2957.0,
-        },
-        {
-          id: "TXN009",
-          type: "transfer",
-          amount: 150.0,
-          status: "completed",
-          date: "2024-01-07 12:30:00",
-          description: "Transfer to User ID: U67890",
-          fee: 0.0,
-          balance: 2807.0,
-        },
-        {
-          id: "TXN010",
-          type: "claimed_profit",
-          amount: 7.02,
-          status: "completed",
-          date: "2024-01-06 14:20:00",
-          description: "Claimed Profit (0.25% of balance)",
-          fee: 0.0,
-          balance: 2814.02,
-        },
-      ];
-      setTransactions(mockData);
-      setFilteredTransactions(mockData);
-      setPagination((prev) => ({ ...prev, total: mockData.length }));
-      setLoading(false);
-    }, 1000);
-  }, []);
+    const fetchTransactions = async () => {
+      if (!user?._id) return;
+      setLoading(true);
+      try {
+        const response = await getTransactionsByUserId(user._id);
+        if (response?.success && Array.isArray(response.data)) {
+          // Map backend transaction model to UI shape
+          const mapped = response.data.map((t) => ({
+            id: t.transactionId || t._id,
+            type: "transfer", // backend doesn't provide type; defaulting for UI
+            amount: Number(t.quantity || 0),
+            status: "completed", // backend doesn't provide status; defaulting
+            date: t.date,
+            description: `From ${t.userWalletId} to ${t.activeWalleteId}`,
+            fee: 0,
+            balance: 0,
+          }));
+          setTransactions(mapped);
+          setFilteredTransactions(mapped);
+          setPagination((prev) => ({ ...prev, total: mapped.length }));
+        } else {
+          setTransactions([]);
+          setFilteredTransactions([]);
+          setPagination((prev) => ({ ...prev, total: 0 }));
+        }
+      } catch (e) {
+        setTransactions([]);
+        setFilteredTransactions([]);
+        setPagination((prev) => ({ ...prev, total: 0 }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [user]);
 
   // Filter and search logic
   useEffect(() => {
@@ -415,7 +343,7 @@ const Transactions = () => {
           type="primary"
           size="small"
           icon={<EyeOutlined />}
-          onClick={() => handleViewTransaction(transaction)}
+          onClick={() => showTransactionDetails(transaction)}
           className="mobile-action-btn"
           block
         >

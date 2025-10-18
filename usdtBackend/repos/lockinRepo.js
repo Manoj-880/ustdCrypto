@@ -17,9 +17,14 @@ const deleteLockin = async (id) => {
   return await lockinModel.findByIdAndDelete(id);
 };
 
+const updateLockin = async (id, data) => {
+  return await lockinModel.findByIdAndUpdate(id, data, { new: true });
+};
+
 module.exports = {
   getAllLockins,
   getLockinsByUserId,
   createLockin,
+  updateLockin,
   deleteLockin,
 };
