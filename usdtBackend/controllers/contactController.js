@@ -9,7 +9,7 @@ const verifyTurnstileToken = async (token) => {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        secret: process.env.TURNSTILE_SECRET_KEY || '0x4AAAAAAB7RJIoCVxvE1kCsnyZXSPMOQiA',
+        secret: process.env.TURNSTILE_SECRET_KEY,
         response: token,
         remoteip: '127.0.0.1' // You can get this from req.ip in production
       }),
