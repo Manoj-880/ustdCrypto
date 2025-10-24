@@ -1,4 +1,5 @@
 const userRepo = require('../repos/userRepo');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 const getAllUsers = async (req, res) => {
     try {
@@ -93,6 +94,15 @@ const createUser = async (req, res) => {
 
         let createUserStatus = await userRepo.addUser(user);
         if(createUserStatus) {
+            // Send welcome email after successful registration
+            try {
+                await sendWelcomeEmail(user.email, user.firstName);
+                console.log('Welcome email sent successfully to:', user.email);
+            } catch (emailError) {
+                console.error('Failed to send welcome email:', emailError);
+                // Don't fail registration if email fails
+            }
+            
             res.status(200).send({
                 success: true,
                 message: "User created successfully",

@@ -1,6 +1,7 @@
 const lockinRepo = require("../repos/lockinRepo");
 const lockinPlanRepo = require("../repos/lockinPlanRepo");
 const userRepo = require("../repos/userRepo");
+const { sendDepositSuccessEmail } = require("../services/emailService");
 
 const getAllLockins = async (req, res) => {
   try {
@@ -108,6 +109,27 @@ const createLockin = async (req, res) => {
     const updatedUser = await userRepo.updateUser(userId, {
       balance: newBalance.toFixed(2).toString(),
     });
+
+    // Send deposit success email
+    try {
+      const transactionId = newLockin._id.toString();
+      const startDateFormatted = startDate.toLocaleDateString();
+      const maturityDateFormatted = endDate.toLocaleDateString();
+      
+      await sendDepositSuccessEmail(
+        user.email,
+        user.firstName,
+        amount,
+        plan.name || `Plan ${planId}`,
+        startDateFormatted,
+        maturityDateFormatted,
+        transactionId
+      );
+      console.log('Deposit success email sent to:', user.email);
+    } catch (emailError) {
+      console.error('Failed to send deposit success email:', emailError);
+      // Don't fail lockin creation if email fails
+    }
 
     res.status(201).send({
       success: true,

@@ -1,6 +1,7 @@
 const withdrawalRequestRepo = require("../repos/withdrawRepo");
 const userRepo = require("../repos/userRepo");
 const transactionRepo = require("../repos/transactionRepo");
+const { sendWithdrawalRequestAlert, sendWithdrawalSuccessEmail } = require("../services/emailService");
 
 const getAllWithdrawalRequests = async (req, res) => {
   try {
@@ -156,6 +157,21 @@ const createWithdrawalRequest = async (req, res) => {
       type: "WITHDRAWAL",
     });
 
+    // Send withdrawal request alert to admin
+    try {
+      await sendWithdrawalRequestAlert(
+        user.firstName,
+        user.email,
+        withdrawalAmount.toFixed(2),
+        "Standard Plan", // You might want to get this from user's active plan
+        new Date().toISOString()
+      );
+      console.log('Withdrawal request alert sent to admin');
+    } catch (emailError) {
+      console.error('Failed to send withdrawal request alert:', emailError);
+      // Don't fail request creation if email fails
+    }
+
     // Get updated user data
     const updatedUser = await userRepo.getUserById(userId);
 
@@ -280,6 +296,24 @@ const approveWithdrawalRequest = async (req, res) => {
       transactionId: transactionId,
       approvedAt: new Date(),
     });
+
+    // Send withdrawal success email to user
+    try {
+      const user = await userRepo.getUserById(request.userId);
+      if (user) {
+        await sendWithdrawalSuccessEmail(
+          user.email,
+          user.firstName,
+          request.amount,
+          transactionId,
+          new Date().toISOString()
+        );
+        console.log('Withdrawal success email sent to:', user.email);
+      }
+    } catch (emailError) {
+      console.error('Failed to send withdrawal success email:', emailError);
+      // Don't fail approval if email fails
+    }
 
     res.status(200).send({
       success: true,

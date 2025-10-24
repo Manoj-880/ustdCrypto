@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,8 +11,6 @@ const path = require("path");
 const fs = require("fs");
 const ipaddr = require("ipaddr.js");
 const corn = require("node-cron");
-
-const constants = require("./constants");
 
 const paymentController = require("./controllers/paymentController");
 
@@ -24,15 +25,16 @@ const corsOptions = {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
+    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+      process.env.ALLOWED_ORIGINS.split(',') : [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:5173',
         'https://www.secureusdt.com',
         'https://api.secureusdt.com',
         'https://secureusdt.com'
-    ];
+      ];
 
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -73,8 +75,8 @@ app.use((req, res, next) => {
 
 // Rate limiter per IP range (/24 subnet)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
   keyGenerator: (req, res) => {
     const clientIp =
       req.headers["x-forwarded-for"] || req.connection.remoteAddress;
@@ -100,7 +102,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 corn.schedule(
-  "0 8 * * *",
+  process.env.PROFIT_CRON_SCHEDULE || "0 8 * * *",
   async () => {
     try {
       await paymentController.addProfit();
@@ -109,7 +111,7 @@ corn.schedule(
     }
   },
   {
-    timezone: "Asia/Kolkata", // IST
+    timezone: process.env.CRON_TIMEZONE || "Asia/Kolkata", // IST
   }
 );
 
@@ -118,7 +120,7 @@ corn.schedule(
 app.use(bodyParser.json());
 
 mongoose
-  .connect(constants.dbURL)
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB successfully");
   })
@@ -160,8 +162,6 @@ let withdrawalRequests = require("./routes/withdrawalRequestsRoute");
 let faq = require("./routes/faqRoute");
 let profit = require("./routes/profitRoute");
 let transfer = require("./routes/transferRoute");
-let terms = require("./routes/termsRoute");
-let privacyPolicy = require("./routes/privacyPolicyRoute");
 let contact = require("./routes/contactRoute");
 
 // end points
@@ -178,9 +178,7 @@ app.use("/api/withdrawal-requests", withdrawalRequests);
 app.use("/api/faq", faq);
 app.use("/api/profits", profit);
 app.use("/api/transfers", transfer);
-app.use("/api/terms", terms);
-app.use("/api/privacy-policy", privacyPolicy);
 app.use("/api/contact", contact);
 
-const PORT = constants.PORT;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));

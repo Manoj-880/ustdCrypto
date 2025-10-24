@@ -1,6 +1,7 @@
 const transferRepo = require("../repos/transferRepo");
 const userRepo = require("../repos/userRepo");
 const transactionRepo = require("../repos/transactionRepo");
+const { sendInternalTransferReceivedEmail } = require("../services/emailService");
 
 const transferToWallet = async (req, res) => {
   try {
@@ -102,6 +103,23 @@ const transferToWallet = async (req, res) => {
       transactionId: `TRANSFER-${Date.now()}-${fromUserId}`,
       type: "TRANSFER_IN",
     });
+
+    // Send internal transfer received email to recipient
+    try {
+      const transactionId = `TRANSFER-${Date.now()}-${fromUserId}`;
+      await sendInternalTransferReceivedEmail(
+        toUser.email,
+        toUser.firstName,
+        fromUser.firstName,
+        transferAmount.toFixed(2),
+        transactionId,
+        toUser.balance
+      );
+      console.log('Internal transfer received email sent to:', toUser.email);
+    } catch (emailError) {
+      console.error('Failed to send internal transfer received email:', emailError);
+      // Don't fail transfer if email fails
+    }
 
     // Get updated sender user data
     const updatedSender = await userRepo.getUserById(fromUserId);

@@ -16,6 +16,8 @@ import HomePage from "./pages/static/HomePage";
 import AboutPage from "./pages/static/AboutPage";
 import HowToUsePage from "./pages/static/HowToUsePage";
 import ContactPage from "./pages/static/ContactPage";
+import Terms from "./pages/userPages/terms";
+import PrivacyPolicy from "./pages/userPages/privacyPolicy";
 
 
 function App() {
@@ -43,6 +45,10 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/register" element={<Register />} />
+            
+            {/* Public Terms and Privacy Policy Routes */}
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
             {/* Protected User App Routes */}
             <Route 

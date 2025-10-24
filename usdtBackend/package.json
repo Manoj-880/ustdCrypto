@@ -16,12 +16,14 @@
     "bignumber.js": "^9.3.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "ipaddr.js": "^2.2.0",
     "mongoose": "^8.17.1",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.9",
     "nodemon": "^3.1.10",
     "tronweb": "^6.0.4"
   }

@@ -195,13 +195,36 @@
 
 /* Mobile Drawer */
 .mobile-drawer .ant-drawer-content {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%) !important;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+}
+
+.mobile-drawer .ant-drawer-content * {
+  background: transparent !important;
+}
+
+.mobile-drawer {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%) !important;
+}
+
+.mobile-drawer .ant-drawer-mask {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+.mobile-drawer .ant-drawer-body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%) !important;
+  flex: 1;
+  padding: 0 !important;
+  overflow-y: auto;
 }
 
 .mobile-drawer .ant-drawer-header {
-  background: transparent;
+  background: transparent !important;
   border-bottom: 1px solid rgba(0, 212, 170, 0.2);
-  padding: 1.5rem;
+  padding: 4px 24px !important;
+  min-height: auto;
 }
 
 .mobile-drawer .ant-drawer-title {
@@ -224,32 +247,46 @@
 }
 
 .mobile-menu {
-  padding: 1rem 0;
+  padding: 0.25rem 0.75rem !important;
+  min-height: auto;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.mobile-menu .mobile-nav-link {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-nav-link {
-  display: block;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1.1rem;
-  padding: 1rem 1.5rem;
-  margin: 0.5rem 0;
-  border-radius: 8px;
+  display: block !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  padding: 10px 20px !important;
+  margin: 4px 0 !important;
+  border-radius: 6px !important;
   transition: all 0.3s ease;
-  border-left: 3px solid transparent;
+  border: 1px solid #00d4aa !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background-color: rgba(0,212,170,0.1) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-nav-link:hover {
-  color: #00d4aa;
-  background: rgba(0, 212, 170, 0.1);
-  border-left-color: #00d4aa;
+  color: #00d4aa !important;
+  background: rgba(0, 212, 170, 0.2) !important;
+  border-color: #00d4aa !important;
 }
 
 .mobile-nav-link.active {
-  color: #00d4aa;
-  background: rgba(0, 212, 170, 0.1);
-  border-left-color: #00d4aa;
+  color: #00d4aa !important;
+  background: rgba(0, 212, 170, 0.2) !important;
+  border-color: #00d4aa !important;
 }
 
 .mobile-auth {

@@ -98,7 +98,7 @@ const Register = () => {
                                SecureUSDT
                            </Title>
                            <Text className="register-subtitle">
-                               Create your account to start trading
+                               Create your account to start investing
                            </Text>
                        </div>
 
@@ -224,9 +224,27 @@ const Register = () => {
                             >
                                 <Text className="terms-text">
                                     I agree to the{" "}
-                                    <Link href="#" className="terms-link">Terms of Service</Link>
+                                    <Link 
+                                        href="/terms" 
+                                        className="terms-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            navigate('/terms');
+                                        }}
+                                    >
+                                        Terms of Service
+                                    </Link>
                                     {" "}and{" "}
-                                    <Link href="#" className="terms-link">Privacy Policy</Link>
+                                    <Link 
+                                        href="/privacy-policy" 
+                                        className="terms-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            navigate('/privacy-policy');
+                                        }}
+                                    >
+                                        Privacy Policy
+                                    </Link>
                                 </Text>
                             </Checkbox>
                         </div>
@@ -262,7 +280,7 @@ const Register = () => {
                 <div className="register-features">
                     <div className="feature-item">
                         <div className="feature-icon">🔒</div>
-                        <Text className="feature-text">Secure Trading</Text>
+                        <Text className="feature-text">Secure Investments</Text>
                     </div>
                     <div className="feature-item">
                         <div className="feature-icon">⚡</div>

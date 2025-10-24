@@ -75,7 +75,7 @@ const LoginPage = () => {
                                Welcome to Secure USDT
                            </Title>
                            <Text className="login-subtitle">
-                               Sign in to your account to continue trading
+                               Sign in to your account to continue investing
                            </Text>
                        </div>
 
@@ -150,7 +150,7 @@ const LoginPage = () => {
                 <div className="login-features">
                     <div className="feature-item">
                         <div className="feature-icon">🔒</div>
-                        <Text className="feature-text">Secure Trading</Text>
+                        <Text className="feature-text">Secure Investments</Text>
                     </div>
                     <div className="feature-item">
                         <div className="feature-icon">⚡</div>

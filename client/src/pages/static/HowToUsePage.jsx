@@ -55,19 +55,19 @@ const HowToUsePage = () => {
       description: 'Sign up and verify your account',
       icon: <UserOutlined />,
       content: {
-        title: 'Step 1: Account Creation',
-        description: 'Getting started is quick and easy. Follow these simple steps to create your SecureUSDT account.',
+        title: 'Step 1: Create Account',
+        description: 'Getting started with SecureUSDT takes only a few minutes. Create your account and gain immediate access to your personalized dashboard.',
         details: [
           'Click the "Get Started" button on our homepage',
           'Fill in your basic information (name, email, password)',
           'Verify your email address through the confirmation link',
-          'Complete the quick identity verification process',
-          'Set up your account security settings'
+          'Complete a simple identity check for security',
+          'Gain immediate access to your personalized dashboard'
         ],
         tips: [
           'Use a strong password with at least 8 characters',
           'Keep your login credentials secure and private',
-          'Enable two-factor authentication for extra security'
+          'The platform\'s onboarding process is fully automated and secure'
         ]
       }
     },
@@ -76,19 +76,19 @@ const HowToUsePage = () => {
       description: 'Add funds to your account',
       icon: <WalletOutlined />,
       content: {
-        title: 'Step 2: Deposit Your USDT',
-        description: 'Safely deposit your USDT into your SecureUSDT wallet to start earning returns.',
+        title: 'Step 2: Deposit USDT',
+        description: 'Add USDT to your wallet through a verified blockchain transaction. Choose your preferred lock-in plan and start earning.',
         details: [
           'Navigate to the "Add Funds" section in your dashboard',
           'Copy your unique USDT wallet address',
           'Send USDT from your external wallet to our address',
           'Wait for blockchain confirmation (usually 5-15 minutes)',
-          'Your funds will appear in your account balance'
+          'Choose from 3-day, 30-day, or 100-day lock-in plans'
         ],
         tips: [
           'Always double-check the wallet address before sending',
           'Send only USDT (TRC-20) to avoid loss of funds',
-          'Keep transaction receipts for your records'
+          'Every deposit is recorded on-chain and reflected immediately'
         ]
       }
     },
@@ -97,19 +97,19 @@ const HowToUsePage = () => {
       description: 'Watch your investment grow',
       icon: <DollarCircleOutlined />,
       content: {
-        title: 'Step 3: Start Earning Returns',
-        description: 'Once your funds are deposited, your investment will start earning daily returns automatically.',
+        title: 'Step 3: Start Earning',
+        description: 'Your rewards are credited to your wallet balance automatically each day. Monitor your earnings and withdraw available funds at your convenience.',
         details: [
-          'Your investment begins earning returns immediately',
-          'Daily profits are calculated and added to your account',
+          'Your rewards are credited automatically each day',
           'Monitor your earnings in the dashboard',
-          'Returns are compounded for maximum growth',
-          'Withdraw profits or reinvest as you prefer'
+          'View historical payouts and performance tracking',
+          'Withdraw available funds at your convenience',
+          'Your principal is securely released at maturity'
         ],
         tips: [
           'Check your dashboard regularly to track progress',
-          'Consider reinvesting profits for compound growth',
-          'Plan your withdrawals according to your financial goals'
+          'Every withdrawal request passes through blockchain verification',
+          'At the end of the lock-in term, your principal amount is securely released'
         ]
       }
     },
@@ -127,8 +127,8 @@ const HowToUsePage = () => {
               How to Use <span className="gradient-text">SecureUSDT</span>
             </Title>
             <Paragraph className="hero-description">
-              Learn how to start earning returns on your USDT investments in just a few simple steps. 
-              Our platform is designed to be user-friendly and secure for investors of all experience levels.
+              Simple. Secure. Seamless. Get started with SecureUSDT in just three easy steps and begin 
+              earning consistent returns on your USDT investments with complete transparency and control.
             </Paragraph>
             <Space size="large">
               <Link to="/register">
@@ -155,7 +155,7 @@ const HowToUsePage = () => {
               Quick <span className="gradient-text">Start Guide</span>
             </Title>
             <Paragraph className="section-description">
-              Follow these four simple steps to start earning returns on your USDT investments.
+              Follow these three simple steps to start earning returns on your USDT investments.
             </Paragraph>
           </div>
           

@@ -5,7 +5,7 @@ const BigNumber = require("bignumber.js");
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
 const withdrawalRepo = require("../repos/withdrawRepo");
-const { sendDepositSuccessEmail } = require("../services/emailService");
+const { sendDepositSuccessEmail, sendReferralBonusEmail } = require("../services/emailService");
 const lockinRepo = require("../repos/lockinRepo");
 
 // USDT ABI minimal
@@ -246,6 +246,21 @@ const addProfit = async () => {
               transactionId: `REFERRAL-BONUS-${Date.now()}-${referrer._id}`,
               type: "REFERRAL_BONUS",
             });
+
+            // Send referral bonus email to referrer
+            try {
+              await sendReferralBonusEmail(
+                referrer.email,
+                referrer.firstName,
+                user.firstName, // referred user's name
+                referralBonus.toFixed(2),
+                newReferrerBalance.toFixed(2)
+              );
+              console.log('Referral bonus email sent to:', referrer.email);
+            } catch (emailError) {
+              console.error('Failed to send referral bonus email:', emailError);
+              // Don't fail bonus processing if email fails
+            }
           }
         } catch (referralErr) {
           console.error("Referral bonus error for user:", user._id, referralErr);

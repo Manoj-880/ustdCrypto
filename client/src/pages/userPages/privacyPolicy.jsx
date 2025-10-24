@@ -1,144 +1,141 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Typography,
-    Card,
-    Spin,
-    Alert,
-    Divider,
-    List
-} from 'antd';
-import {
-    SafetyOutlined,
-    CalendarOutlined
-} from '@ant-design/icons';
-import { getLatestPrivacyPolicy } from '../../api_calls/privacyPolicyApi';
+import React from 'react';
 import '../../styles/pages/userPages/privacyPolicy.css';
 
-const { Title, Text, Paragraph } = Typography;
-
 const PrivacyPolicy = () => {
-    const [policy, setPolicy] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        loadPrivacyPolicy();
-    }, []);
-
-    const loadPrivacyPolicy = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await getLatestPrivacyPolicy();
-            if (response.success) {
-                setPolicy(response.data);
-            } else {
-                setError(response.message || 'Failed to load privacy policy');
-            }
-        } catch (error) {
-            console.error('Error loading privacy policy:', error);
-            setError('Failed to load privacy policy');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="privacy-policy-page">
-                <div className="loading-container">
-                    <Spin size="large" />
-                    <Text>Loading privacy policy...</Text>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="privacy-policy-page">
-                <Alert
-                    message="Error"
-                    description={error}
-                    type="error"
-                    showIcon
-                    action={
-                        <button 
-                            className="retry-btn"
-                            onClick={loadPrivacyPolicy}
-                        >
-                            Retry
-                        </button>
-                    }
-                />
-            </div>
-        );
-    }
-
-    if (!policy) {
-        return (
-            <div className="privacy-policy-page">
-                <Alert
-                    message="No Content"
-                    description="No privacy policy is currently available."
-                    type="info"
-                    showIcon
-                />
-            </div>
-        );
-    }
-
     return (
         <div className="privacy-policy-page">
             <div className="page-header">
-                <Title level={1} className="page-title">
-                    <SafetyOutlined /> Privacy Policy
-                </Title>
-                <div className="last-updated">
-                    <CalendarOutlined />
-                    <Text type="secondary">
-                        Last updated: {new Date(policy.lastUpdated).toLocaleDateString()}
-                    </Text>
-                </div>
+                <h1 className="page-title">Privacy Policy</h1>
+                <p className="last-updated">Last updated: January 2025</p>
             </div>
 
-            <Card className="privacy-policy-card">
-                <div className="privacy-policy-content">
-                    <Title level={2} className="policy-main-title">
-                        {policy.title}
-                    </Title>
-                    
-                    <Paragraph className="policy-main-content">
-                        {policy.content}
-                    </Paragraph>
+            <div className="content-container">
+                <h2 className="main-title">SecureUSDT – Privacy Policy (2025 Edition)</h2>
+                
+                <p className="intro-text">
+                    At SecureUSDT, we value your trust and are committed to safeguarding your personal and financial
+                    information. This Privacy Policy explains how we collect, use, and protect your data while
+                    maintaining full transparency and compliance with international standards.
+                </p>
 
-                    {policy.sections && policy.sections.length > 0 && (
-                        <div className="policy-sections">
-                            {policy.sections.map((section, index) => (
-                                <div key={index} className="policy-section">
-                                    {section.type === 'paragraph' ? (
-                                        <Paragraph className="section-content">
-                                            {section.content}
-                                        </Paragraph>
-                                    ) : (
-                                        <div className="section-points">
-                                            <ul className="points-list">
-                                                {section.points && section.points.map((point, pointIndex) => (
-                                                    <li key={pointIndex} className="point-item">
-                                                        {point}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                    
-                                    {index < policy.sections.length - 1 && <Divider />}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                <div className="content-section">
+                    <h3 className="section-title">1. Data Collection</h3>
+                    <p className="section-text">
+                        We collect minimal user information such as your name, email address, and wallet address solely for
+                        account registration, verification, and operational purposes.
+                    </p>
                 </div>
-            </Card>
+
+                <div className="content-section">
+                    <h3 className="section-title">2. Transaction Records</h3>
+                    <p className="section-text">
+                        All deposits, lock-ins, withdrawals, and referral activities are securely recorded in our system to
+                        ensure accuracy, transparency, and accountability in every transaction.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">3. Use of Data</h3>
+                    <p className="section-text">Your personal data is used exclusively for:</p>
+                    <ul className="bullet-list">
+                        <li>Account verification and authentication</li>
+                        <li>Processing deposits, withdrawals, and rewards</li>
+                        <li>Customer support and communication</li>
+                        <li>Security alerts and service updates</li>
+                    </ul>
+                    <p className="section-text">
+                        We never use your data beyond these intended purposes.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">4. Confidentiality</h3>
+                    <p className="section-text">
+                        SecureUSDT maintains strict confidentiality protocols. We do not sell, rent, or share user data with
+                        any third party for marketing, profit, or advertising purposes.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">5. Email Communication</h3>
+                    <p className="section-text">We may contact you via email for essential communications such as:</p>
+                    <ul className="bullet-list">
+                        <li>Transaction confirmations</li>
+                        <li>Account notifications and updates</li>
+                        <li>Security alerts and verification requests</li>
+                        <li>Optional newsletters and feature announcements</li>
+                    </ul>
+                    <p className="section-text">
+                        Users may unsubscribe from non-essential updates anytime.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">6. Wallet Security</h3>
+                    <p className="section-text">
+                        Wallet addresses and transaction logs are encrypted using advanced cryptographic standards and
+                        stored in secure servers, ensuring protection from unauthorized access or manipulation.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">7. Data Storage</h3>
+                    <p className="section-text">
+                        All personal and transactional data is stored on protected servers with restricted access, 24/7
+                        monitoring, and automated security checks.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">8. Third-Party Services</h3>
+                    <p className="section-text">
+                        We may share limited data with trusted service providers (such as payment gateways or analytics
+                        partners) strictly for operational, technical, or regulatory purposes. These partners are bound by
+                        confidentiality and data protection agreements.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">9. Cookies</h3>
+                    <p className="section-text">
+                        Our website uses cookies to enhance usability, personalize your experience, and analyze
+                        performance metrics. You may manage or disable cookies through your browser settings.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">10. User Rights</h3>
+                    <p className="section-text">
+                        You may request the closure of your account or deletion of your personal data at any time by
+                        contacting our support team at support@secureusdt.com.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">11. Compliance</h3>
+                    <p className="section-text">
+                        SecureUSDT adheres to applicable data protection laws, including GDPR and international privacy
+                        frameworks, ensuring transparency, integrity, and user control over data.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">12. Breach Notification</h3>
+                    <p className="section-text">
+                        In the unlikely event of a data breach, affected users will be promptly notified, and immediate
+                        remedial actions will be taken to secure all affected systems and data.
+                    </p>
+                </div>
+
+                <div className="content-section">
+                    <h3 className="section-title">Contact Information</h3>
+                    <p className="section-text">
+                        For any privacy-related queries, contact us at:
+                        <br />
+                        <strong>support@secureusdt.com</strong>
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };
