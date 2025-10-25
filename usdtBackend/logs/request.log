@@ -1577,3 +1577,7 @@ POST /api/users 500 51 17.531 ms
 ::1 - - [24/Oct/2025:12:52:34 +0000] "GET /api/faq HTTP/1.1" 500 51 "http://localhost:5173/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 ::1 - - [24/Oct/2025:12:54:46 +0000] "POST /api/login HTTP/1.1" 500 51 "http://localhost:5173/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
 ::1 - - [24/Oct/2025:12:55:17 +0000] "POST /api/login HTTP/1.1" - - "http://localhost:5173/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+::1 - - [25/Oct/2025:03:49:26 +0000] "POST /api/login HTTP/1.1" 500 51 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+::1 - - [25/Oct/2025:04:58:58 +0000] "POST /api/login HTTP/1.1" - - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+::1 - - [25/Oct/2025:04:59:18 +0000] "POST /api/login HTTP/1.1" 500 51 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+::1 - - [25/Oct/2025:05:00:46 +0000] "POST /api/login HTTP/1.1" 500 51 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
