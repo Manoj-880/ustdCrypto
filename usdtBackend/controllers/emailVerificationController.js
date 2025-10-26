@@ -1,11 +1,11 @@
-const crypto = require('crypto');
-const userRepo = require('../repos/userRepo');
-const userModel = require('../models/userModel');
-const { sendEmail } = require('../services/emailService');
+const crypto = require("crypto");
+const userRepo = require("../repos/userRepo");
+const userModel = require("../models/userModel");
+const { sendEmail } = require("../services/emailService");
 
 // Generate verification token
 const generateVerificationToken = () => {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 };
 
 // Send verification email
@@ -16,7 +16,7 @@ const sendVerificationEmail = async (req, res) => {
     if (!email) {
       return res.status(400).send({
         success: false,
-        message: "Email is required"
+        message: "Email is required",
       });
     }
 
@@ -25,7 +25,7 @@ const sendVerificationEmail = async (req, res) => {
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -33,7 +33,7 @@ const sendVerificationEmail = async (req, res) => {
     if (user.isEmailVerified) {
       return res.status(400).send({
         success: false,
-        message: "Email is already verified"
+        message: "Email is already verified",
       });
     }
 
@@ -44,17 +44,18 @@ const sendVerificationEmail = async (req, res) => {
     // Update user with verification token
     await userRepo.updateUser(user._id, {
       emailVerificationToken: verificationToken,
-      emailVerificationExpires: verificationExpires
+      emailVerificationExpires: verificationExpires,
     });
 
     // Send verification email
-    const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://secureusdt.com' : 'http://localhost:5173');
+    // const frontendUrl = 'http://localhost:5173';
+    const frontendUrl = "https://secureusdt.com";
     const verificationLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
-    
+
     const emailResult = await sendEmail(
       user.email,
-      'emailVerification',
-      'noreply@secureusdt.com',
+      "emailVerification",
+      "noreply@secureusdt.com",
       user.firstName,
       user.email,
       verificationLink
@@ -63,20 +64,19 @@ const sendVerificationEmail = async (req, res) => {
     if (emailResult.success) {
       res.status(200).send({
         success: true,
-        message: "Verification email sent successfully"
+        message: "Verification email sent successfully",
       });
     } else {
       res.status(500).send({
         success: false,
-        message: "Failed to send verification email"
+        message: "Failed to send verification email",
       });
     }
-
   } catch (error) {
-    console.error('Send verification email error:', error);
+    console.error("Send verification email error:", error);
     res.status(500).send({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -85,42 +85,46 @@ const sendVerificationEmail = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const { token } = req.body;
-    console.log('Verification request received with token:', token);
+    console.log("Verification request received with token:", token);
 
     if (!token) {
       return res.status(400).send({
         success: false,
-        message: "Verification token is required"
+        message: "Verification token is required",
       });
     }
 
     // Find user by verification token
-    console.log('Searching for user with token:', token);
-    console.log('Token length:', token ? token.length : 'undefined');
+    console.log("Searching for user with token:", token);
+    console.log("Token length:", token ? token.length : "undefined");
     const user = await userRepo.getUserByVerificationToken(token);
-    console.log('User found by token:', user ? 'Yes' : 'No');
+    console.log("User found by token:", user ? "Yes" : "No");
     if (user) {
-      console.log('User email:', user.email);
-      console.log('User token in DB:', user.emailVerificationToken);
-      console.log('Token matches:', user.emailVerificationToken === token);
-      console.log('Token expires at:', user.emailVerificationExpires);
-      console.log('Current time:', new Date());
+      console.log("User email:", user.email);
+      console.log("User token in DB:", user.emailVerificationToken);
+      console.log("Token matches:", user.emailVerificationToken === token);
+      console.log("Token expires at:", user.emailVerificationExpires);
+      console.log("Current time:", new Date());
     } else {
-      console.log('No user found with this token. Checking all users with verification tokens...');
+      console.log(
+        "No user found with this token. Checking all users with verification tokens..."
+      );
       // Debug: Find all users with verification tokens
-      const allUsersWithTokens = await userModel.find({ 
-        emailVerificationToken: { $exists: true, $ne: null } 
+      const allUsersWithTokens = await userModel.find({
+        emailVerificationToken: { $exists: true, $ne: null },
       });
-      console.log('Users with verification tokens:', allUsersWithTokens.length);
-      allUsersWithTokens.forEach(u => {
-        console.log(`User ${u.email}: token=${u.emailVerificationToken}, expires=${u.emailVerificationExpires}`);
+      console.log("Users with verification tokens:", allUsersWithTokens.length);
+      allUsersWithTokens.forEach((u) => {
+        console.log(
+          `User ${u.email}: token=${u.emailVerificationToken}, expires=${u.emailVerificationExpires}`
+        );
       });
     }
-    
+
     if (!user) {
       return res.status(400).send({
         success: false,
-        message: "Invalid or expired verification token"
+        message: "Invalid or expired verification token",
       });
     }
 
@@ -128,7 +132,7 @@ const verifyEmail = async (req, res) => {
     if (user.emailVerificationExpires < new Date()) {
       return res.status(400).send({
         success: false,
-        message: "Verification token has expired"
+        message: "Verification token has expired",
       });
     }
 
@@ -136,43 +140,49 @@ const verifyEmail = async (req, res) => {
     await userRepo.updateUser(user._id, {
       isEmailVerified: true,
       emailVerificationToken: null,
-      emailVerificationExpires: null
+      emailVerificationExpires: null,
     });
 
     // Send welcome email after successful verification
     try {
-      const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://secureusdt.com' : 'http://localhost:5173');
+      const frontendUrl =
+        process.env.FRONTEND_URL ||
+        (process.env.NODE_ENV === "production"
+          ? "https://secureusdt.com"
+          : "http://localhost:5173");
       const loginUrl = `${frontendUrl}/login`;
-      
+
       const welcomeEmailResult = await sendEmail(
         user.email,
-        'postVerificationWelcome',
-        'admin@secureusdt.com',
+        "postVerificationWelcome",
+        "admin@secureusdt.com",
         user.firstName,
         user.email,
         loginUrl
       );
-      
+
       if (welcomeEmailResult.success) {
-        console.log('Welcome email sent successfully to:', user.email);
+        console.log("Welcome email sent successfully to:", user.email);
       } else {
-        console.warn('Failed to send welcome email:', welcomeEmailResult.message);
+        console.warn(
+          "Failed to send welcome email:",
+          welcomeEmailResult.message
+        );
       }
     } catch (emailError) {
-      console.error('Error sending welcome email:', emailError);
+      console.error("Error sending welcome email:", emailError);
       // Don't fail the verification if email sending fails
     }
 
     res.status(200).send({
       success: true,
-      message: "Email verified successfully"
+      message: "Email verified successfully",
     });
-
   } catch (error) {
-    console.error('Verify email error:', error);
+    console.error("Verify email error:", error);
     res.status(500).send({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -185,7 +195,7 @@ const resendVerificationEmail = async (req, res) => {
     if (!email) {
       return res.status(400).send({
         success: false,
-        message: "Email is required"
+        message: "Email is required",
       });
     }
 
@@ -194,7 +204,7 @@ const resendVerificationEmail = async (req, res) => {
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -202,7 +212,7 @@ const resendVerificationEmail = async (req, res) => {
     if (user.isEmailVerified) {
       return res.status(400).send({
         success: false,
-        message: "Email is already verified"
+        message: "Email is already verified",
       });
     }
 
@@ -213,17 +223,21 @@ const resendVerificationEmail = async (req, res) => {
     // Update user with new verification token
     await userRepo.updateUser(user._id, {
       emailVerificationToken: verificationToken,
-      emailVerificationExpires: verificationExpires
+      emailVerificationExpires: verificationExpires,
     });
 
     // Send verification email
-    const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://secureusdt.com' : 'http://localhost:5173');
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://secureusdt.com"
+        : "http://localhost:5173");
     const verificationLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
-    
+
     const emailResult = await sendEmail(
       user.email,
-      'emailVerification',
-      'noreply@secureusdt.com',
+      "emailVerification",
+      "noreply@secureusdt.com",
       user.firstName,
       user.email,
       verificationLink
@@ -232,20 +246,19 @@ const resendVerificationEmail = async (req, res) => {
     if (emailResult.success) {
       res.status(200).send({
         success: true,
-        message: "Verification email resent successfully"
+        message: "Verification email resent successfully",
       });
     } else {
       res.status(500).send({
         success: false,
-        message: "Failed to resend verification email"
+        message: "Failed to resend verification email",
       });
     }
-
   } catch (error) {
-    console.error('Resend verification email error:', error);
+    console.error("Resend verification email error:", error);
     res.status(500).send({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -253,5 +266,5 @@ const resendVerificationEmail = async (req, res) => {
 module.exports = {
   sendVerificationEmail,
   verifyEmail,
-  resendVerificationEmail
+  resendVerificationEmail,
 };
