@@ -52,20 +52,6 @@
   color: #ffffff !important;
 }
 
-.withdraw-alert {
-  background: rgba(22, 119, 255, 0.1) !important;
-  border: 1px solid rgba(22, 119, 255, 0.3) !important;
-  border-radius: 8px !important;
-  margin-bottom: 16px !important;
-}
-
-.withdraw-alert .ant-alert-message {
-  color: #ffffff !important;
-}
-
-.withdraw-alert .ant-alert-description {
-  color: #cccccc !important;
-}
 
 /* Form Card */
 .withdraw-form-card {
@@ -96,11 +82,17 @@
   gap: 12px;
 }
 
-.form-label {
-  font-weight: 600;
+/* Form Labels */
+.withdraw-form .ant-form-item-label > label {
   color: #ffffff !important;
-  font-size: 14px;
-  margin-bottom: 4px;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin-bottom: 8px !important;
+}
+
+.withdraw-form .ant-form-item-label > label.ant-form-item-required::before {
+  color: #ff4d4f !important;
+  font-size: 16px !important;
 }
 
 .withdraw-type-select {
@@ -194,7 +186,8 @@
 }
 
 .amount-input,
-.wallet-input {
+.wallet-input,
+.email-input {
   height: 56px !important;
   background: #2a2a2a !important;
   border: 2px solid #444444 !important;
@@ -206,21 +199,93 @@
   color: #ffffff !important;
 }
 
+.remarks-input {
+  background: #2a2a2a !important;
+  border: 2px solid #444444 !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  padding: 12px 16px !important;
+  color: #ffffff !important;
+  min-height: 100px !important;
+  resize: vertical !important;
+}
+
 .amount-input:hover,
-.wallet-input:hover {
+.wallet-input:hover,
+.email-input:hover,
+.remarks-input:hover {
   border-color: #1677ff !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 .amount-input:focus,
-.wallet-input:focus {
+.wallet-input:focus,
+.email-input:focus,
+.remarks-input:focus {
   border-color: #1677ff !important;
   box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.15) !important;
 }
 
+/* Input Placeholders */
 .amount-input::placeholder,
-.wallet-input::placeholder {
-  color: #888888 !important;
+.wallet-input::placeholder,
+.email-input::placeholder,
+.remarks-input::placeholder {
+  color: #cccccc !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+.withdraw-type-select .ant-select-selection-placeholder {
+  color: #cccccc !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+/* Additional placeholder styling for better visibility */
+.withdraw-form .ant-input::placeholder {
+  color: #cccccc !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+.withdraw-form .ant-input-affix-wrapper .ant-input::placeholder {
+  color: #cccccc !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+.withdraw-form .ant-input-textarea::placeholder {
+  color: #cccccc !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+/* Force placeholder visibility with higher specificity */
+.withdraw-modal .ant-input::placeholder {
+  color: #cccccc !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
+}
+
+.withdraw-modal .ant-input-affix-wrapper .ant-input::placeholder {
+  color: #cccccc !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
+}
+
+.withdraw-modal .ant-input-textarea::placeholder {
+  color: #cccccc !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
+}
+
+.withdraw-modal .ant-select-selection-placeholder {
+  color: #cccccc !important;
+  opacity: 1 !important;
+  font-size: 16px !important;
 }
 
 .balance-info {
@@ -299,6 +364,7 @@
 .withdraw-button {
   flex: 1;
 }
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

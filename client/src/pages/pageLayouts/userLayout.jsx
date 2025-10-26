@@ -15,6 +15,7 @@ import {
   SendOutlined,
   FileTextOutlined,
   SafetyOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import ScrollToTop from "../../components/ScrollToTop";
@@ -27,6 +28,7 @@ import Lockins from "../userPages/lockins";
 import WithdrawalRequests from "../userPages/withdrawalRequests";
 import Terms from "../userPages/terms";
 import PrivacyPolicy from "../userPages/privacyPolicy";
+import RiskDisclaimer from "../static/riskDisclaimer";
 import logo from "../../assets/logo.svg";
 import "../../styles/layouts/userLayout.css";
 
@@ -80,6 +82,7 @@ const UserLayout = () => {
     { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/app/faq" },
     { key: "terms", label: "Terms & Conditions", icon: <FileTextOutlined />, path: "/app/terms" },
     { key: "privacy-policy", label: "Privacy Policy", icon: <SafetyOutlined />, path: "/app/privacy-policy" },
+    { key: "risk-disclaimer", label: "Risk Disclaimer", icon: <ExclamationCircleOutlined />, path: "/app/risk-disclaimer" },
   ];
 
   return (
@@ -159,6 +162,7 @@ const UserLayout = () => {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
           </Routes>
         </div>
       </div>

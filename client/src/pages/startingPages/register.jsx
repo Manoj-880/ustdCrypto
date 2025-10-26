@@ -67,9 +67,9 @@ const Register = () => {
 
         let response = await createUser(formData);
         if(response.success) {
-            toast.success("Registration successful!", { position: "top-right" });
-            login(response.data);
-            navigate("/app", { replace: true });
+            toast.success("Registration successful! Please check your email to verify your account.", { position: "top-right" });
+            // Don't auto-login, user needs to verify email first
+            navigate("/login", { replace: true });
         } else {
             toast.error(response.message, { position: "top-right" });
         }
@@ -234,7 +234,7 @@ const Register = () => {
                                     >
                                         Terms of Service
                                     </Link>
-                                    {" "}and{" "}
+                                    {", "}
                                     <Link 
                                         href="/privacy-policy" 
                                         className="terms-link"
@@ -244,6 +244,17 @@ const Register = () => {
                                         }}
                                     >
                                         Privacy Policy
+                                    </Link>
+                                    {" and "}
+                                    <Link 
+                                        href="/risk-disclaimer" 
+                                        className="terms-link"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            navigate('/risk-disclaimer');
+                                        }}
+                                    >
+                                        Risk Disclaimer
                                     </Link>
                                 </Text>
                             </Checkbox>

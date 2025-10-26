@@ -55,8 +55,8 @@ const AdminLogin = () => {
 
     let response = await adminLogin(adminData);
     if (response.success) {
-      // Store admin data in session storage
-      login(adminData);
+      // Store admin data in session storage with admin role
+      login(adminData, 'admin');
 
       toast.success(response.message, { position: "top-right" });
       setFormData({ email: "", password: "" });

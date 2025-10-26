@@ -310,7 +310,7 @@ const ContactPage = () => {
                       {turnstileLoaded && (
                         <div
                           className="cf-turnstile"
-                          data-sitekey="0x4AAAAAAB7RJC2IsQAMNbh6"
+                          data-sitekey="0x4AAAAAAB8nkpI8tRRklGxA"
                           data-callback="onTurnstileSuccess"
                           data-error-callback="onTurnstileError"
                           data-expired-callback="onTurnstileExpired"

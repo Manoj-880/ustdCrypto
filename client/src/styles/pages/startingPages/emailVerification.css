@@ -1,0 +1,297 @@
+/* =========================
+   Email Verification Page Styles
+   ========================= */
+
+.email-verification-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+.verification-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.verification-card {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+.verification-card .ant-card-body {
+  padding: var(--space-8) !important;
+  text-align: center;
+}
+
+/* =========================
+   Loading State
+   ========================= */
+
+.verification-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  gap: var(--space-4);
+}
+
+.verification-loading .ant-spin {
+  margin-bottom: var(--space-4);
+}
+
+.verification-loading .ant-typography {
+  font-size: 16px;
+  color: #666;
+}
+
+/* =========================
+   Pending State
+   ========================= */
+
+.verification-pending {
+  padding: var(--space-4);
+}
+
+.verification-pending .ant-typography {
+  margin-bottom: var(--space-4);
+}
+
+.verification-pending .anticon {
+  display: block;
+  margin: 0 auto var(--space-6);
+}
+
+/* =========================
+   Resend Form
+   ========================= */
+
+.resend-form {
+  background: #f8f9fa;
+  padding: var(--space-6);
+  border-radius: 12px;
+  margin: var(--space-6) 0;
+  text-align: left;
+}
+
+.resend-form .ant-typography {
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.email-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.email-input::placeholder {
+  color: #999;
+}
+
+/* =========================
+   Result Components
+   ========================= */
+
+.verification-card .ant-result {
+  padding: var(--space-4) 0;
+}
+
+.verification-card .ant-result-title {
+  color: #000 !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+.verification-card .ant-result-subtitle {
+  color: #666 !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  margin-bottom: var(--space-6) !important;
+}
+
+.verification-card .ant-result-extra {
+  margin-top: var(--space-6);
+}
+
+.verification-card .ant-result-extra .ant-btn {
+  margin: 0 var(--space-2);
+  height: 40px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.verification-card .ant-result-extra .ant-btn-primary {
+  background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.verification-card .ant-result-extra .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #40a9ff 0%, #9254de 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+}
+
+.verification-card .ant-result-extra .ant-btn-default {
+  border: 2px solid #d9d9d9;
+  color: #666;
+}
+
+.verification-card .ant-result-extra .ant-btn-default:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+/* =========================
+   Alert Styling
+   ========================= */
+
+.verification-card .ant-alert {
+  border-radius: 8px;
+  border: none;
+  margin: var(--space-4) 0;
+}
+
+.verification-card .ant-alert-info {
+  background: #e6f7ff;
+  border-left: 4px solid #1890ff;
+}
+
+.verification-card .ant-alert-message {
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.verification-card .ant-alert-description {
+  color: #666;
+  margin-top: var(--space-2);
+}
+
+/* =========================
+   Responsive Design
+   ========================= */
+
+@media (max-width: 768px) {
+  .email-verification-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .verification-card .ant-card-body {
+    padding: var(--space-6) !important;
+  }
+
+  .verification-card .ant-result-title {
+    font-size: 20px !important;
+  }
+
+  .verification-card .ant-result-subtitle {
+    font-size: 14px !important;
+  }
+
+  .verification-card .ant-result-extra .ant-btn {
+    width: 100%;
+    margin: var(--space-2) 0;
+  }
+
+  .resend-form {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .email-verification-page {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .verification-card .ant-card-body {
+    padding: var(--space-4) !important;
+  }
+
+  .verification-pending .anticon {
+    font-size: 48px;
+  }
+}
+
+/* =========================
+   Animation Effects
+   ========================= */
+
+.verification-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.verification-card .ant-result-icon {
+  animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================
+   Success State Specific
+   ========================= */
+
+.verification-card .ant-result-success .ant-result-icon {
+  color: #52c41a !important;
+}
+
+.verification-card .ant-result-success .ant-result-title {
+  color: #52c41a !important;
+}
+
+/* =========================
+   Error State Specific
+   ========================= */
+
+.verification-card .ant-result-error .ant-result-icon {
+  color: #ff4d4f !important;
+}
+
+.verification-card .ant-result-error .ant-result-title {
+  color: #ff4d4f !important;
+}

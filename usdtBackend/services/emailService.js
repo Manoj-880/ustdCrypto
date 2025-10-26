@@ -681,6 +681,466 @@ const emailTemplates = {
         This is an automated message from the SecureUSDT website.
       `
     };
+  },
+
+
+  // 10. Withdrawal Request Rejection Email
+  withdrawalRejection: (userName, userEmail, amount, rejectionReason, requestDate) => {
+    return {
+      subject: "Withdrawal Request Rejected - SecureUSDT",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Withdrawal Request Rejected - SecureUSDT</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 50%, #bd2130 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #ffffff; padding: 40px; border-radius: 0 0 10px 10px; }
+            .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+            .rejection-box { background: #f8d7da; border: 2px solid #f5c6cb; padding: 30px; text-align: center; border-radius: 10px; margin: 30px 0; }
+            .rejection-icon { font-size: 48px; margin-bottom: 15px; }
+            .amount-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .reason-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; color: #856404; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">🔒 SecureUSDT</div>
+              <h1>Withdrawal Request Rejected</h1>
+              <p>Your withdrawal request has been reviewed and rejected</p>
+            </div>
+            <div class="content">
+              <h2>Hello ${userName}!</h2>
+              <p>We regret to inform you that your withdrawal request has been rejected after careful review by our team.</p>
+              
+              <div class="rejection-box">
+                <div class="rejection-icon">❌</div>
+                <h3>Withdrawal Request Rejected</h3>
+                <p>Your request has been declined and the funds have been returned to your account balance.</p>
+              </div>
+              
+              <div class="amount-box">
+                <h4>Request Details:</h4>
+                <p><strong>Amount:</strong> ${amount} USDT</p>
+                <p><strong>Request Date:</strong> ${new Date(requestDate).toLocaleDateString()}</p>
+                <p><strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">REJECTED</span></p>
+              </div>
+              
+              <div class="reason-box">
+                <h4>📋 Rejection Reason:</h4>
+                <p style="font-style: italic; margin: 10px 0;">"${rejectionReason}"</p>
+              </div>
+              
+              <div style="background: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h4>💡 What You Can Do:</h4>
+                <ul style="text-align: left; margin: 10px 0;">
+                  <li>Review the rejection reason above</li>
+                  <li>Ensure your wallet address is correct and valid</li>
+                  <li>Check that you have sufficient balance for withdrawal</li>
+                  <li>Contact our support team if you need clarification</li>
+                  <li>Submit a new withdrawal request when ready</li>
+                </ul>
+              </div>
+              
+              <p>If you have any questions about this rejection or need assistance, please don't hesitate to contact our support team.</p>
+            </div>
+            <div class="footer">
+              <p>This is an automated message from SecureUSDT. Please do not reply to this email.</p>
+              <p>© 2024 SecureUSDT. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Withdrawal Request Rejected - SecureUSDT
+        
+        Hello ${userName}!
+        
+        We regret to inform you that your withdrawal request has been rejected after careful review by our team.
+        
+        REQUEST DETAILS:
+        Amount: ${amount} USDT
+        Request Date: ${new Date(requestDate).toLocaleDateString()}
+        Status: REJECTED
+        
+        REJECTION REASON:
+        "${rejectionReason}"
+        
+        WHAT YOU CAN DO:
+        - Review the rejection reason above
+        - Ensure your wallet address is correct and valid
+        - Check that you have sufficient balance for withdrawal
+        - Contact our support team if you need clarification
+        - Submit a new withdrawal request when ready
+        
+        If you have any questions about this rejection or need assistance, please don't hesitate to contact our support team.
+        
+        This is an automated message from SecureUSDT. Please do not reply to this email.
+        © 2024 SecureUSDT. All rights reserved.
+      `
+    };
+  },
+
+  // 11. Admin Balance Added Email
+  adminBalanceAdded: (userName, userEmail, amount, newBalance, transactionId, reason) => {
+    return {
+      subject: "Balance Added to Your Account – SecureUSDT",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Balance Added</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #ffffff; padding: 40px; border-radius: 0 0 10px 10px; }
+            .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+            .success-title { font-size: 28px; margin: 20px 0; color: #00d4aa; }
+            .balance-info { background: #f8f9fa; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center; }
+            .amount { font-size: 36px; font-weight: bold; color: #00d4aa; margin: 10px 0; }
+            .transaction-details { background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .detail-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 5px 0; border-bottom: 1px solid #ddd; }
+            .detail-label { font-weight: bold; color: #666; }
+            .detail-value { color: #333; }
+            .cta-button { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; font-weight: bold; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+            .reason-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">🔒 SecureUSDT</div>
+              <h1 class="success-title">Balance Added Successfully!</h1>
+              <p>Your account has been credited with additional funds</p>
+            </div>
+            <div class="content">
+              <h2>Hello ${userName}!</h2>
+              <p>Great news! We've successfully added funds to your SecureUSDT account.</p>
+              
+              <div class="balance-info">
+                <h3>💰 Amount Added</h3>
+                <div class="amount">+${amount} USDT</div>
+                <p>Your new balance: <strong>${newBalance} USDT</strong></p>
+              </div>
+              
+              <div class="transaction-details">
+                <h3>📋 Transaction Details</h3>
+                <div class="detail-row">
+                  <span class="detail-label">Transaction ID:</span>
+                  <span class="detail-value">${transactionId}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Amount Added:</span>
+                  <span class="detail-value">${amount} USDT</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">New Balance:</span>
+                  <span class="detail-value">${newBalance} USDT</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Date:</span>
+                  <span class="detail-value">${new Date().toLocaleDateString()}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Time:</span>
+                  <span class="detail-value">${new Date().toLocaleTimeString()}</span>
+                </div>
+              </div>
+              
+              ${reason ? `
+                <div class="reason-box">
+                  <h4>📝 Reason:</h4>
+                  <p>${reason}</p>
+                </div>
+              ` : ''}
+              
+              <div style="text-align: center;">
+                <a href="https://secureusdt.com/dashboard" class="cta-button">View Your Dashboard</a>
+              </div>
+              
+              <p>You can now use these funds to invest in our secure lock-in plans or make withdrawals. If you have any questions about this transaction, please contact our support team.</p>
+              
+              <div class="footer">
+                <p>Best regards,<br>The SecureUSDT Team</p>
+                <p>This is an automated email from payments@secureusdt.com. Please do not reply to this message.</p>
+                <p>© 2024 SecureUSDT. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Balance Added to Your Account – SecureUSDT
+        
+        Hello ${userName},
+        
+        Great news! We've successfully added funds to your SecureUSDT account.
+        
+        Amount Added: +${amount} USDT
+        Your new balance: ${newBalance} USDT
+        
+        Transaction Details:
+        - Transaction ID: ${transactionId}
+        - Amount Added: ${amount} USDT
+        - New Balance: ${newBalance} USDT
+        - Date: ${new Date().toLocaleDateString()}
+        - Time: ${new Date().toLocaleTimeString()}
+        ${reason ? `- Reason: ${reason}` : ''}
+        
+        You can now use these funds to invest in our secure lock-in plans or make withdrawals.
+        
+        View your dashboard: https://secureusdt.com/dashboard
+        
+        If you have any questions about this transaction, please contact our support team.
+        
+        Best regards,
+        The SecureUSDT Team
+        
+        This is an automated email from payments@secureusdt.com. Please do not reply to this message.
+        © 2024 SecureUSDT. All rights reserved.
+      `
+    };
+  },
+
+  // 12. Email Verification Email
+  emailVerification: (userName, userEmail, verificationLink) => {
+    return {
+      subject: "Verify Your Email Address – SecureUSDT",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Email Verification</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #ffffff; padding: 40px; border-radius: 0 0 10px 10px; }
+            .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+            .verification-title { font-size: 28px; margin: 20px 0; color: #00d4aa; }
+            .verification-info { background: #f8f9fa; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center; }
+            .verification-link { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; font-weight: bold; font-size: 18px; }
+            .security-notice { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+            .expiry-notice { color: #dc3545; font-weight: bold; margin: 15px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">🔒 SecureUSDT</div>
+              <h1 class="verification-title">Verify Your Email Address</h1>
+              <p>Complete your account setup to get started</p>
+            </div>
+            <div class="content">
+              <h2>Hello ${userName}!</h2>
+              <p>Thank you for registering with SecureUSDT. To complete your account setup and start using our platform, please verify your email address.</p>
+
+              <div class="verification-info">
+                <h3>📧 Email Verification Required</h3>
+                <p>Click the button below to verify your email address:</p>
+                <a href="${verificationLink}" class="verification-link">Verify Email Address</a>
+                <div class="expiry-notice">⏰ This link will expire in 24 hours</div>
+              </div>
+
+              <div class="security-notice">
+                <h4>🔒 Security Notice</h4>
+                <p>If you didn't create an account with SecureUSDT, please ignore this email. Your account will not be activated without email verification.</p>
+              </div>
+
+              <p>Once verified, you'll be able to:</p>
+              <ul>
+                <li>Access your SecureUSDT dashboard</li>
+                <li>Make deposits and investments</li>
+                <li>Track your profits and transactions</li>
+                <li>Withdraw your earnings</li>
+              </ul>
+
+              <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+              <p style="word-break: break-all; color: #666; background: #f8f9fa; padding: 10px; border-radius: 4px;">${verificationLink}</p>
+
+              <div class="footer">
+                <p>Best regards,<br>The SecureUSDT Team</p>
+                <p>This is an automated email from noreply@secureusdt.com. Please do not reply to this message.</p>
+                <p>© 2024 SecureUSDT. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Email Verification – SecureUSDT
+
+        Hello ${userName},
+
+        Thank you for registering with SecureUSDT. To complete your account setup and start using our platform, please verify your email address.
+
+        Click the link below to verify your email:
+        ${verificationLink}
+
+        This link will expire in 24 hours.
+
+        Security Notice:
+        If you didn't create an account with SecureUSDT, please ignore this email. Your account will not be activated without email verification.
+
+        Once verified, you'll be able to:
+        - Access your SecureUSDT dashboard
+        - Make deposits and investments
+        - Track your profits and transactions
+        - Withdraw your earnings
+
+        Best regards,
+        The SecureUSDT Team
+
+        This is an automated email from noreply@secureusdt.com. Please do not reply to this message.
+        © 2024 SecureUSDT. All rights reserved.
+      `
+    };
+  },
+
+  // 13. Post-Verification Welcome Email
+  postVerificationWelcome: (userName, userEmail, loginUrl) => {
+    return {
+      subject: "Welcome to SecureUSDT – Your Account is Ready!",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Welcome to SecureUSDT</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #ffffff; padding: 40px; border-radius: 0 0 10px 10px; }
+            .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+            .welcome-title { font-size: 28px; margin: 20px 0; color: #00d4aa; }
+            .success-badge { background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; font-weight: bold; }
+            .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+            .feature-item { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }
+            .feature-icon { font-size: 32px; margin-bottom: 10px; }
+            .cta-button { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; font-weight: bold; font-size: 18px; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+            .security-note { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">🎉 SecureUSDT</div>
+              <h1 class="welcome-title">Welcome to SecureUSDT!</h1>
+              <p>Your account is now ready to use</p>
+            </div>
+            <div class="content">
+              <div class="success-badge">
+                ✅ Email Verified Successfully!
+              </div>
+              
+              <h2>Hello ${userName}!</h2>
+              <p>Congratulations! Your email has been verified and your SecureUSDT account is now fully activated. You're ready to start your investment journey with us.</p>
+
+              <h3>🚀 What You Can Do Now:</h3>
+              <div class="features-grid">
+                <div class="feature-item">
+                  <div class="feature-icon">💰</div>
+                  <h4>Make Deposits</h4>
+                  <p>Start investing with USDT and watch your portfolio grow</p>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">📊</div>
+                  <h4>Track Performance</h4>
+                  <p>Monitor your investments with real-time analytics</p>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">🔒</div>
+                  <h4>Secure Trading</h4>
+                  <p>Trade with confidence using our secure platform</p>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">📈</div>
+                  <h4>Earn Profits</h4>
+                  <p>Access various investment opportunities</p>
+                </div>
+              </div>
+
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${loginUrl}" class="cta-button">Login to Your Account</a>
+              </div>
+
+              <div class="security-note">
+                <h4>🔐 Security Reminder</h4>
+                <p>Keep your login credentials secure and never share them with anyone. SecureUSDT will never ask for your password via email.</p>
+              </div>
+
+              <h3>📞 Need Help?</h3>
+              <p>If you have any questions or need assistance, our support team is here to help:</p>
+              <ul>
+                <li>📧 Email: support@secureusdt.com</li>
+                <li>💬 Live Chat: Available 24/7 on our platform</li>
+                <li>📚 Help Center: Comprehensive guides and FAQs</li>
+              </ul>
+
+              <div class="footer">
+                <p>Welcome to the SecureUSDT family!</p>
+                <p>Best regards,<br>The SecureUSDT Team</p>
+                <p>This email was sent from admin@secureusdt.com</p>
+                <p>© 2024 SecureUSDT. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Welcome to SecureUSDT – Your Account is Ready!
+
+        Hello ${userName},
+
+        Congratulations! Your email has been verified and your SecureUSDT account is now fully activated. You're ready to start your investment journey with us.
+
+        ✅ Email Verified Successfully!
+
+        What You Can Do Now:
+        💰 Make Deposits - Start investing with USDT and watch your portfolio grow
+        📊 Track Performance - Monitor your investments with real-time analytics
+        🔒 Secure Trading - Trade with confidence using our secure platform
+        📈 Earn Profits - Access various investment opportunities
+
+        Login to your account: ${loginUrl}
+
+        Security Reminder:
+        Keep your login credentials secure and never share them with anyone. SecureUSDT will never ask for your password via email.
+
+        Need Help?
+        📧 Email: support@secureusdt.com
+        💬 Live Chat: Available 24/7 on our platform
+        📚 Help Center: Comprehensive guides and FAQs
+
+        Welcome to the SecureUSDT family!
+
+        Best regards,
+        The SecureUSDT Team
+
+        This email was sent from admin@secureusdt.com
+        © 2024 SecureUSDT. All rights reserved.
+      `
+    };
   }
 };
 
@@ -741,6 +1201,7 @@ const sendContactFormEmail = async (name, email, mobileNumber, subject, message)
   return await sendEmail(
     'admin@secureusdt.com', // Admin email for contact form submissions
     'contactForm',
+    'noreply@secureusdt.com', // Send from noreply email
     name,
     email,
     mobileNumber,
@@ -833,6 +1294,21 @@ const sendReferralBonusEmail = async (userEmail, userName, referralName, bonusAm
   );
 };
 
+
+// 10. Withdrawal Rejection Email
+const sendWithdrawalRejectionEmail = async (userEmail, userName, amount, rejectionReason, requestDate) => {
+  return await sendEmail(
+    userEmail,
+    'withdrawalRejection',
+    'payments@secureusdt.com',
+    userName,
+    userEmail,
+    amount,
+    rejectionReason,
+    requestDate
+  );
+};
+
 module.exports = {
   sendEmail,
   sendContactFormEmail,
@@ -842,5 +1318,6 @@ module.exports = {
   sendWithdrawalRequestAlert,
   sendInternalTransferReceivedEmail,
   sendReferralBonusEmail,
+  sendWithdrawalRejectionEmail,
   emailTemplates
 };

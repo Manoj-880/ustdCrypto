@@ -43,17 +43,18 @@ const getLockinPlanById = async (req, res) => {
 
 const createLockinPlan = async (req, res) => {
   try {
-    const { planName, duration, interestRate, description } = req.body;
-    if (!planName || !duration || !interestRate) {
+    const { planName, duration, interestRate, referralBonus, description } = req.body;
+    if (!planName || !duration || !interestRate || referralBonus === undefined) {
       return res.status(400).send({
         success: false,
-        message: "Plan name, duration, and interest rate are required",
+        message: "Plan name, duration, interest rate, and referral bonus are required",
       });
     }
     const newPlan = await lockinPlanRepo.createLockinPlan({
       planName,
       duration,
       interestRate,
+      referralBonus: referralBonus || 0,
       description,
     });
     res.status(201).send({
@@ -73,11 +74,12 @@ const createLockinPlan = async (req, res) => {
 const updateLockinPlan = async (req, res) => {
   try {
     const { id } = req.params;
-    const { planName, duration, interestRate, description } = req.body;
+    const { planName, duration, interestRate, referralBonus, description } = req.body;
     const updatedPlan = await lockinPlanRepo.updateLockinPlan(id, {
       planName,
       duration,
       interestRate,
+      referralBonus: referralBonus || 0,
       description,
     });
     if (!updatedPlan) {

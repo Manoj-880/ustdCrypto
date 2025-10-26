@@ -817,3 +817,247 @@
     font-size: var(--font-size-3xl);
   }
 }
+
+/* =========================
+   Add Balance Button Styles
+========================= */
+.add-balance-btn {
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-hover) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  transition: all var(--transition-normal) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.add-balance-btn:hover {
+  background: linear-gradient(135deg, var(--color-success-hover) 0%, var(--color-success-dark) 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.add-balance-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* =========================
+   Add Balance Modal Styles
+========================= */
+.add-balance-modal .ant-modal-content {
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.add-balance-modal .ant-modal-header {
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-hover) 100%);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  border-bottom: none;
+  padding: var(--space-6);
+}
+
+.add-balance-modal .ant-modal-title {
+  color: white !important;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  text-align: center;
+}
+
+.add-balance-content {
+  padding: var(--space-6);
+}
+
+.balance-info {
+  background: var(--color-bg-secondary);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  margin-bottom: var(--space-6);
+}
+
+.current-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.balance-amount {
+  font-size: var(--font-size-lg);
+  color: var(--color-success) !important;
+  font-weight: var(--font-weight-bold);
+}
+
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-balance-form {
+  margin-bottom: var(--space-6);
+}
+
+.add-balance-form .ant-form-item-label > label {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+.add-balance-form .ant-input-number {
+  background: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+}
+
+.add-balance-form .ant-input-number:focus,
+.add-balance-form .ant-input-number-focused {
+  border-color: var(--color-success) !important;
+  box-shadow: 0 0 0 3px var(--color-success-bg) !important;
+}
+
+.add-balance-form .ant-input-number .ant-input-number-input {
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+}
+
+.add-balance-form .ant-input-number .ant-input-number-prefix {
+  color: var(--color-success) !important;
+  font-size: var(--font-size-lg) !important;
+}
+
+.add-balance-form .ant-input {
+  background: var(--color-bg-secondary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+.add-balance-form .ant-input:focus,
+.add-balance-form .ant-input-focused {
+  border-color: var(--color-success) !important;
+  box-shadow: 0 0 0 3px var(--color-success-bg) !important;
+}
+
+.add-balance-form .ant-input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+
+.modal-actions .cancel-btn {
+  background: var(--color-bg-tertiary) !important;
+  border: 2px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  transition: all var(--transition-normal) !important;
+  min-width: 120px;
+}
+
+.modal-actions .cancel-btn:hover {
+  background: var(--color-bg-secondary) !important;
+  border-color: var(--color-border-secondary) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-actions .submit-btn {
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-hover) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  transition: all var(--transition-normal) !important;
+  min-width: 140px;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.modal-actions .submit-btn:hover {
+  background: linear-gradient(135deg, var(--color-success-hover) 0%, var(--color-success-dark) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-actions .submit-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+.balance-notice {
+  background: var(--color-info-bg);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-info);
+  margin-top: var(--space-4);
+}
+
+.notice-text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-info) !important;
+}
+
+.notice-list {
+  margin: 0;
+  padding-left: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.notice-list li {
+  margin-bottom: var(--space-2);
+  line-height: 1.5;
+}
+
+/* Responsive Design for Add Balance Modal */
+@media (max-width: 768px) {
+  .add-balance-modal {
+    margin: var(--space-4);
+    max-width: calc(100vw - 32px);
+  }
+
+  .add-balance-content {
+    padding: var(--space-4);
+  }
+
+  .balance-info {
+    padding: var(--space-3);
+  }
+
+  .current-balance,
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .modal-actions .cancel-btn,
+  .modal-actions .submit-btn {
+    width: 100%;
+    min-width: auto;
+  }
+}

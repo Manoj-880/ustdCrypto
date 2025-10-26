@@ -93,15 +93,18 @@ const createLockin = async (req, res) => {
     const endDate = new Date();
     endDate.setDate(startDate.getDate() + plan.duration);
 
-    // Create the lockin
+    // Create the lockin with all plan details stored
     const newLockin = await lockinRepo.createLockin({
       userId,
-      duration: planId, // Keep planId for reference
-      planDuration: plan.duration, // Store actual duration in days
+      planId, // Keep planId for reference
+      planName: plan.planName,
+      planDuration: plan.duration,
+      interestRate: plan.interestRate,
+      referralBonus: plan.referralBonus || 0,
+      planDescription: plan.description || '',
       amount: amount.toString(),
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      intrestRate: plan.interestRate.toString(),
     });
 
     // Subtract amount from user balance
@@ -120,7 +123,7 @@ const createLockin = async (req, res) => {
         user.email,
         user.firstName,
         amount,
-        plan.name || `Plan ${planId}`,
+        `${plan.duration} days`,
         startDateFormatted,
         maturityDateFormatted,
         transactionId

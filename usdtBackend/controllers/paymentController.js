@@ -101,8 +101,10 @@ const makePayment = async (req, res) => {
         user.email,
         `${user.firstName} ${user.lastName}`,
         transferredAmount,
-        txId,
-        transactionData.date
+        "Deposit", // planName - for regular deposits
+        transactionData.date, // startDate
+        transactionData.date, // maturityDate (same as start for regular deposits)
+        txId
       );
 
       if (emailResult.success) {
@@ -194,7 +196,7 @@ const addProfit = async () => {
       let userLockinProfit = userLockins
         .filter((lockin) => lockin.status === "ACTIVE") // consider only ACTIVE lockins
         .map((lockin) => {
-          const dailyRate = parseFloat(lockin.intrestRate) / 100; // Convert percentage to decimal
+          const dailyRate = (lockin.interestRate || 0) / 100; // Convert percentage to decimal
           return (parseFloat(lockin.amount) || 0) * dailyRate;
         })
         .reduce((sum, profit) => sum + profit, 0);
@@ -223,14 +225,24 @@ const addProfit = async () => {
         type: "DAILY_PROFIT",
       });
 
-      // Referral bonus: if this user was referred, credit 10% of this user's profit to the referrer
+      // Referral bonus: if this user was referred, credit referral bonus based on lockin plan
       if (user.referredBy && userLockinProfit > 0) {
         try {
           const referrer = await userRepo.getUserByReferralCode(user.referredBy);
           if (referrer) {
-            const referralBonus = (userLockinProfit * 0.10);
+            // Calculate referral bonus based on each active lockin's referral bonus rate
+            let totalReferralBonus = 0;
+            const activeLockins = userLockins.filter((lockin) => lockin.status === "ACTIVE");
+            
+            for (const lockin of activeLockins) {
+              const lockinAmount = parseFloat(lockin.amount) || 0;
+              const lockinReferralRate = (lockin.referralBonus || 0) / 100; // Convert percentage to decimal
+              const lockinReferralBonus = lockinAmount * lockinReferralRate;
+              totalReferralBonus += lockinReferralBonus;
+            }
+            
             const referrerBalance = parseFloat(referrer.balance) || 0;
-            const newReferrerBalance = referrerBalance + referralBonus;
+            const newReferrerBalance = referrerBalance + totalReferralBonus;
 
             await userRepo.updateUser(referrer._id, {
               balance: newReferrerBalance.toFixed(2).toString(),
@@ -238,7 +250,7 @@ const addProfit = async () => {
 
             // Log referral bonus transaction for the referrer
             await transactionRepo.createTransaction({
-              quantity: referralBonus.toFixed(2).toString(),
+              quantity: totalReferralBonus.toFixed(2).toString(),
               date: new Date(),
               userId: referrer._id,
               activeWalleteId: MY_WALLET,
@@ -253,7 +265,7 @@ const addProfit = async () => {
                 referrer.email,
                 referrer.firstName,
                 user.firstName, // referred user's name
-                referralBonus.toFixed(2),
+                totalReferralBonus.toFixed(2),
                 newReferrerBalance.toFixed(2)
               );
               console.log('Referral bonus email sent to:', referrer.email);

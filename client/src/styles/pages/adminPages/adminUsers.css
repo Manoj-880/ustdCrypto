@@ -322,6 +322,7 @@
   box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .table-card::before {
@@ -336,6 +337,7 @@
 
 .table-card .ant-card-body {
   padding: 0;
+  width: 100%;
 }
 
 /* =========================
@@ -344,15 +346,26 @@
 .users-table {
   background: transparent;
   overflow-x: auto;
+  width: 100%;
 }
 
 .users-table .ant-table {
   background: transparent;
-  min-width: 600px;
+  min-width: 100%;
+  width: 100%;
 }
 
 .users-table .ant-table-container {
   overflow-x: auto;
+  width: 100%;
+}
+
+.users-table .ant-table-content {
+  width: 100%;
+}
+
+.users-table .ant-table-body {
+  width: 100%;
 }
 
 /* Responsive table columns */
@@ -389,6 +402,10 @@
   }
 }
 
+.users-table .ant-table-thead > tr {
+  width: 100%;
+}
+
 .users-table .ant-table-thead > tr > th {
   background-color: var(--color-bg-secondary) !important;
   color: var(--color-text-primary) !important;
@@ -398,6 +415,11 @@
   font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  width: auto;
+}
+
+.users-table .ant-table-tbody > tr {
+  width: 100%;
 }
 
 .users-table .ant-table-tbody > tr > td {
@@ -406,30 +428,34 @@
   border-bottom: 1px solid var(--color-border-primary) !important;
   padding: var(--space-6);
   transition: all var(--transition-fast);
+  width: auto;
 }
 
 .users-table .ant-table-tbody > tr:hover > td {
   background-color: var(--color-bg-secondary) !important;
 }
 
-.users-table .ant-table-pagination {
+/* Pagination Container */
+.pagination-container {
   background-color: var(--color-bg-card) !important;
   padding: var(--space-6);
   margin: 0;
   border-top: 2px solid var(--color-border-primary);
   display: flex !important;
-  justify-content: flex-end !important;
+  justify-content: center !important;
   align-items: center !important;
   min-height: 60px;
   position: relative;
   z-index: 10;
+  width: 100% !important;
 }
 
 .users-pagination {
   display: flex !important;
-  justify-content: flex-end !important;
+  justify-content: center !important;
   align-items: center !important;
-  width: 100%;
+  width: 100% !important;
+  margin: 0 !important;
 }
 
 .users-pagination .ant-pagination-item a,

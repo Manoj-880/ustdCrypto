@@ -26,6 +26,16 @@ const getUserByReferralCode = async (referralCode) => {
     return user;
 };
 
+const getUserByEmail = async (email) => {
+    const user = await userModel.findOne({ email });
+    return user;
+};
+
+const getUserByVerificationToken = async (token) => {
+    const user = await userModel.findOne({ emailVerificationToken: token });
+    return user;
+};
+
 const updateUser = async (id, data) => {
     const user = await userModel.findByIdAndUpdate(id, data);
     return user;
@@ -41,7 +51,9 @@ module.exports = {
     addUser,
     getUserById,
     getUserByMail,
+    getUserByEmail,
     getUserByReferralCode,
+    getUserByVerificationToken,
     updateUser,
     deleteUser,
 };

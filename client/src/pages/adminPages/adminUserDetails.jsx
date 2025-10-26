@@ -36,9 +36,10 @@ import {
   PhoneOutlined,
   EnvironmentOutlined,
   IdcardOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminUserDetails.css";
-import { getUserById } from "../../api_calls/userApi";
+import { getUserById, addBalance, deleteUser } from "../../api_calls/userApi";
 import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
@@ -51,6 +52,8 @@ const AdminUserDetails = () => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [addBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
+  const [addBalanceLoading, setAddBalanceLoading] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -106,26 +109,66 @@ const AdminUserDetails = () => {
 
   const confirmDelete = async () => {
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await deleteUser(userData._id);
+      if (response.success) {
+        setDeleteModalVisible(false);
+        message.success("User deleted successfully!");
+        toast.success("User deleted successfully!");
+        navigate("/admin/users");
+      } else {
+        message.error(response.message || "Failed to delete user");
+        toast.error(response.message || "Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Delete user error:", error);
+      message.error("Failed to delete user. Please try again.");
+      toast.error("Failed to delete user. Please try again.");
+    } finally {
       setLoading(false);
-      setDeleteModalVisible(false);
-      message.success("User deleted successfully!");
-      navigate("/admin/users");
-    }, 1000);
+    }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "green";
-      case "inactive":
-        return "red";
-      case "suspended":
-        return "orange";
-      default:
-        return "blue";
+  const handleAddBalance = () => {
+    setAddBalanceModalVisible(true);
+  };
+
+  const handleAddBalanceSubmit = async (values) => {
+    setAddBalanceLoading(true);
+    try {
+      const result = await addBalance(
+        userData._id,
+        values.amount,
+        values.reason
+      );
+      
+      if (result.success) {
+        // Update user data with new balance
+        setUserData({
+          ...userData,
+          balance: result.data.newBalance
+        });
+        
+        setAddBalanceModalVisible(false);
+        form.resetFields();
+        message.success(`Successfully added ${values.amount} USDT to user balance!`);
+        toast.success(`Balance added successfully! Email notification sent to ${userData.email}`);
+      } else {
+        message.error(result.message || 'Failed to add balance');
+        toast.error(result.message || 'Failed to add balance');
+      }
+    } catch (error) {
+      console.error('Add balance error:', error);
+      message.error('Network error. Please try again.');
+      toast.error('Network error. Please try again.');
+    } finally {
+      setAddBalanceLoading(false);
     }
+  };
+
+  const handleAddBalanceCancel = () => {
+    setAddBalanceModalVisible(false);
+    form.resetFields();
   };
 
   if (loading && !userData) {
@@ -152,10 +195,10 @@ const AdminUserDetails = () => {
             />
             <div className="profile-info">
               <Title level={2} className="user-name">
-                {userData?.name}
+                {userData?.firstName} {userData?.lastName}
               </Title>
               <Text className="user-email">{userData?.email}</Text>
-              <Text className="user-id">ID: {userData?.id}</Text>
+              <Text className="user-id">ID: {userData?._id}</Text>
             </div>
           </div>
           <div className="profile-actions">
@@ -169,6 +212,15 @@ const AdminUserDetails = () => {
                   size="large"
                 >
                   Edit User
+                </Button>
+                <Button
+                  type="default"
+                  icon={<PlusOutlined />}
+                  onClick={handleAddBalance}
+                  className="add-balance-btn"
+                  size="large"
+                >
+                  Add Balance
                 </Button>
                 <Button
                   danger
@@ -261,7 +313,9 @@ const AdminUserDetails = () => {
                 <UserOutlined className="info-icon" />
                 Full Name
               </div>
-              <div className="info-value">{userData?.name}</div>
+              <div className="info-value">
+                {userData?.firstName} {userData?.lastName}
+              </div>
             </div>
           </Col>
           <Col xs={24} sm={12} md={8}>
@@ -279,7 +333,7 @@ const AdminUserDetails = () => {
                 <PhoneOutlined className="info-icon" />
                 Phone
               </div>
-              <div className="info-value">{userData?.phone}</div>
+              <div className="info-value">{userData?.mobile}</div>
             </div>
           </Col>
           <Col xs={24} sm={12} md={8}>
@@ -300,22 +354,7 @@ const AdminUserDetails = () => {
               <div className="info-value">{userData?.profit} USDT</div>
             </div>
           </Col>
-          <Col xs={24} sm={12} md={8}>
-            <div className="info-item">
-              <div className="info-label">
-                <IdcardOutlined className="info-icon" />
-                Status
-              </div>
-              <div className="info-value">
-                <Tag
-                  color={getStatusColor(userData?.status)}
-                  className="status-tag"
-                >
-                  {userData?.status?.toUpperCase()}
-                </Tag>
-              </div>
-            </div>
-          </Col>
+
           <Col xs={24} sm={12} md={8}>
             <div className="info-item">
               <div className="info-label">
@@ -367,7 +406,7 @@ const AdminUserDetails = () => {
                 <div className="detail-label">User ID</div>
                 <div className="detail-value">
                   <Text code className="code-text">
-                    {userData?.id}
+                    {userData?._id}
                   </Text>
                 </div>
               </div>
@@ -383,7 +422,7 @@ const AdminUserDetails = () => {
                 <div className="detail-label">Referred By</div>
                 <div className="detail-value">
                   <Text code className="code-text">
-                    {userData?.referredBy}
+                    {userData?.referredBy ? userData?.referredBy : "N/A"}
                   </Text>
                 </div>
               </div>
@@ -440,8 +479,119 @@ const AdminUserDetails = () => {
             account information will be permanently deleted.
           </Text>
           <div className="user-preview">
-            <Text strong>User: {userData?.name}</Text>
+            <Text strong>User: {userData?.firstName} {userData?.lastName}</Text>
             <Text type="secondary">Email: {userData?.email}</Text>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Add Balance Modal */}
+      <Modal
+        title="Add Balance to User Account"
+        open={addBalanceModalVisible}
+        onCancel={handleAddBalanceCancel}
+        footer={null}
+        className="add-balance-modal"
+        width={500}
+        centered
+      >
+        <div className="add-balance-content">
+          <div className="balance-info">
+            <div className="current-balance">
+              <Text type="secondary">Current Balance:</Text>
+              <Text strong className="balance-amount">
+                {userData?.balance} USDT
+              </Text>
+            </div>
+            <div className="user-info">
+              <Text type="secondary">User:</Text>
+              <Text strong>{userData?.firstName} {userData?.lastName} ({userData?.email})</Text>
+            </div>
+          </div>
+
+          <Form
+            form={form}
+            onFinish={handleAddBalanceSubmit}
+            layout="vertical"
+            className="add-balance-form"
+          >
+            <Form.Item
+              name="amount"
+              label="Amount to Add (USDT)"
+              rules={[
+                { required: true, message: 'Please enter the amount' },
+                { 
+                  type: 'number', 
+                  min: 0.01, 
+                  message: 'Amount must be greater than 0' 
+                },
+                {
+                  validator: (_, value) => {
+                    if (value && value > 10000) {
+                      return Promise.reject('Amount cannot exceed 10,000 USDT');
+                    }
+                    return Promise.resolve();
+                  }
+                }
+              ]}
+            >
+              <InputNumber
+                placeholder="Enter amount"
+                style={{ width: '100%' }}
+                min={0.01}
+                max={10000}
+                step={0.01}
+                precision={2}
+                prefix={<DollarOutlined />}
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="reason"
+              label="Reason (Optional)"
+              rules={[
+                { max: 200, message: 'Reason cannot exceed 200 characters' }
+              ]}
+            >
+              <Input.TextArea
+                placeholder="Enter reason for adding balance (e.g., Bonus, Refund, etc.)"
+                rows={3}
+                maxLength={200}
+                showCount
+              />
+            </Form.Item>
+
+            <div className="modal-actions">
+              <Button
+                onClick={handleAddBalanceCancel}
+                size="large"
+                className="cancel-btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={addBalanceLoading}
+                size="large"
+                className="submit-btn"
+                icon={<PlusOutlined />}
+              >
+                Add Balance
+              </Button>
+            </div>
+          </Form>
+
+          <div className="balance-notice">
+            <Text type="secondary" className="notice-text">
+              <DollarOutlined /> This action will:
+            </Text>
+            <ul className="notice-list">
+              <li>Add the specified amount to the user's wallet balance</li>
+              <li>Create a transaction record for audit purposes</li>
+              <li>Send an email notification to {userData?.email}</li>
+            </ul>
           </div>
         </div>
       </Modal>

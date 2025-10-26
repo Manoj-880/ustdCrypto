@@ -22,6 +22,7 @@ import {
   SearchOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "../../styles/pages/adminPages/adminWithdrawRequests.css";
@@ -129,6 +130,11 @@ const AdminWithdrawRequests = () => {
     setCurrentRequest(request);
     setIsVerifyModalVisible(true);
     verifyForm.resetFields();
+  };
+
+  const handleViewDetails = (request) => {
+    setSelectedRequest(request);
+    setIsModalVisible(true);
   };
 
   const handleApproveSubmit = async (values) => {
@@ -267,6 +273,15 @@ const AdminWithdrawRequests = () => {
       render: (_, record) => {
         return (
           <Space size="small">
+            <Tooltip title="View Details">
+              <Button
+                type="text"
+                size="small"
+                icon={<EyeOutlined />}
+                onClick={() => handleViewDetails(record)}
+                className="view-details-btn"
+              />
+            </Tooltip>
             {record.status === 'PENDING' && (
               <>
                 <Tooltip title="Approve Request">
@@ -301,7 +316,9 @@ const AdminWithdrawRequests = () => {
               </Tooltip>
             )}
             {record.status === 'REJECTED' && (
-              <Text type="secondary">Rejected</Text>
+              <Tooltip title={record.remarks || "Rejected"}>
+                <Text type="secondary">Rejected</Text>
+              </Tooltip>
             )}
             {record.status === 'COMPLETED' && (
               <Text type="success">Completed</Text>
@@ -409,6 +426,17 @@ const AdminWithdrawRequests = () => {
 
       <div className="mobile-card-actions">
         <div className="action-buttons">
+          <Tooltip title="View Details">
+            <Button
+              type="default"
+              size="small"
+              icon={<EyeOutlined />}
+              onClick={() => handleViewDetails(request)}
+              className="mobile-action-btn view-details-btn"
+            >
+              Details
+            </Button>
+          </Tooltip>
           <Tooltip title="Approve Request">
             <Button
               type="primary"
@@ -591,6 +619,24 @@ const AdminWithdrawRequests = () => {
                 )}
               </Text>
             </div>
+
+            {selectedRequest.status === 'REJECTED' && selectedRequest.remarks && (
+              <div className="detail-row">
+                <Text strong>Rejection Reason:</Text>
+                <Text type="danger" className="rejection-reason">
+                  {selectedRequest.remarks}
+                </Text>
+              </div>
+            )}
+
+            {selectedRequest.status === 'APPROVED' && selectedRequest.transactionId && (
+              <div className="detail-row">
+                <Text strong>Transaction ID:</Text>
+                <Text code className="transaction-id">
+                  {selectedRequest.transactionId}
+                </Text>
+              </div>
+            )}
           </div>
         )}
       </Modal>

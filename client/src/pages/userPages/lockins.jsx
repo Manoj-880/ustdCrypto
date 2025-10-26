@@ -53,9 +53,13 @@ const Lockins = () => {
     setLoading(true);
     try {
       const response = await getLockinsByUserId(user._id);
-      console.log(response);
+      console.log('Lockins response:', response);
       if (response.success) {
         const allLockins = response.data;
+        console.log('Lockins data:', allLockins);
+        if (allLockins.length > 0) {
+          console.log('First lockin details:', allLockins[0]);
+        }
         setLockins(allLockins);
         
         // Update pagination total
@@ -165,7 +169,7 @@ const Lockins = () => {
       },
       {
         title: 'Interest Rate',
-        dataIndex: 'intrestRate',
+        dataIndex: 'interestRate',
         key: 'interestRate',
         render: (interestRate) => (
           <Space>

@@ -45,6 +45,18 @@ const userSchema = new Schema({
         type: String, // stores referralCode of the referrer
         default: null,
     },
+    isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerificationToken: {
+        type: String,
+        default: null
+    },
+    emailVerificationExpires: {
+        type: Date,
+        default: null
+    },
     joinDate: {
         type: Date,
         default: Date.now

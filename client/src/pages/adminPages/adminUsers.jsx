@@ -16,6 +16,7 @@ import {
   Statistic,
   Avatar,
   Divider,
+  Pagination,
 } from "antd";
 import {
   SearchOutlined,
@@ -29,7 +30,7 @@ import {
   SortAscendingOutlined,
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminUsers.css";
-import { getAllUsers } from "../../api_calls/userApi";
+import { getAllUsers, deleteUser } from "../../api_calls/userApi";
 import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
@@ -47,6 +48,8 @@ const AdminUsers = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Handle window resize
   useEffect(() => {
@@ -102,9 +105,9 @@ const AdminUsers = () => {
     if (searchText) {
       filtered = filtered.filter(
         (user) =>
-          user.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          (user.firstName + ' ' + user.lastName).toLowerCase().includes(searchText.toLowerCase()) ||
           user.email.toLowerCase().includes(searchText.toLowerCase()) ||
-          user.id.toLowerCase().includes(searchText.toLowerCase())
+          user._id.toLowerCase().includes(searchText.toLowerCase())
       );
     }
 
@@ -116,7 +119,22 @@ const AdminUsers = () => {
     filtered = sortUsers(filtered, sortBy);
 
     setFilteredUsers(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [users, searchText, statusFilter, sortBy]);
+
+  // Get paginated data
+  const getPaginatedUsers = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredUsers.slice(startIndex, endIndex);
+  };
+
+  const handlePageChange = (page, size) => {
+    setCurrentPage(page);
+    if (size !== pageSize) {
+      setPageSize(size);
+    }
+  };
 
   const handleViewUser = (user) => {
     navigate(`/admin/user/${user._id}`);
@@ -127,11 +145,27 @@ const AdminUsers = () => {
     setDeleteModalVisible(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (userToDelete) {
-      setUsers(users.filter((user) => user.id !== userToDelete.id));
-      setDeleteModalVisible(false);
-      setUserToDelete(null);
+      setLoading(true);
+      try {
+        const response = await deleteUser(userToDelete._id);
+        if (response.success) {
+          // Remove user from local state
+          setUsers(users.filter((user) => user._id !== userToDelete._id));
+          setFilteredUsers(filteredUsers.filter((user) => user._id !== userToDelete._id));
+          toast.success("User deleted successfully!");
+        } else {
+          toast.error(response.message || "Failed to delete user");
+        }
+      } catch (error) {
+        console.error("Delete user error:", error);
+        toast.error("Failed to delete user. Please try again.");
+      } finally {
+        setLoading(false);
+        setDeleteModalVisible(false);
+        setUserToDelete(null);
+      }
     }
   };
 
@@ -145,21 +179,21 @@ const AdminUsers = () => {
       title: "Name",
       dataIndex: "firstName",
       key: "firstName",
-      width: 120,
+      width: "20%",
       render: (text) => <Text className="user-name">{text}</Text>,
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      width: 180,
+      width: "30%",
       render: (text) => <Text className="user-email">{text}</Text>,
     },
     {
       title: "Balance",
       dataIndex: "balance",
       key: "balance",
-      width: 100,
+      width: "15%",
       render: (balance) => {
         const value = Number(balance) || 0;
         return <Text className="balance-cell">{value.toFixed(2)} USDT</Text>;
@@ -169,7 +203,7 @@ const AdminUsers = () => {
       title: "Profit",
       dataIndex: "profit",
       key: "profit",
-      width: 100,
+      width: "15%",
       render: (profit) => {
         const value = Number(profit) || 0;
         return <Text className="balance-cell">{value.toFixed(2)} USDT</Text>;
@@ -178,7 +212,7 @@ const AdminUsers = () => {
     {
       title: "Actions",
       key: "actions",
-      width: 80,
+      width: "20%",
       render: (_, record) => (
         <Space size="small">
           <Button
@@ -229,7 +263,7 @@ const AdminUsers = () => {
           />
           <div className="user-info">
             <Title level={5} className="user-name">
-              {user.name}
+              {user.firstName} {user.lastName}
             </Title>
             <Text type="secondary" className="user-email">
               {user.email}
@@ -287,7 +321,7 @@ const AdminUsers = () => {
               <Text type="secondary" className="stat-label">
                 User ID
               </Text>
-              <Text className="stat-value user-id">{user.id}</Text>
+              <Text className="stat-value user-id">{user._id}</Text>
             </div>
           </Col>
         </Row>
@@ -418,33 +452,45 @@ const AdminUsers = () => {
             )}
           </div>
         ) : (
-          <Table
-            columns={columns}
-            dataSource={filteredUsers}
-            loading={loading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} users`,
-              className: "users-pagination",
-            }}
-            className="users-table"
-            locale={{
-              emptyText: (
-                <div className="table-empty-state">
-                  <div className="empty-state-icon">
-                    <UserOutlined />
+          <>
+            <Table
+              columns={columns}
+              dataSource={getPaginatedUsers()}
+              loading={loading}
+              pagination={false}
+              className="users-table"
+              locale={{
+                emptyText: (
+                  <div className="table-empty-state">
+                    <div className="empty-state-icon">
+                      <UserOutlined />
+                    </div>
+                    <div className="empty-state-title">No Users Found</div>
+                    <div className="empty-state-description">
+                      {searchText ? 'No users match your search criteria.' : 'No users have been registered yet.'}
+                    </div>
                   </div>
-                  <div className="empty-state-title">No Users Found</div>
-                  <div className="empty-state-description">
-                    {searchText ? 'No users match your search criteria.' : 'No users have been registered yet.'}
-                  </div>
-                </div>
-              )
-            }}
-          />
+                )
+              }}
+            />
+            {filteredUsers.length > 0 && (
+              <div className="pagination-container">
+                <Pagination
+                  current={currentPage}
+                  total={filteredUsers.length}
+                  pageSize={pageSize}
+                  showSizeChanger={true}
+                  showQuickJumper={true}
+                  showTotal={(total, range) =>
+                    `${range[0]}-${range[1]} of ${total} users`
+                  }
+                  onChange={handlePageChange}
+                  onShowSizeChange={handlePageChange}
+                  className="users-pagination"
+                />
+              </div>
+            )}
+          </>
         )}
       </Card>
 
@@ -470,7 +516,7 @@ const AdminUsers = () => {
           </Text>
           {userToDelete && (
             <div className="user-preview">
-              <Text strong>User: {userToDelete.name}</Text>
+              <Text strong>User: {userToDelete.firstName} {userToDelete.lastName}</Text>
               <Text type="secondary">Email: {userToDelete.email}</Text>
             </div>
           )}

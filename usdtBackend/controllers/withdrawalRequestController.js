@@ -1,7 +1,7 @@
 const withdrawalRequestRepo = require("../repos/withdrawRepo");
 const userRepo = require("../repos/userRepo");
 const transactionRepo = require("../repos/transactionRepo");
-const { sendWithdrawalRequestAlert, sendWithdrawalSuccessEmail } = require("../services/emailService");
+const { sendWithdrawalRequestAlert, sendWithdrawalSuccessEmail, sendWithdrawalRejectionEmail } = require("../services/emailService");
 
 const getAllWithdrawalRequests = async (req, res) => {
   try {
@@ -242,12 +242,36 @@ const rejectWithdrawalRequest = async (req, res) => {
       });
     }
 
+    // Get user details for email
+    const user = await userRepo.getUserById(request.userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     // Update request status to rejected
     const updatedRequest = await withdrawalRequestRepo.updateRequest(id, {
       status: 'REJECTED',
       remarks: remarks,
       rejectedAt: new Date(),
     });
+
+    // Send rejection email to user
+    try {
+      await sendWithdrawalRejectionEmail(
+        user.email,
+        user.firstName,
+        request.amount,
+        remarks,
+        request.requestDate || request.createdAt
+      );
+      console.log('Withdrawal rejection email sent to:', user.email);
+    } catch (emailError) {
+      console.error('Failed to send withdrawal rejection email:', emailError);
+      // Don't fail rejection if email fails
+    }
 
     res.status(200).send({
       success: true,

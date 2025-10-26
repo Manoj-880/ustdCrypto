@@ -5,7 +5,18 @@ const login = async (req, res) => {
   try {
     let { email, password } = req.body;
     let user = await userRepo.getUserByMail(email);
+    
     if (user && user.password === password) {
+      // Check if email is verified
+      if (!user.isEmailVerified) {
+        return res.status(200).send({
+          success: false,
+          message: "Please verify your email address before logging in. Check your inbox for the verification link.",
+          requiresVerification: true,
+          email: user.email
+        });
+      }
+      
       res.status(200).send({
         success: true,
         message: "Login Successful",

@@ -88,6 +88,7 @@ const LockinPlans = () => {
       planName: record.planName,
       duration: record.duration,
       interestRate: record.interestRate,
+      referralBonus: record.referralBonus || 0,
       description: record.description || ''
     });
     setIsModalVisible(true);
@@ -157,6 +158,18 @@ const LockinPlans = () => {
       sorter: (a, b) => a.interestRate - b.interestRate,
     },
     {
+      title: 'Referral Bonus',
+      dataIndex: 'referralBonus',
+      key: 'referralBonus',
+      render: (bonus) => (
+        <Space>
+          <PercentageOutlined style={{ color: '#fa8c16' }} />
+          <Text strong style={{ color: '#fa8c16' }}>{bonus || 0}%</Text>
+        </Space>
+      ),
+      sorter: (a, b) => (a.referralBonus || 0) - (b.referralBonus || 0),
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
@@ -204,6 +217,7 @@ const LockinPlans = () => {
   const totalPlans = plans.length;
   const averageDuration = plans.length > 0 ? Math.round(plans.reduce((sum, plan) => sum + plan.duration, 0) / plans.length) : 0;
   const averageInterestRate = plans.length > 0 ? (plans.reduce((sum, plan) => sum + plan.interestRate, 0) / plans.length).toFixed(2) : 0;
+  const averageReferralBonus = plans.length > 0 ? (plans.reduce((sum, plan) => sum + (plan.referralBonus || 0), 0) / plans.length).toFixed(2) : 0;
 
   return (
     <div className="lockin-plans-page">
@@ -218,7 +232,7 @@ const LockinPlans = () => {
 
       {/* Summary Cards */}
       <Row gutter={[16, 16]} className="summary-cards">
-        <Col xs={24} sm={8}>
+        <Col xs={24} sm={6}>
           <Card className="summary-card">
             <Statistic
               title="Total Plans"
@@ -228,7 +242,7 @@ const LockinPlans = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={8}>
+        <Col xs={24} sm={6}>
           <Card className="summary-card">
             <Statistic
               title="Average Duration"
@@ -239,7 +253,7 @@ const LockinPlans = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={8}>
+        <Col xs={24} sm={6}>
           <Card className="summary-card">
             <Statistic
               title="Average Interest Rate"
@@ -247,6 +261,17 @@ const LockinPlans = () => {
               suffix="%"
               prefix={<PercentageOutlined />}
               valueStyle={{ color: '#722ed1' }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={6}>
+          <Card className="summary-card">
+            <Statistic
+              title="Average Referral Bonus"
+              value={averageReferralBonus}
+              suffix="%"
+              prefix={<PercentageOutlined />}
+              valueStyle={{ color: '#fa8c16' }}
             />
           </Card>
         </Col>
@@ -367,6 +392,25 @@ const LockinPlans = () => {
           >
             <InputNumber
               placeholder="Enter interest rate percentage"
+              size="large"
+              className="form-input"
+              style={{ width: '100%' }}
+              min={0}
+              max={100}
+              step={0.1}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="referralBonus"
+            label="Referral Bonus (%)"
+            rules={[
+              { required: true, message: 'Please enter the referral bonus percentage' },
+              { type: 'number', min: 0, max: 100, message: 'Referral bonus must be between 0 and 100' }
+            ]}
+          >
+            <InputNumber
+              placeholder="Enter referral bonus percentage"
               size="large"
               className="form-input"
               style={{ width: '100%' }}

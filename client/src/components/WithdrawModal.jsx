@@ -232,13 +232,6 @@ const WithdrawModal = ({ visible, onClose, user }) => {
               </Text>
             </div>
 
-            <Alert
-              message="Important Notice"
-              description={`${withdrawType === 'withdraw' ? 'Withdrawal' : 'Transfer'} requests are processed within 24 hours. Please ensure you have sufficient balance.`}
-              type="info"
-              showIcon
-              className="withdraw-alert"
-            />
 
             <div className="modal-actions">
               <Button

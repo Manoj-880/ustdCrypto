@@ -8,7 +8,8 @@ import {
   SendOutlined,
   WalletOutlined,
   QuestionCircleOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../../../contexts/AuthContext";
 import "../../../styles/pages/adminPages/components/adminSideNav.css";
@@ -26,6 +27,7 @@ const AdminSideNav = ({ collapsed, isMobile }) => {
     { key: "wallets", label: "Admin Wallets", icon: <WalletOutlined />, path: "/admin/wallets" },
     { key: "lockin-plans", label: "Lock-In Plans", icon: <ClockCircleOutlined />, path: "/admin/lockin-plans" },
     { key: "faq", label: "FAQ Management", icon: <QuestionCircleOutlined />, path: "/admin/faq" },
+    { key: "risk-disclaimer", label: "Risk Disclaimer", icon: <ExclamationCircleOutlined />, path: "/admin/risk-disclaimer" },
   ];
 
   return (

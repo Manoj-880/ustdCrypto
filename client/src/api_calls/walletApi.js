@@ -30,4 +30,13 @@ const updateWallet = async (id) => {
   }
 };
 
-export { getAllWallets, addWalletId, updateWallet };
+const getActiveWallet = async () => {
+  try {
+    const response = await axios.get(`${fileUrl}/active`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { getAllWallets, addWalletId, updateWallet, getActiveWallet };

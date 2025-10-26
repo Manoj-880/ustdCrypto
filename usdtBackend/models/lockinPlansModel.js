@@ -14,6 +14,11 @@ const lockinPlansSchema = new Schema({
     type: Number,
     required: true,
   },
+  referralBonus: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   description: {
     type: String,
     required: false,

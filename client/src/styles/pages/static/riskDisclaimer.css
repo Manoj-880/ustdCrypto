@@ -1,0 +1,284 @@
+/* =========================
+   Risk Disclaimer Page Styles
+   ========================= */
+
+.risk-disclaimer-page {
+  background: #ffffff;
+  padding: var(--space-6) var(--space-4);
+}
+
+.risk-disclaimer-header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+  color: #000000;
+}
+
+.risk-disclaimer-title {
+  color: #000000 !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: var(--space-4) !important;
+  text-shadow: none;
+}
+
+.risk-disclaimer-title .anticon {
+  color: #dc3545;
+  margin-right: var(--space-3);
+}
+
+.risk-disclaimer-subtitle {
+  font-size: 1.2rem !important;
+  color: #666666 !important;
+  font-weight: 400;
+}
+
+.risk-disclaimer-card {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e0e0e0 !important;
+  overflow: hidden;
+  background: #ffffff !important;
+}
+
+.risk-disclaimer-card .ant-card-body {
+  padding: var(--space-8) !important;
+  background: #ffffff !important;
+}
+
+/* =========================
+   Disclaimer Introduction
+   ========================= */
+
+.disclaimer-intro {
+  background: #f8f9fa;
+  padding: var(--space-6);
+  border-radius: 12px;
+  margin-bottom: var(--space-6);
+  border-left: 4px solid #dc3545;
+}
+
+.intro-text {
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+  margin-bottom: 0 !important;
+  color: #000000 !important;
+}
+
+/* SecureUSDT brand styling */
+.intro-text strong,
+.disclaimer-section .ant-typography strong,
+.acknowledgment-text strong {
+  color: #1677ff !important;
+  font-weight: 700 !important;
+}
+
+/* Specific styling for SecureUSDT text */
+.risk-disclaimer-page .ant-typography strong {
+  color: #1677ff !important;
+  font-weight: 700 !important;
+}
+
+/* Ensure all strong text in the page is blue (for SecureUSDT) */
+.risk-disclaimer-page strong {
+  color: #1677ff !important;
+  font-weight: 700 !important;
+}
+
+/* =========================
+   Disclaimer Sections
+   ========================= */
+
+.disclaimer-sections {
+  margin: var(--space-6) 0;
+}
+
+.disclaimer-section {
+  margin-bottom: var(--space-8);
+  padding: var(--space-6);
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.disclaimer-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.section-title {
+  color: #000000 !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  margin-bottom: var(--space-4) !important;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.section-title .anticon {
+  color: #dc3545;
+  font-size: 1.2rem;
+}
+
+.disclaimer-section .ant-typography {
+  color: #333333 !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  margin-bottom: 0 !important;
+}
+
+/* =========================
+   Acknowledgment Footer
+   ========================= */
+
+.disclaimer-footer {
+  margin-top: var(--space-8);
+}
+
+.acknowledgment-card {
+  background: #f8f9fa !important;
+  border: 2px solid #dc3545 !important;
+  border-radius: 12px !important;
+}
+
+.acknowledgment-card .ant-card-body {
+  padding: var(--space-6) !important;
+  background: #f8f9fa !important;
+}
+
+.acknowledgment-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.acknowledgment-icon {
+  font-size: 2rem;
+  color: #dc3545;
+  margin-top: var(--space-1);
+  flex-shrink: 0;
+}
+
+.acknowledgment-text {
+  flex: 1;
+}
+
+.acknowledgment-title {
+  color: #000000 !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+.acknowledgment-description {
+  color: #333333 !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+  margin-bottom: 0 !important;
+}
+
+/* =========================
+   Responsive Design
+   ========================= */
+
+@media (max-width: 768px) {
+  .risk-disclaimer-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .risk-disclaimer-title {
+    font-size: 2rem !important;
+  }
+
+  .risk-disclaimer-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .risk-disclaimer-card .ant-card-body {
+    padding: var(--space-6) !important;
+  }
+
+  .disclaimer-section {
+    padding: var(--space-4);
+  }
+
+  .section-title {
+    font-size: 1.1rem !important;
+  }
+
+  .acknowledgment-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .acknowledgment-icon {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .risk-disclaimer-page {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .risk-disclaimer-title {
+    font-size: 1.8rem !important;
+  }
+
+  .risk-disclaimer-card .ant-card-body {
+    padding: var(--space-4) !important;
+  }
+
+  .disclaimer-section {
+    padding: var(--space-3);
+  }
+
+  .intro-text {
+    font-size: 1rem !important;
+  }
+}
+
+/* =========================
+   Print Styles
+   ========================= */
+
+@media print {
+  .risk-disclaimer-page {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .risk-disclaimer-header {
+    color: black !important;
+  }
+
+  .risk-disclaimer-title {
+    color: black !important;
+  }
+
+  .risk-disclaimer-subtitle {
+    color: #666 !important;
+  }
+
+  .risk-disclaimer-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    background: white !important;
+  }
+
+  .disclaimer-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background: white !important;
+    border: 1px solid #ddd !important;
+  }
+
+  .acknowledgment-card {
+    background: #f8f9fa !important;
+    border: 1px solid #ddd !important;
+  }
+}

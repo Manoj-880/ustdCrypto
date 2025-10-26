@@ -60,4 +60,19 @@ const deleteUser = async (id) => {
     }
 }
 
-export { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+const addBalance = async (userId, amount, reason) => {
+    try {
+        const response = await axios.post(`${url}/admin/add-balance`, {
+            userId,
+            amount,
+            reason
+        });
+        console.log('Add balance response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.log('Add balance error:', error);
+        return error.response?.data || { success: false, message: "Network error" };
+    }
+}
+
+export { getAllUsers, getUserById, createUser, updateUser, deleteUser, addBalance };

@@ -435,3 +435,242 @@
         padding: var(--space-1) var(--space-2);
     }
 }
+
+/* =========================
+   Contact Support Modal
+========================= */
+.contact-support-modal .ant-modal-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: none;
+    padding: var(--space-6);
+}
+
+.contact-support-modal .ant-modal-title {
+    color: white !important;
+    font-weight: var(--font-weight-bold) !important;
+    font-size: var(--font-size-xl) !important;
+}
+
+.contact-support-modal .ant-modal-close {
+    color: white !important;
+    top: var(--space-6);
+    right: var(--space-6);
+}
+
+.contact-support-modal .ant-modal-close:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.contact-support-modal .ant-modal-body {
+    padding: var(--space-8);
+    background: var(--color-bg-card);
+}
+
+.contact-modal-content {
+    width: 100%;
+}
+
+.contact-info {
+    text-align: center;
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-primary);
+}
+
+.contact-form .ant-form-item-label > label {
+    color: var(--color-text-primary) !important;
+    font-weight: var(--font-weight-semibold) !important;
+    font-size: var(--font-size-base) !important;
+}
+
+.contact-form .ant-input,
+.contact-form .ant-input-affix-wrapper {
+    background-color: var(--color-bg-primary) !important;
+    border: 2px solid var(--color-border-primary) !important;
+    color: var(--color-text-primary) !important;
+    border-radius: var(--radius-lg) !important;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-base);
+    padding: var(--space-3) var(--space-4);
+    height: 48px !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.contact-form .ant-input::placeholder,
+.contact-form .ant-input-affix-wrapper .ant-input::placeholder {
+    color: var(--color-text-tertiary) !important;
+    font-size: var(--font-size-base);
+    opacity: 0.7;
+}
+
+.contact-form .ant-input:focus,
+.contact-form .ant-input-focused,
+.contact-form .ant-input-affix-wrapper:focus,
+.contact-form .ant-input-affix-wrapper-focused {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+    transform: translateY(-1px);
+}
+
+.contact-form .ant-input-prefix {
+    color: var(--color-text-tertiary) !important;
+    font-size: var(--font-size-base);
+    margin-right: var(--space-3);
+}
+
+.contact-form .ant-input-prefix:hover {
+    color: var(--color-primary) !important;
+}
+
+.contact-form .ant-input-affix-wrapper .ant-input {
+    background-color: transparent !important;
+    color: var(--color-text-primary) !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: var(--space-4) !important;
+}
+
+.contact-form .ant-input-affix-wrapper .ant-input:focus {
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.contact-form .ant-input-affix-wrapper {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.contact-form .ant-input-affix-wrapper .ant-input-prefix {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    margin-right: var(--space-3) !important;
+}
+
+.contact-form .ant-input-textarea {
+    background-color: var(--color-bg-primary) !important;
+    border: 2px solid var(--color-border-primary) !important;
+    color: var(--color-text-primary) !important;
+    border-radius: var(--radius-lg) !important;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-base);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: var(--shadow-sm);
+    resize: vertical;
+    min-height: 120px !important;
+    line-height: 1.5 !important;
+}
+
+.contact-form .ant-input-textarea::placeholder {
+    color: var(--color-text-tertiary) !important;
+    font-size: var(--font-size-base);
+    opacity: 0.7;
+    line-height: 1.5 !important;
+}
+
+.contact-form .ant-input-textarea:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px var(--color-primary-bg) !important;
+    transform: translateY(-1px);
+}
+
+.contact-form .ant-input-textarea + .ant-input-textarea-suffix {
+    color: var(--color-text-tertiary) !important;
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+.contact-form .ant-form-item {
+    margin-bottom: var(--space-6);
+}
+
+.contact-form .ant-form-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-form .ant-btn {
+    height: 48px !important;
+    border-radius: var(--radius-lg) !important;
+    font-size: var(--font-size-base) !important;
+    font-weight: var(--font-weight-semibold) !important;
+    padding: 0 var(--space-6) !important;
+    transition: all var(--transition-fast) !important;
+}
+
+.contact-form .ant-btn-default {
+    background: var(--color-bg-secondary) !important;
+    border: 2px solid var(--color-border-primary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+.contact-form .ant-btn-default:hover {
+    background: var(--color-bg-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.contact-form .ant-btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.contact-form .ant-btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.contact-form .ant-btn-primary:disabled {
+    background: var(--color-text-tertiary) !important;
+    color: white !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Responsive design for modal */
+@media (max-width: 768px) {
+    .contact-support-modal {
+        margin: var(--space-4) !important;
+        max-width: calc(100vw - var(--space-8)) !important;
+    }
+    
+    .contact-support-modal .ant-modal-body {
+        padding: var(--space-6);
+    }
+    
+    .contact-form .ant-form-item {
+        margin-bottom: var(--space-4);
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-support-modal {
+        margin: var(--space-2) !important;
+        max-width: calc(100vw - var(--space-4)) !important;
+    }
+    
+    .contact-support-modal .ant-modal-body {
+        padding: var(--space-4);
+    }
+    
+    .contact-form .ant-input,
+    .contact-form .ant-input-affix-wrapper {
+        height: 44px !important;
+        font-size: var(--font-size-sm);
+    }
+    
+    .contact-form .ant-btn {
+        height: 44px !important;
+        font-size: var(--font-size-sm) !important;
+    }
+}

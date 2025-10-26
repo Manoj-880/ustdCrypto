@@ -16,6 +16,7 @@ import {
   Modal,
   Divider,
   Avatar,
+  Pagination,
 } from "antd";
 import { SearchOutlined, ReloadOutlined, EyeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -55,16 +56,42 @@ const Transactions = () => {
         const response = await getTransactionsByUserId(user._id);
         if (response?.success && Array.isArray(response.data)) {
           // Map backend transaction model to UI shape
-          const mapped = response.data.map((t) => ({
-            id: t.transactionId || t._id,
-            type: "transfer", // backend doesn't provide type; defaulting for UI
-            amount: Number(t.quantity || 0),
-            status: "completed", // backend doesn't provide status; defaulting
-            date: t.date,
-            description: `From ${t.userWalletId} to ${t.activeWalleteId}`,
-            fee: 0,
-            balance: 0,
-          }));
+          const mapped = response.data.map((t) => {
+            // Determine transaction type based on backend data
+            let type = "transfer";
+            let description = `From ${t.userWalletId} to ${t.activeWalleteId}`;
+            
+            // Debug logging
+            console.log("Transaction data:", t);
+            console.log("Transaction type from backend:", t.type);
+            
+            if (t.type === "ADMIN_ADD" || t.type === "cash" || t.type === "CASH") {
+              type = "deposit";
+              description = t.reason || "Admin added balance";
+            } else if (t.type === "DAILY_PROFIT") {
+              type = "profit";
+              description = "Daily profit earned";
+            } else if (t.type === "REFERRAL_BONUS") {
+              type = "bonus";
+              description = "Referral bonus earned";
+            } else if (t.type === "WITHDRAWAL") {
+              type = "withdrawal";
+              description = "Withdrawal request";
+            }
+
+            console.log("Mapped transaction type:", type);
+
+            return {
+              id: t.transactionId || t._id,
+              type: type,
+              amount: Number(t.quantity || 0),
+              status: "completed", // All transactions are completed
+              date: t.date,
+              description: description,
+              fee: 0,
+              balance: 0,
+            };
+          });
           setTransactions(mapped);
           setFilteredTransactions(mapped);
           setPagination((prev) => ({ ...prev, total: mapped.length }));
@@ -127,11 +154,11 @@ const Transactions = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleTableChange = (paginationInfo) => {
+  const handlePaginationChange = (page, pageSize) => {
     setPagination((prev) => ({
       ...prev,
-      current: paginationInfo.current,
-      pageSize: paginationInfo.pageSize,
+      current: page,
+      pageSize: pageSize,
     }));
   };
 
@@ -471,22 +498,35 @@ const Transactions = () => {
             {filteredTransactions.map(renderMobileCard)}
           </div>
         ) : (
-          <Table
-            columns={columns}
-            dataSource={filteredTransactions}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              ...pagination,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} transactions`,
-            }}
-            onChange={handleTableChange}
-            className="transactions-table"
-            scroll={{ x: 960 }}
-          />
+          <>
+            <Table
+              columns={columns}
+              dataSource={filteredTransactions.slice(
+                (pagination.current - 1) * pagination.pageSize,
+                pagination.current * pagination.pageSize
+              )}
+              rowKey="id"
+              loading={loading}
+              pagination={false}
+              className="transactions-table"
+              scroll={{ x: 960 }}
+            />
+            <div className="pagination-container">
+              <Pagination
+                current={pagination.current}
+                pageSize={pagination.pageSize}
+                total={pagination.total}
+                showSizeChanger={true}
+                showQuickJumper={true}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} transactions`
+                }
+                onChange={handlePaginationChange}
+                onShowSizeChange={handlePaginationChange}
+                className="transactions-pagination"
+              />
+            </div>
+          </>
         )}
       </Card>
 

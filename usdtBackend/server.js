@@ -163,6 +163,7 @@ let faq = require("./routes/faqRoute");
 let profit = require("./routes/profitRoute");
 let transfer = require("./routes/transferRoute");
 let contact = require("./routes/contactRoute");
+let emailVerification = require("./routes/emailVerificationRoute");
 
 // end points
 app.use("/api/users", user);
@@ -179,6 +180,7 @@ app.use("/api/faq", faq);
 app.use("/api/profits", profit);
 app.use("/api/transfers", transfer);
 app.use("/api/contact", contact);
+app.use("/api/email-verification", emailVerification);
 
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
