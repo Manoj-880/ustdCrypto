@@ -77,7 +77,7 @@ const transferToWallet = async (req, res) => {
       amount: transferAmount.toFixed(2),
       recipientEmail,
       status: "COMPLETED",
-      transactionId: `TRANSFER-${Date.now()}-${fromUserId}`,
+      transactionId: `TRANSFER-${Date.now()}`,
     };
 
     const newTransfer = await transferRepo.createTransfer(transferData);
@@ -89,8 +89,11 @@ const transferToWallet = async (req, res) => {
       userId: fromUserId,
       activeWalleteId: "TRANSFER_OUT",
       userWalletId: fromUser.walletId || null,
-      transactionId: `TRANSFER-${Date.now()}-${fromUserId}`,
+      transactionId: `TRANSFER-${Date.now()}`,
       type: "TRANSFER_OUT",
+      status: "completed",
+      description: `Transfer to ${toUser.email}`,
+      fee: 0
     });
 
     // Create transaction record for recipient (incoming)
@@ -100,8 +103,11 @@ const transferToWallet = async (req, res) => {
       userId: toUser._id,
       activeWalleteId: "TRANSFER_IN",
       userWalletId: toUser.walletId || null,
-      transactionId: `TRANSFER-${Date.now()}-${fromUserId}`,
+      transactionId: `TRANSFER-${Date.now()}`,
       type: "TRANSFER_IN",
+      status: "completed",
+      description: `Transfer from ${fromUser.email}`,
+      fee: 0
     });
 
     // Send internal transfer received email to recipient

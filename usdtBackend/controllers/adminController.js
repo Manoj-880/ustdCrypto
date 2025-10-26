@@ -89,9 +89,11 @@ const addBalance = async (req, res) => {
       userId: userId,
       activeWalleteId: "ADMIN_ADD",
       userWalletId: user.walletId || null,
-      transactionId: `ADMIN-ADD-${Date.now()}-${userId}`,
+      transactionId: `ADMIN-ADD-${Date.now()}`,
       type: "ADMIN_ADD",
-      reason: reason || "Admin added balance",
+      status: "completed",
+      description: reason || "Admin added balance",
+      fee: 0
     };
 
     await transactionRepo.createTransaction(transactionData);

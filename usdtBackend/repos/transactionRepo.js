@@ -1,13 +1,25 @@
 const transactionsModel = require('../models/transactionsModel');
 
 const getAllTransactions = async () => {
-    const transactions = await transactionsModel.find();
+    const transactions = await transactionsModel
+        .find()
+        .populate({
+            path: 'userId',
+            select: 'firstName lastName email walletId balance',
+            options: { strictPopulate: false }
+        })
+        .sort({ date: -1 }); // latest first
     return transactions;
 };
 
 const getAllTransactionsByUserId = async (userId) => {
   const transactions = await transactionsModel
     .find({ userId })
+    .populate({
+        path: 'userId',
+        select: 'firstName lastName email walletId balance',
+        options: { strictPopulate: false }
+    })
     .sort({ date: -1 }); // latest first
 
   return transactions;

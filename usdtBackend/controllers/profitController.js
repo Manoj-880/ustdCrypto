@@ -118,7 +118,7 @@ const claimProfit = async (req, res) => {
       amount: currentProfit.toString(),
       status: "CLAIMED",
       claimedAt: new Date(),
-      transactionId: `PROFIT-CLAIM-${Date.now()}-${userId}`,
+      transactionId: `PROFIT-CLAIM-${Date.now()}`,
     };
 
     const claimedProfit = await profitRepo.createProfit(profitData);

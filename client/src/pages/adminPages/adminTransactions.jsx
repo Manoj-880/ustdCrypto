@@ -17,6 +17,7 @@ import {
   Descriptions,
   QRCode,
   Avatar,
+  Pagination,
 } from "antd";
 import {
   SearchOutlined,
@@ -46,6 +47,8 @@ const AdminTransactions = () => {
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 991);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Mock data - replace with actual API calls
   useEffect(() => {
@@ -103,6 +106,7 @@ const AdminTransactions = () => {
     }
 
     setFilteredTransactions(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [transactions, searchText, dateRange, typeFilter]);
 
   const clearFilters = () => {
@@ -226,79 +230,9 @@ const AdminTransactions = () => {
       { wch: 50 }, // Transaction Hash
     ];
 
-    // Create Summary Sheet
-    const summaryData = [
-      ["TRANSACTION SUMMARY - ADMIN WALLET ALPHA WAVE"],
-      [""],
-      ["Generated on: " + dayjs().format("MMMM DD, YYYY [at] HH:mm")],
-      ["Total Transactions: " + filteredTransactions.length],
-      [""],
-      ["TRANSACTION TYPES BREAKDOWN"],
-      [""],
-      ["Type", "Count", "Total Amount (USDT)"],
-    ];
-
-    // Add summary data for each type
-    transactionTypes.forEach(type => {
-      const typeTransactions = transactionsByType[type];
-      const totalAmount = typeTransactions.reduce((sum, txn) => sum + parseFloat(txn.usdtQuantity || 0), 0);
-      summaryData.push([
-        type ? type.toUpperCase() : 'UNKNOWN',
-        typeTransactions.length,
-        (totalAmount || 0).toFixed(2)
-      ]);
-    });
-
-    // Add all transactions to summary
-    summaryData.push([""], ["ALL TRANSACTIONS"], [""], headers);
-    
-    const allTransactionData = filteredTransactions.map((txn) => [
-      txn.id,
-      txn.userName,
-      txn.userEmail,
-      txn.type ? txn.type.toUpperCase() : 'UNKNOWN',
-      txn.usdtQuantity,
-      dayjs(txn.date).format("MMM DD, YYYY HH:mm"),
-      txn.status ? txn.status.toUpperCase() : 'UNKNOWN',
-      txn.description,
-      txn.fee,
-      txn.balance,
-      txn.transactionHash,
-    ]);
-
-    summaryData.push(...allTransactionData);
-
-    // Create summary worksheet
-    const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
-    summaryWorksheet["!cols"] = columnWidths;
-
-    // Merge cells for title in summary
-    if (!summaryWorksheet["!merges"]) summaryWorksheet["!merges"] = [];
-    summaryWorksheet["!merges"].push({
-      s: { r: 0, c: 0 },
-      e: { r: 0, c: headers.length - 1 },
-    });
-
-    // Add summary sheet
-    XLSX.utils.book_append_sheet(workbook, summaryWorksheet, "Summary");
-
-    // Create individual sheets for each transaction type
-    transactionTypes.forEach(type => {
-      const typeTransactions = transactionsByType[type];
-      
-      // Add title and metadata rows for each type
-      const typeTitleData = [
-        [`${type.toUpperCase()} TRANSACTIONS - ADMIN WALLET ALPHA WAVE`],
-        [""],
-        ["Generated on: " + dayjs().format("MMMM DD, YYYY [at] HH:mm")],
-        [`Total ${type} Transactions: ${typeTransactions.length}`],
-        [""],
-        [`${type.toUpperCase()} TRANSACTION DETAILS`],
-        [""],
-      ];
-
-      // Add transaction data for this type
-      const typeTransactionData = typeTransactions.map((txn) => [
+    // Helper function to create transaction data
+    const createTransactionData = (transactions) => {
+      return transactions.map((txn) => [
         txn.id,
         txn.userName,
         txn.userEmail,
@@ -311,23 +245,50 @@ const AdminTransactions = () => {
         txn.balance,
         txn.transactionHash,
       ]);
+    };
 
-      // Combine all data for this type
-      const typeAllData = [...typeTitleData, headers, ...typeTransactionData];
+    // Helper function to create worksheet with title
+    const createWorksheetWithTitle = (title, transactions, sheetName) => {
+      const titleData = [
+        [title],
+        [""],
+        ["Generated on: " + dayjs().format("MMMM DD, YYYY [at] HH:mm")],
+        [`Total Transactions: ${transactions.length}`],
+        [""],
+        ["TRANSACTION DETAILS"],
+        [""],
+      ];
 
-      // Create worksheet for this type
-      const typeWorksheet = XLSX.utils.aoa_to_sheet(typeAllData);
-      typeWorksheet["!cols"] = columnWidths;
+      const transactionData = createTransactionData(transactions);
+      const allData = [...titleData, headers, ...transactionData];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(allData);
+      worksheet["!cols"] = columnWidths;
 
       // Merge cells for title
-      if (!typeWorksheet["!merges"]) typeWorksheet["!merges"] = [];
-      typeWorksheet["!merges"].push({
+      if (!worksheet["!merges"]) worksheet["!merges"] = [];
+      worksheet["!merges"].push({
         s: { r: 0, c: 0 },
         e: { r: 0, c: headers.length - 1 },
       });
 
-      // Add worksheet to workbook
-      XLSX.utils.book_append_sheet(workbook, typeWorksheet, type.toUpperCase());
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    };
+
+    // 1. Create "All Transactions" sheet
+    createWorksheetWithTitle(
+      "ALL TRANSACTIONS - ADMIN WALLET ALPHA WAVE",
+      filteredTransactions,
+      "All Transactions"
+    );
+
+    // 2. Create individual sheets for each transaction type
+    transactionTypes.forEach(type => {
+      const typeTransactions = transactionsByType[type];
+      const typeTitle = `${type.toUpperCase()} TRANSACTIONS - ADMIN WALLET ALPHA WAVE`;
+      const sheetName = type.charAt(0).toUpperCase() + type.slice(1);
+      
+      createWorksheetWithTitle(typeTitle, typeTransactions, sheetName);
     });
 
     // Generate filename with current date
@@ -648,37 +609,54 @@ const AdminTransactions = () => {
             )}
           </div>
         ) : (
-          <Table
-            columns={columns}
-            dataSource={filteredTransactions}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} transactions`,
-              className: "transactions-pagination",
-            }}
-            className="transactions-table"
-            scroll={{ x: 800 }}
-            locale={{
-              emptyText: (
-                <div className="table-empty-state">
-                  <div className="empty-state-icon">
-                    <FileExcelOutlined />
+          <div className="table-container">
+            <Table
+              columns={columns}
+              dataSource={filteredTransactions.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+              rowKey="id"
+              loading={loading}
+              pagination={false}
+              className="transactions-table"
+              scroll={{ x: 800 }}
+              locale={{
+                emptyText: (
+                  <div className="table-empty-state">
+                    <div className="empty-state-icon">
+                      <FileExcelOutlined />
+                    </div>
+                    <div className="empty-state-title">No Transactions Found</div>
+                    <div className="empty-state-description">
+                      {searchText || dateRange || typeFilter !== "all" 
+                        ? 'No transactions match your filter criteria.' 
+                        : 'No transactions have been recorded yet.'}
+                    </div>
                   </div>
-                  <div className="empty-state-title">No Transactions Found</div>
-                  <div className="empty-state-description">
-                    {searchText || dateRange || typeFilter !== "all" 
-                      ? 'No transactions match your filter criteria.' 
-                      : 'No transactions have been recorded yet.'}
-                  </div>
-                </div>
-              )
-            }}
-          />
+                )
+              }}
+            />
+            {filteredTransactions.length > 0 && (
+              <div className="transactions-pagination">
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={filteredTransactions.length}
+                  showSizeChanger={true}
+                  showQuickJumper={true}
+                  showTotal={(total, range) =>
+                    `${range[0]}-${range[1]} of ${total} transactions`
+                  }
+                  onChange={(page, size) => {
+                    setCurrentPage(page);
+                    setPageSize(size);
+                  }}
+                  onShowSizeChange={(current, size) => {
+                    setCurrentPage(1);
+                    setPageSize(size);
+                  }}
+                />
+              </div>
+            )}
+          </div>
         )}
       </div>
 

@@ -12,7 +12,7 @@ const transactionSchema = new Schema({
     },
     userId: { 
         type: Schema.Types.ObjectId, 
-        ref: "User", 
+        ref: "user", 
         required: true 
     },
     activeWalleteId: {
@@ -26,6 +26,24 @@ const transactionSchema = new Schema({
     transactionId: {
         type: String,
         required: true,
+    },
+    type: {
+        type: String,
+        enum: ["deposit", "withdraw", "claimed_profit", "transfer", "ADMIN_ADD", "TRANSFER_OUT", "TRANSFER_IN", "WITHDRAWAL_REQUEST"],
+        default: "deposit"
+    },
+    status: {
+        type: String,
+        enum: ["completed", "pending", "failed"],
+        default: "completed"
+    },
+    description: {
+        type: String,
+        default: ""
+    },
+    fee: {
+        type: Number,
+        default: 0
     }
 });
 

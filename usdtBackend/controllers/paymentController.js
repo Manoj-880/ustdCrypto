@@ -89,6 +89,10 @@ const makePayment = async (req, res) => {
       activeWalleteId: MY_WALLET,
       userWalletId: transfer.from_address,
       transactionId: txId,
+      type: "deposit",
+      status: "completed",
+      description: `Deposit from ${transfer.from_address}`,
+      fee: 0
     };
 
     let user = await userRepo.getUserById(userId);
@@ -230,7 +234,7 @@ const addProfit = async () => {
         userId: user._id,
         activeWalleteId: MY_WALLET,
         userWalletId: user.walletId || null,
-        transactionId: `PROFIT-${Date.now()}-${user._id}`,
+        transactionId: `PROFIT-${Date.now()}`,
         type: "DAILY_PROFIT",
       });
 
