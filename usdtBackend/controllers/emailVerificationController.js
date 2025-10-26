@@ -48,8 +48,11 @@ const sendVerificationEmail = async (req, res) => {
     });
 
     // Send verification email
-    // const frontendUrl = 'http://localhost:5173';
-    const frontendUrl = "https://secureusdt.com";
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://secureusdt.com"
+        : "http://localhost:5173");
     const verificationLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
     const emailResult = await sendEmail(
