@@ -4,8 +4,12 @@ const BigNumber = require("bignumber.js");
 // import transactionsModel from "../models/transactionsModel.js"; // adjust path as needed
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
+const walletRepo = require("../repos/walletRepo");
 const withdrawalRepo = require("../repos/withdrawRepo");
-const { sendDepositSuccessEmail, sendReferralBonusEmail } = require("../services/emailService");
+const {
+  sendDepositSuccessEmail,
+  sendReferralBonusEmail,
+} = require("../services/emailService");
 const lockinRepo = require("../repos/lockinRepo");
 
 // USDT ABI minimal
@@ -26,7 +30,7 @@ const makePayment = async (req, res) => {
   try {
     const { txId, userId } = req.body;
     let MY_WALLET;
-    const activerWallet = await userRepo.getActiveWallet();
+    const activerWallet = await walletRepo.getActiveWallet();
     if (activerWallet) {
       MY_WALLET = activerWallet.address;
     }
@@ -165,7 +169,7 @@ const addProfit = async () => {
         }
         // ISO-like without TZ
         if (/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2})?)?$/.test(dateString)) {
-          const base = dateString.replace(' ', 'T');
+          const base = dateString.replace(" ", "T");
           if (base.length <= 10) {
             // Date only: treat end of day IST
             return new Date(`${base}T23:59:59+05:30`);
@@ -181,7 +185,12 @@ const addProfit = async () => {
       for (const lockin of userLockins) {
         try {
           const endIst = parseIstDate(lockin.endDate);
-          if (lockin.status === "ACTIVE" && endIst instanceof Date && !isNaN(endIst.getTime()) && nowUtc > endIst) {
+          if (
+            lockin.status === "ACTIVE" &&
+            endIst instanceof Date &&
+            !isNaN(endIst.getTime()) &&
+            nowUtc > endIst
+          ) {
             await lockinRepo.updateLockin(lockin._id, { status: "COMPLETED" });
           }
         } catch (e) {
@@ -228,19 +237,23 @@ const addProfit = async () => {
       // Referral bonus: if this user was referred, credit referral bonus based on lockin plan
       if (user.referredBy && userLockinProfit > 0) {
         try {
-          const referrer = await userRepo.getUserByReferralCode(user.referredBy);
+          const referrer = await userRepo.getUserByReferralCode(
+            user.referredBy
+          );
           if (referrer) {
             // Calculate referral bonus based on each active lockin's referral bonus rate
             let totalReferralBonus = 0;
-            const activeLockins = userLockins.filter((lockin) => lockin.status === "ACTIVE");
-            
+            const activeLockins = userLockins.filter(
+              (lockin) => lockin.status === "ACTIVE"
+            );
+
             for (const lockin of activeLockins) {
               const lockinAmount = parseFloat(lockin.amount) || 0;
               const lockinReferralRate = (lockin.referralBonus || 0) / 100; // Convert percentage to decimal
               const lockinReferralBonus = lockinAmount * lockinReferralRate;
               totalReferralBonus += lockinReferralBonus;
             }
-            
+
             const referrerBalance = parseFloat(referrer.balance) || 0;
             const newReferrerBalance = referrerBalance + totalReferralBonus;
 
@@ -268,14 +281,18 @@ const addProfit = async () => {
                 totalReferralBonus.toFixed(2),
                 newReferrerBalance.toFixed(2)
               );
-              console.log('Referral bonus email sent to:', referrer.email);
+              console.log("Referral bonus email sent to:", referrer.email);
             } catch (emailError) {
-              console.error('Failed to send referral bonus email:', emailError);
+              console.error("Failed to send referral bonus email:", emailError);
               // Don't fail bonus processing if email fails
             }
           }
         } catch (referralErr) {
-          console.error("Referral bonus error for user:", user._id, referralErr);
+          console.error(
+            "Referral bonus error for user:",
+            user._id,
+            referralErr
+          );
         }
       }
     }

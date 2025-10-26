@@ -16,10 +16,10 @@ const StaticNavigation = () => {
 
   const menuItems = [
     { key: '/', label: 'Home', path: '/' },
-    { key: '/about', label: 'About', path: '/about' },
+    { key: '/why-join', label: 'Why Join', path: '/why-join' },
+    { key: '/our-plans', label: 'Our Plans', path: '/our-plans' },
     { key: '/how-to-use', label: 'How to Use', path: '/how-to-use' },
     { key: '/contact', label: 'Contact', path: '/contact' },
-    { key: '/risk-disclaimer', label: 'Risk Disclaimer', path: '/risk-disclaimer' },
   ];
 
   // Debug: Log menu items
@@ -134,7 +134,7 @@ const StaticNavigation = () => {
           </Link>
           
           <Link
-            to="/about"
+            to="/why-join"
             className="mobile-nav-link"
             onClick={closeMobileMenu}
             style={{ 
@@ -153,7 +153,30 @@ const StaticNavigation = () => {
               textAlign: 'left'
             }}
           >
-            ℹ️ About
+            💡 Why Join
+          </Link>
+          
+          <Link
+            to="/our-plans"
+            className="mobile-nav-link"
+            onClick={closeMobileMenu}
+            style={{ 
+              display: 'block !important', 
+              marginBottom: '4px',
+              backgroundColor: 'rgba(0,212,170,0.1)',
+              border: '1px solid #00d4aa',
+              padding: '10px 20px',
+              borderRadius: '6px',
+              color: '#ffffff !important',
+              textDecoration: 'none',
+              fontSize: '16px',
+              fontWeight: '600',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+              width: '100%',
+              textAlign: 'left'
+            }}
+          >
+            📋 Our Plans
           </Link>
           
           <Link
@@ -202,28 +225,6 @@ const StaticNavigation = () => {
             📞 Contact
           </Link>
           
-          <Link
-            to="/risk-disclaimer"
-            className="mobile-nav-link"
-            onClick={closeMobileMenu}
-            style={{ 
-              display: 'block !important', 
-              marginBottom: '6px',
-              backgroundColor: 'rgba(0,212,170,0.1)',
-              border: '1px solid #00d4aa',
-              padding: '10px 20px',
-              borderRadius: '6px',
-              color: '#ffffff !important',
-              textDecoration: 'none',
-              fontSize: '16px',
-              fontWeight: '600',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-              width: '100%',
-              textAlign: 'left'
-            }}
-          >
-            ⚠️ Risk Disclaimer
-          </Link>
           
           <div className="mobile-auth" style={{ marginTop: '8px', padding: '4px 0' }}>
             <Link to="/login" onClick={closeMobileMenu}>

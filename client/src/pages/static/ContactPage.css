@@ -49,6 +49,7 @@
   font-size: inherit !important;
   margin: 0 0.5rem !important;
   padding: 0 !important;
+  text-shadow: 0 0 10px rgba(0, 212, 170, 0.3);
 }
 
 .hero-description {
@@ -106,10 +107,10 @@
   justify-content: center !important;
 }
 
-.section-title {
+.contact-page .section-title {
   font-size: 2rem !important;
   font-weight: 700 !important;
-  color: #ffffff;
+  color: #ffffff !important;
   margin: 0 !important;
   padding: 1.5rem 0 !important;
   text-align: center !important;

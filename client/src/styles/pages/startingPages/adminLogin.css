@@ -334,15 +334,18 @@ body:has(.admin-login-page) .app {
 
 .form-input {
   width: 100%;
-  height: 7vh;
+  height: 56px;
   background: rgba(255, 255, 255, 0.05) !important;
   border: 2px solid rgba(255, 193, 7, 0.2) !important;
   border-radius: 10px;
   color: var(--color-text-primary) !important;
-  font-size: var(--font-size-sm);
+  font-size: 16px;
   font-weight: var(--font-weight-medium);
+  line-height: 1.5;
   transition: all var(--transition-normal);
   backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
 }
 
 .form-input .ant-input {
@@ -350,8 +353,13 @@ body:has(.admin-login-page) .app {
   border: none !important;
   box-shadow: none !important;
   color: var(--color-text-primary) !important;
-  font-size: var(--font-size-sm);
+  font-size: 16px;
   font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  height: auto;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
 }
 
 .form-input .ant-input::placeholder {
@@ -397,12 +405,12 @@ body:has(.admin-login-page) .app {
 ========================= */
 .admin-login-button {
   width: 100%;
-  height: 7vh;
+  height: 56px;
   background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%) !important;
   border: none !important;
   border-radius: 10px;
   color: #000 !important;
-  font-size: var(--font-size-sm);
+  font-size: 16px;
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -552,13 +560,13 @@ body:has(.admin-login-page) .app {
   }
 
   .form-input {
-    height: 6vh;
-    font-size: var(--font-size-xs);
+    height: 48px;
+    font-size: 14px;
   }
 
   .admin-login-button {
-    height: 6vh;
-    font-size: var(--font-size-sm);
+    height: 48px;
+    font-size: 14px;
   }
 
   .admin-login-features {

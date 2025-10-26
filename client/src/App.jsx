@@ -16,6 +16,8 @@ import Register from "./pages/startingPages/register";
 import StaticLayout from "./pages/pageLayouts/StaticLayout";
 import HomePage from "./pages/static/HomePage";
 import AboutPage from "./pages/static/AboutPage";
+import WhyJoinPage from "./pages/static/WhyJoinPage";
+import OurPlansPage from "./pages/static/OurPlansPage";
 import HowToUsePage from "./pages/static/HowToUsePage";
 import ContactPage from "./pages/static/ContactPage";
 import Terms from "./pages/userPages/terms";
@@ -39,7 +41,8 @@ function App() {
             {/* Static Website Routes */}
             <Route path="/" element={<StaticLayout />}>
               <Route index element={<HomePage />} />
-              <Route path="about" element={<AboutPage />} />
+              <Route path="why-join" element={<WhyJoinPage />} />
+              <Route path="our-plans" element={<OurPlansPage />} />
               <Route path="how-to-use" element={<HowToUsePage />} />
               <Route path="contact" element={<ContactPage />} />
             </Route>

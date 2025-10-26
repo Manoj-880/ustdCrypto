@@ -1,0 +1,398 @@
+/* Why Join Page Styles */
+.why-join-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  padding: 120px 0 80px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.gradient-orbs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.3;
+}
+
+.orb-1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #00d4aa, #00a8ff);
+  top: 10%;
+  left: 10%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  top: 60%;
+  right: 15%;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+.orb-3 {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+  bottom: 20%;
+  left: 60%;
+  animation: float 7s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-size: 3.5rem !important;
+  font-weight: 700;
+  margin-bottom: 24px !important;
+  line-height: 1.2;
+}
+
+.gradient-text {
+  color: #00d4aa !important;
+  font-weight: inherit;
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
+  font-size: inherit;
+  text-shadow: 0 0 10px rgba(0, 212, 170, 0.3);
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  color: #b0b0b0;
+  margin-bottom: 40px !important;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  margin-top: 40px;
+}
+
+.cta-button {
+  background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%) !important;
+  border: none !important;
+  height: 50px;
+  padding: 0 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+}
+
+.learn-more-btn {
+  background: transparent !important;
+  border: 2px solid #00d4aa !important;
+  color: #00d4aa !important;
+  height: 50px;
+  padding: 0 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.learn-more-btn:hover {
+  background: #00d4aa !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Section Styles */
+.benefits-section,
+.values-section,
+.team-section,
+.stats-section,
+.cta-section {
+  padding: 80px 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.why-join-page .section-title {
+  color: #ffffff !important;
+  font-size: 2.5rem !important;
+  font-weight: 700;
+  margin-bottom: 16px !important;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  color: #b0b0b0;
+  max-width: 600px;
+  margin: 0 auto !important;
+}
+
+/* Benefits Cards */
+.benefit-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(0, 212, 170, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 32px !important;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+  border-color: #00d4aa !important;
+  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
+}
+
+.benefit-icon {
+  font-size: 3rem;
+  color: #00d4aa;
+  margin-bottom: 20px;
+}
+
+.benefit-title {
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 12px !important;
+}
+
+.benefit-description {
+  color: #b0b0b0 !important;
+  margin: 0 !important;
+}
+
+/* Values Cards */
+.value-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(0, 212, 170, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 32px !important;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.value-card:hover {
+  transform: translateY(-5px);
+  border-color: #00d4aa !important;
+  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
+}
+
+.value-icon {
+  font-size: 3rem;
+  color: #00d4aa;
+  margin-bottom: 20px;
+}
+
+.value-title {
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 12px !important;
+}
+
+.value-description {
+  color: #b0b0b0 !important;
+  margin: 0 !important;
+}
+
+/* Team Cards */
+.team-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(0, 212, 170, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 32px !important;
+  text-align: center;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+  border-color: #00d4aa !important;
+  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team-avatar {
+  margin-bottom: 20px;
+  border: 3px solid #00d4aa;
+}
+
+.member-name {
+  color: #ffffff !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 8px !important;
+}
+
+.member-role {
+  color: #00d4aa !important;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.member-description {
+  color: #b0b0b0 !important;
+  margin: 0 !important;
+  font-size: 0.9rem;
+}
+
+/* Stats Section */
+.stats-section {
+  background: rgba(0, 212, 170, 0.1);
+  border-top: 1px solid rgba(0, 212, 170, 0.2);
+  border-bottom: 1px solid rgba(0, 212, 170, 0.2);
+}
+
+.stat-item {
+  text-align: center;
+  padding: 20px;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #00d4aa;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #b0b0b0;
+  font-weight: 500;
+}
+
+/* CTA Section */
+.cta-section {
+  background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 168, 255, 0.1) 100%);
+  border-top: 1px solid rgba(0, 212, 170, 0.2);
+}
+
+.cta-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  font-size: 2.5rem !important;
+  font-weight: 700;
+  margin-bottom: 16px !important;
+}
+
+.cta-description {
+  font-size: 1.1rem;
+  color: #b0b0b0;
+  margin-bottom: 40px !important;
+}
+
+.contact-btn {
+  background: transparent !important;
+  border: 2px solid #00d4aa !important;
+  color: #00d4aa !important;
+  height: 50px;
+  padding: 0 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+  background: #00d4aa !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem !important;
+  }
+  
+  .section-title {
+    font-size: 2rem !important;
+  }
+  
+  .cta-title {
+    font-size: 2rem !important;
+  }
+  
+  .benefit-card,
+  .value-card,
+  .team-card {
+    padding: 24px !important;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+  }
+  
+  .cta-button,
+  .learn-more-btn,
+  .contact-btn {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+}

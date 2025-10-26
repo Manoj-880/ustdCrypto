@@ -94,6 +94,8 @@ const AddFundsModal = ({ visible, onClose, user }) => {
         userId: user.id,
       });
 
+      console.log(result);
+
       if (result.success) {
         toast.success(
           "Payment verified successfully! Funds have been added to your account.",

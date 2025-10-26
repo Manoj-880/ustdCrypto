@@ -81,7 +81,7 @@ const HomePage = () => {
         <div className="hero-content">
           <div className="hero-badge">
             <StarOutlined />
-            <span>Trusted by 12,500+ Investors Worldwide</span>
+            <span>Trusted by 1200+ Investors Worldwide</span>
           </div>
           
           <Title level={1} className="hero-title">
@@ -91,7 +91,7 @@ const HomePage = () => {
           </Title>
           
           <Paragraph className="hero-description">
-            Join thousands of investors earning up to 0.5% daily returns on their USDT investments. 
+            Join thousands of investors earning up to 0.2% daily returns on their USDT investments. 
             Our bank-grade security and expert management ensure your funds are safe while generating consistent profits.
           </Paragraph>
           
@@ -116,7 +116,7 @@ const HomePage = () => {
       <section className="features-section">
         <div className="container">
           <div className="section-header">
-            <Title level={2} className="section-title">
+            <Title level={2} className="section-title" style={{color: '#ffffff !important'}}>
               Why Choose <span className="gradient-text">SecureUSDT</span>?
             </Title>
             <Paragraph className="section-description">
@@ -182,6 +182,128 @@ const HomePage = () => {
         </div>
       </section>
 
+
+      {/* About Section */}
+      <section className="about-section">
+        <div className="container">
+          <div className="section-header">
+            <Title level={2} className="section-title">
+              About <span className="gradient-text">SecureUSDT</span>
+            </Title>
+            <Paragraph className="section-description">
+              We are a leading cryptocurrency investment platform dedicated to providing secure, 
+              profitable opportunities for USDT investors worldwide.
+            </Paragraph>
+          </div>
+          
+          <Row gutter={[32, 32]} justify="center">
+            <Col xs={24} md={12}>
+              <Card className="about-card">
+                <div className="about-content">
+                  <div className="about-icon">
+                    <SafetyOutlined />
+                  </div>
+                  <Title level={3} className="about-title">Our Mission</Title>
+                  <Paragraph className="about-description">
+                    To democratize cryptocurrency investments by providing secure, transparent, 
+                    and profitable opportunities for investors of all levels. We believe everyone 
+                    deserves access to high-quality investment services.
+                  </Paragraph>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} md={12}>
+              <Card className="about-card">
+                <div className="about-content">
+                  <div className="about-icon">
+                    <RiseOutlined />
+                  </div>
+                  <Title level={3} className="about-title">Our Vision</Title>
+                  <Paragraph className="about-description">
+                    To become the world's most trusted cryptocurrency investment platform, 
+                    empowering millions of investors to achieve their financial goals through 
+                    innovative blockchain technology and expert management.
+                  </Paragraph>
+                </div>
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      </section>
+
+      {/* Our Impact Section */}
+      <section className="impact-section">
+        <div className="container">
+          <div className="section-header">
+            <Title level={2} className="section-title">
+              Our <span className="gradient-text">Impact</span>
+            </Title>
+            <Paragraph className="section-description">
+              See the positive impact we're making in the cryptocurrency investment space.
+            </Paragraph>
+          </div>
+          
+          <Row gutter={[32, 32]} justify="center">
+            <Col xs={12} sm={6}>
+              <div className="impact-stat">
+                <div className="stat-number">1200+</div>
+                <div className="stat-label">Active Investors</div>
+              </div>
+            </Col>
+            <Col xs={12} sm={6}>
+              <div className="impact-stat">
+                <div className="stat-number">$5k+</div>
+                <div className="stat-label">Assets Under Management</div>
+              </div>
+            </Col>
+            <Col xs={12} sm={6}>
+              <div className="impact-stat">
+                <div className="stat-number">99.9%</div>
+                <div className="stat-label">Platform Uptime</div>
+              </div>
+            </Col>
+            <Col xs={12} sm={6}>
+              <div className="impact-stat">
+                <div className="stat-number">4.9/5</div>
+                <div className="stat-label">User Rating</div>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </section>
+
+      {/* Footer Links Section */}
+      <section className="footer-links-section">
+        <div className="container">
+          <Row gutter={[32, 32]} justify="space-between" align="middle">
+            <Col xs={24} md={12}>
+              <div className="links-content">
+                <Title level={3} className="links-title">Important Links</Title>
+                <div className="links-list">
+                  <Link to="/terms" className="footer-link">Terms and Conditions</Link>
+                  <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+                  <Link to="/risk-disclaimer" className="footer-link">Risk Disclaimer</Link>
+                </div>
+              </div>
+            </Col>
+            <Col xs={24} md={12}>
+              <div className="ready-to-join">
+                <Title level={3} className="join-title">Ready to Join Our Community?</Title>
+                <Paragraph className="join-description">
+                  Start your investment journey today and become part of our growing community 
+                  of successful investors.
+                </Paragraph>
+                <Link to="/register">
+                  <Button type="primary" size="large" className="join-button">
+                    Join Now
+                    <ArrowRightOutlined />
+                  </Button>
+                </Link>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="cta-section">

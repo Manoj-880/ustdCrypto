@@ -293,6 +293,76 @@ const HowToUsePage = () => {
         </div>
       </section>
 
+      {/* Created At Section */}
+      <section className="created-at-section">
+        <div className="container">
+          <div className="section-header">
+            <Title level={2} className="section-title">
+              <span className="gradient-text">Created At</span> SecureUSDT
+            </Title>
+            <Paragraph className="section-description">
+              Learn about our journey and the vision that drives our platform.
+            </Paragraph>
+          </div>
+          
+          <Row gutter={[32, 32]} justify="center">
+            <Col xs={24} md={12}>
+              <Card className="created-card">
+                <div className="created-content">
+                  <div className="created-icon">
+                    <TrophyOutlined />
+                  </div>
+                  <Title level={3} className="created-title">Our Journey</Title>
+                  <Paragraph className="created-description">
+                    SecureUSDT was founded in 2024 with a vision to democratize cryptocurrency investments 
+                    and provide secure, profitable opportunities for investors worldwide. Our platform 
+                    combines cutting-edge blockchain technology with traditional investment principles 
+                    to deliver consistent returns.
+                  </Paragraph>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} md={12}>
+              <Card className="created-card">
+                <div className="created-content">
+                  <div className="created-icon">
+                    <SafetyOutlined />
+                  </div>
+                  <Title level={3} className="created-title">Built for Security</Title>
+                  <Paragraph className="created-description">
+                    From day one, security has been our top priority. We've implemented multiple layers 
+                    of protection including cold storage, multi-signature wallets, and advanced encryption 
+                    to ensure your funds are always safe. Our platform undergoes regular security audits 
+                    and compliance checks.
+                  </Paragraph>
+                </div>
+              </Card>
+            </Col>
+          </Row>
+          
+          <Row gutter={[32, 32]} justify="center" style={{ marginTop: 32 }}>
+            <Col xs={24} md={8}>
+              <div className="stat-item">
+                <div className="stat-number">2024</div>
+                <div className="stat-label">Founded</div>
+              </div>
+            </Col>
+            <Col xs={24} md={8}>
+              <div className="stat-item">
+                <div className="stat-number">1200+</div>
+                <div className="stat-label">Active Users</div>
+              </div>
+            </Col>
+            <Col xs={24} md={8}>
+              <div className="stat-item">
+                <div className="stat-number">$5k+</div>
+                <div className="stat-label">Assets Managed</div>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="cta-section">
         <div className="container">

@@ -76,7 +76,7 @@
   vertical-align: baseline;
   line-height: inherit;
   font-size: inherit;
-  background: none !important;
+  text-shadow: 0 0 10px rgba(0, 212, 170, 0.3);
 }
 
 .hero-description {
