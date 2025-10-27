@@ -88,10 +88,14 @@ const AddFundsModal = ({ visible, onClose, user }) => {
     setIsVerifying(true);
 
     try {
+      console.log({
+        txId: transactionId,
+        userId: user._id,
+      })
       // Call the payment verification API
       const result = await verifyPayment({
         txId: transactionId,
-        userId: user.id,
+        userId: user._id,
       });
 
       console.log(result);
