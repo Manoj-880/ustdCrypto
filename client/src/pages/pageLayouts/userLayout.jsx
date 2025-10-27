@@ -1,6 +1,12 @@
 // UserLayout.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, Routes, Route, Outlet, useLocation } from "react-router-dom";
+import {
+  useNavigate,
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   MenuFoldOutlined,
@@ -45,8 +51,8 @@ const UserLayout = () => {
 
   // Helper function to strip HTML tags and clean text
   const stripHtmlTags = (text) => {
-    if (!text) return '';
-    return text.replace(/<[^>]*>/g, '').trim();
+    if (!text) return "";
+    return text.replace(/<[^>]*>/g, "").trim();
   };
 
   // Handle window resize
@@ -54,7 +60,7 @@ const UserLayout = () => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      
+
       // Auto-collapse on mobile, auto-expand on desktop/tablet
       if (mobile) {
         setCollapsed(true);
@@ -63,8 +69,8 @@ const UserLayout = () => {
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleLogout = () => {
@@ -74,43 +80,95 @@ const UserLayout = () => {
   };
 
   const menuItems = [
-    { key: "dashboard", label: "Dashboard", icon: <PieChartOutlined />, path: "/app" },
-    { key: "transactions", label: "Transactions", icon: <SwapOutlined />, path: "/app/transaction" },
-    { key: "profits", label: "Profits", icon: <RiseOutlined />, path: "/app/profit" },
-    { key: "lockins", label: "Lock-Ins", icon: <LockOutlined />, path: "/app/lockins" },
-    { key: "withdrawals", label: "Withdrawals", icon: <SendOutlined />, path: "/app/withdrawals" },
-    { key: "faq", label: "FAQ", icon: <QuestionCircleOutlined />, path: "/app/faq" },
-    { key: "terms", label: "Terms & Conditions", icon: <FileTextOutlined />, path: "/app/terms" },
-    { key: "privacy-policy", label: "Privacy Policy", icon: <SafetyOutlined />, path: "/app/privacy-policy" },
-    { key: "risk-disclaimer", label: "Risk Disclaimer", icon: <ExclamationCircleOutlined />, path: "/app/risk-disclaimer" },
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      icon: <PieChartOutlined />,
+      path: "/app",
+    },
+    {
+      key: "transactions",
+      label: "Transactions",
+      icon: <SwapOutlined />,
+      path: "/app/transaction",
+    },
+    {
+      key: "profits",
+      label: "Profits",
+      icon: <RiseOutlined />,
+      path: "/app/profit",
+    },
+    {
+      key: "lockins",
+      label: "Lock-Ins",
+      icon: <LockOutlined />,
+      path: "/app/lockins",
+    },
+    {
+      key: "withdrawals",
+      label: "Withdrawals",
+      icon: <SendOutlined />,
+      path: "/app/withdrawals",
+    },
+    {
+      key: "faq",
+      label: "FAQ",
+      icon: <QuestionCircleOutlined />,
+      path: "/app/faq",
+    },
+    {
+      key: "terms",
+      label: "Terms & Conditions",
+      icon: <FileTextOutlined />,
+      path: "/app/terms",
+    },
+    {
+      key: "privacy-policy",
+      label: "Privacy Policy",
+      icon: <SafetyOutlined />,
+      path: "/app/privacy-policy",
+    },
+    {
+      key: "risk-disclaimer",
+      label: "Risk Disclaimer",
+      icon: <ExclamationCircleOutlined />,
+      path: "/app/risk-disclaimer",
+    },
   ];
 
   return (
-    <div className={`layout ${collapsed ? "collapsed" : ""} ${isMobile ? "mobile" : ""}`}>
+    <div
+      className={`layout ${collapsed ? "collapsed" : ""} ${
+        isMobile ? "mobile" : ""
+      }`}
+    >
       {/* Mobile backdrop */}
       {isMobile && !collapsed && (
-        <div 
-          className="mobile-backdrop" 
-          onClick={() => setCollapsed(true)}
-        />
+        <div className="mobile-backdrop" onClick={() => setCollapsed(true)} />
       )}
-      
+
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="profile-card">
           <div className="avatar">
-            {stripHtmlTags(user?.firstName)?.charAt(0)?.toUpperCase() || stripHtmlTags(user?.name)?.charAt(0)?.toUpperCase() || 'U'}
+            {stripHtmlTags(user?.firstName)?.charAt(0)?.toUpperCase() ||
+              stripHtmlTags(user?.name)?.charAt(0)?.toUpperCase() ||
+              "U"}
           </div>
-          {(!collapsed && !isMobile) && (
+          {!collapsed && !isMobile && (
             <div className="profile-info">
               <h4 className="user-name">
-                {user?.firstName && user?.lastName 
-                  ? `${stripHtmlTags(user.firstName)} ${stripHtmlTags(user.lastName)}`
-                  : stripHtmlTags(user?.name) || 'User'
-                }
+                {user?.firstName && user?.lastName
+                  ? `${stripHtmlTags(user.firstName)}`
+                  : stripHtmlTags(user?.name) || "User"}
               </h4>
-              <p className="user-email">{user?.email || 'user@example.com'}</p>
-              <button className="view-profile" onClick={() => navigate('/app/profile')}>View Profile</button>
+              <p className="user-email">{user?.email || "user@example.com"}</p>
+              <button
+                className="view-profile"
+                onClick={() => navigate("/app/profile")}
+              >
+                View Profile
+              </button>
             </div>
           )}
         </div>
@@ -119,11 +177,13 @@ const UserLayout = () => {
           {menuItems.map((item) => (
             <button
               key={item.key}
-              className={`menu-item ${location.pathname === item.path ? "active" : ""}`}
+              className={`menu-item ${
+                location.pathname === item.path ? "active" : ""
+              }`}
               onClick={() => navigate(item.path)}
             >
               {item.icon}
-              {(!collapsed && !isMobile) && item.label}
+              {!collapsed && !isMobile && item.label}
             </button>
           ))}
         </nav>

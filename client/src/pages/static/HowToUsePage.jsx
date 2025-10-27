@@ -1,8 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Card, Row, Col, Typography, Steps, Collapse, Space, Alert, Divider, Spin, Empty, message } from 'antd';
-import { 
-  ArrowRightOutlined, 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  Button,
+  Card,
+  Row,
+  Col,
+  Typography,
+  Steps,
+  Collapse,
+  Space,
+  Alert,
+  Divider,
+  Spin,
+  Empty,
+  message,
+} from "antd";
+import {
+  ArrowRightOutlined,
   UserOutlined,
   WalletOutlined,
   DollarCircleOutlined,
@@ -13,10 +27,10 @@ import {
   ClockCircleOutlined,
   TrophyOutlined,
   SafetyOutlined,
-  ThunderboltOutlined
-} from '@ant-design/icons';
-import { getAllFAQs } from '../../api_calls/faqApi';
-import './HowToUsePage.css';
+  ThunderboltOutlined,
+} from "@ant-design/icons";
+import { getAllFAQs } from "../../api_calls/faqApi";
+import "./HowToUsePage.css";
 
 const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
@@ -39,11 +53,11 @@ const HowToUsePage = () => {
       if (response.success) {
         setFaqs(response.data);
       } else {
-        message.error(response.message || 'Failed to load FAQs');
+        message.error(response.message || "Failed to load FAQs");
       }
     } catch (error) {
-      console.error('Error loading FAQs:', error);
-      message.error('Failed to load FAQs');
+      console.error("Error loading FAQs:", error);
+      message.error("Failed to load FAQs");
     } finally {
       setFaqLoading(false);
     }
@@ -51,71 +65,72 @@ const HowToUsePage = () => {
 
   const steps = [
     {
-      title: 'Create Account',
-      description: 'Sign up and verify your account',
+      title: "Create Account",
+      description: "Sign up and verify your account",
       icon: <UserOutlined />,
       content: {
-        title: 'Step 1: Create Account',
-        description: 'Getting started with SecureUSDT takes only a few minutes. Create your account and gain immediate access to your personalized dashboard.',
+        title: "Step 1: Create Account",
+        description:
+          "Getting started with SecureUSDT takes only a few minutes. Create your account and gain immediate access to your personalized dashboard.",
         details: [
           'Click the "Get Started" button on our homepage',
-          'Fill in your basic information (name, email, password)',
-          'Verify your email address through the confirmation link',
-          'Complete a simple identity check for security',
-          'Gain immediate access to your personalized dashboard'
+          "Fill in your basic information (name, email, password)",
+          "Verify your email address through the confirmation link",
+          "Complete a simple identity check for security",
+          "Gain immediate access to your personalized dashboard",
         ],
         tips: [
-          'Use a strong password with at least 8 characters',
-          'Keep your login credentials secure and private',
-          'The platform\'s onboarding process is fully automated and secure'
-        ]
-      }
+          "Use a strong password with at least 8 characters",
+          "Keep your login credentials secure and private",
+          "The platform's onboarding process is fully automated and secure",
+        ],
+      },
     },
     {
-      title: 'Deposit USDT',
-      description: 'Add funds to your account',
+      title: "Deposit USDT",
+      description: "Add funds to your account",
       icon: <WalletOutlined />,
       content: {
-        title: 'Step 2: Deposit USDT',
-        description: 'Add USDT to your wallet through a verified blockchain transaction. Choose your preferred lock-in plan and start earning.',
+        title: "Step 2: Deposit USDT",
+        description:
+          "Add USDT to your wallet through a verified blockchain transaction. Choose your preferred lock-in plan and start earning.",
         details: [
           'Navigate to the "Add Funds" section in your dashboard',
-          'Copy your unique USDT wallet address',
-          'Send USDT from your external wallet to our address',
-          'Wait for blockchain confirmation (usually 5-15 minutes)',
-          'Choose from 3-day, 30-day, or 100-day lock-in plans'
+          "Copy your unique USDT wallet address",
+          "Send USDT from your external wallet to our address",
+          "Wait for blockchain confirmation (usually 5-15 minutes)",
+          "Choose from 3-day, 30-day, or 100-day lock-in plans",
         ],
         tips: [
-          'Always double-check the wallet address before sending',
-          'Send only USDT (TRC-20) to avoid loss of funds',
-          'Every deposit is recorded on-chain and reflected immediately'
-        ]
-      }
+          "Always double-check the wallet address before sending",
+          "Send only USDT (TRC-20) to avoid loss of funds",
+          "Every deposit is recorded on-chain and reflected immediately",
+        ],
+      },
     },
     {
-      title: 'Start Earning',
-      description: 'Watch your investment grow',
+      title: "Start Earning",
+      description: "Watch your investment grow",
       icon: <DollarCircleOutlined />,
       content: {
-        title: 'Step 3: Start Earning',
-        description: 'Your rewards are credited to your wallet balance automatically each day. Monitor your earnings and withdraw available funds at your convenience.',
+        title: "Step 3: Start Earning",
+        description:
+          "Your rewards are credited to your wallet balance automatically each day. Monitor your earnings and withdraw available funds at your convenience.",
         details: [
-          'Your rewards are credited automatically each day',
-          'Monitor your earnings in the dashboard',
-          'View historical payouts and performance tracking',
-          'Withdraw available funds at your convenience',
-          'Your principal is securely released at maturity'
+          "Your rewards are credited automatically each day",
+          "Monitor your earnings in the dashboard",
+          "View historical payouts and performance tracking",
+          "Withdraw available funds at your convenience",
+          "Your principal is securely released at maturity",
         ],
         tips: [
-          'Check your dashboard regularly to track progress',
-          'Every withdrawal request passes through blockchain verification',
-          'At the end of the lock-in term, your principal amount is securely released'
-        ]
-      }
+          "Check your dashboard regularly to track progress",
+          "Every withdrawal request passes through blockchain verification",
+          "At the end of the lock-in term, your principal amount is securely released",
+        ],
+      },
     },
   ];
-
-
 
   return (
     <div className="how-to-use-page">
@@ -127,8 +142,9 @@ const HowToUsePage = () => {
               How to Use <span className="gradient-text">SecureUSDT</span>
             </Title>
             <Paragraph className="hero-description">
-              Simple. Secure. Seamless. Get started with SecureUSDT in just three easy steps and begin 
-              earning consistent returns on your USDT investments with complete transparency and control.
+              Simple. Secure. Seamless. Get started with SecureUSDT in just
+              three easy steps and begin earning consistent returns on your USDT
+              investments with complete transparency and control.
             </Paragraph>
             <Space size="large">
               <Link to="/register">
@@ -155,22 +171,23 @@ const HowToUsePage = () => {
               Quick <span className="gradient-text">Start Guide</span>
             </Title>
             <Paragraph className="section-description">
-              Follow these three simple steps to start earning returns on your USDT investments.
+              Follow these three simple steps to start earning returns on your
+              USDT investments.
             </Paragraph>
           </div>
-          
+
           <div className="steps-container">
             <Steps
               current={activeStep}
               onChange={setActiveStep}
-              items={steps.map(step => ({
+              items={steps.map((step) => ({
                 title: step.title,
                 description: step.description,
-                icon: step.icon
+                icon: step.icon,
               }))}
               className="custom-steps"
             />
-            
+
             <div className="step-content">
               <Card className="step-card">
                 <Title level={3} className="step-content-title">
@@ -179,9 +196,11 @@ const HowToUsePage = () => {
                 <Paragraph className="step-content-description">
                   {steps[activeStep].content.description}
                 </Paragraph>
-                
+
                 <div className="step-details">
-                  <Title level={4} className="details-title">What you need to do:</Title>
+                  <Title level={4} className="details-title">
+                    What you need to do:
+                  </Title>
                   <ul className="details-list">
                     {steps[activeStep].content.details.map((detail, index) => (
                       <li key={index} className="detail-item">
@@ -191,7 +210,7 @@ const HowToUsePage = () => {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div className="step-tips">
                   <Title level={4} className="tips-title">
                     <InfoCircleOutlined className="info-icon" />
@@ -211,7 +230,6 @@ const HowToUsePage = () => {
           </div>
         </div>
       </section>
-
 
       {/* Important Information Section */}
       <section className="info-section">
@@ -259,10 +277,11 @@ const HowToUsePage = () => {
               Frequently Asked <span className="gradient-text">Questions</span>
             </Title>
             <Paragraph className="section-description">
-              Find answers to common questions about using SecureUSDT and managing your investments.
+              Find answers to common questions about using SecureUSDT and
+              managing your investments.
             </Paragraph>
           </div>
-          
+
           <div className="faq-container">
             {faqLoading ? (
               <div className="loading-container">
@@ -284,7 +303,9 @@ const HowToUsePage = () => {
                       {faq.question}
                     </div>
                   ),
-                  children: <Paragraph className="faq-answer">{faq.answer}</Paragraph>
+                  children: (
+                    <Paragraph className="faq-answer">{faq.answer}</Paragraph>
+                  ),
                 }))}
                 className="custom-collapse"
               />
@@ -304,7 +325,7 @@ const HowToUsePage = () => {
               Learn about our journey and the vision that drives our platform.
             </Paragraph>
           </div>
-          
+
           <Row gutter={[32, 32]} justify="center">
             <Col xs={24} md={12}>
               <Card className="created-card">
@@ -312,12 +333,15 @@ const HowToUsePage = () => {
                   <div className="created-icon">
                     <TrophyOutlined />
                   </div>
-                  <Title level={3} className="created-title">Our Journey</Title>
+                  <Title level={3} className="created-title">
+                    Our Journey
+                  </Title>
                   <Paragraph className="created-description">
-                    SecureUSDT was founded in 2024 with a vision to democratize cryptocurrency investments 
-                    and provide secure, profitable opportunities for investors worldwide. Our platform 
-                    combines cutting-edge blockchain technology with traditional investment principles 
-                    to deliver consistent returns.
+                    SecureUSDT was founded in 2024 with a vision to democratize
+                    cryptocurrency investments and provide secure, profitable
+                    opportunities for investors worldwide. Our platform combines
+                    cutting-edge blockchain technology with traditional
+                    investment principles to deliver consistent returns.
                   </Paragraph>
                 </div>
               </Card>
@@ -328,18 +352,21 @@ const HowToUsePage = () => {
                   <div className="created-icon">
                     <SafetyOutlined />
                   </div>
-                  <Title level={3} className="created-title">Built for Security</Title>
+                  <Title level={3} className="created-title">
+                    Built for Security
+                  </Title>
                   <Paragraph className="created-description">
-                    From day one, security has been our top priority. We've implemented multiple layers 
-                    of protection including cold storage, multi-signature wallets, and advanced encryption 
-                    to ensure your funds are always safe. Our platform undergoes regular security audits 
-                    and compliance checks.
+                    From day one, security has been our top priority. We've
+                    implemented multiple layers of protection including cold
+                    storage, multi-signature wallets, and advanced encryption to
+                    ensure your funds are always safe. Our platform undergoes
+                    regular security audits and compliance checks.
                   </Paragraph>
                 </div>
               </Card>
             </Col>
           </Row>
-          
+
           <Row gutter={[32, 32]} justify="center" style={{ marginTop: 32 }}>
             <Col xs={24} md={8}>
               <div className="stat-item">
@@ -355,7 +382,7 @@ const HowToUsePage = () => {
             </Col>
             <Col xs={24} md={8}>
               <div className="stat-item">
-                <div className="stat-number">$5k+</div>
+                <div className="stat-number">$1M+</div>
                 <div className="stat-label">Assets Managed</div>
               </div>
             </Col>
@@ -371,7 +398,8 @@ const HowToUsePage = () => {
               Ready to Start <span className="gradient-text">Earning</span>?
             </Title>
             <Paragraph className="cta-description">
-              Join thousands of investors who are already earning consistent returns on their USDT investments.
+              Join thousands of investors who are already earning consistent
+              returns on their USDT investments.
             </Paragraph>
             <Space size="large">
               <Link to="/register">

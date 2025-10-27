@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Card, Row, Col, Typography, Space, Avatar } from 'antd';
-import { 
-  ArrowRightOutlined, 
-  SafetyOutlined, 
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button, Card, Row, Col, Typography, Space, Avatar } from "antd";
+import {
+  ArrowRightOutlined,
+  SafetyOutlined,
   DollarCircleOutlined,
   GlobalOutlined,
   TeamOutlined,
@@ -17,9 +17,9 @@ import {
   TrophyOutlined,
   UserOutlined,
   CrownOutlined,
-  RocketOutlined
-} from '@ant-design/icons';
-import './WhyJoinPage.css';
+  RocketOutlined,
+} from "@ant-design/icons";
+import "./WhyJoinPage.css";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -31,94 +31,104 @@ const WhyJoinPage = () => {
   const coreValues = [
     {
       icon: <SafetyOutlined />,
-      title: 'Security First',
-      description: 'Your funds are protected with bank-grade security protocols and multi-layer encryption.'
+      title: "Security First",
+      description:
+        "Your funds are protected with bank-grade security protocols and multi-layer encryption.",
     },
     {
       icon: <HeartOutlined />,
-      title: 'Transparency',
-      description: 'Complete transparency in all operations with real-time reporting and open communication.'
+      title: "Transparency",
+      description:
+        "Complete transparency in all operations with real-time reporting and open communication.",
     },
     {
       icon: <BulbOutlined />,
-      title: 'Innovation',
-      description: 'Cutting-edge technology and innovative investment strategies for maximum returns.'
+      title: "Innovation",
+      description:
+        "Cutting-edge technology and innovative investment strategies for maximum returns.",
     },
     {
       icon: <TrophyOutlined />,
-      title: 'Excellence',
-      description: 'Commitment to delivering exceptional results and maintaining the highest standards.'
+      title: "Excellence",
+      description:
+        "Commitment to delivering exceptional results and maintaining the highest standards.",
     },
     {
       icon: <TeamOutlined />,
-      title: 'Community',
-      description: 'Building a strong community of successful investors who support each other.'
+      title: "Community",
+      description:
+        "Building a strong community of successful investors who support each other.",
     },
     {
       icon: <RocketOutlined />,
-      title: 'Growth',
-      description: 'Focused on sustainable growth and long-term success for all our members.'
-    }
+      title: "Growth",
+      description:
+        "Focused on sustainable growth and long-term success for all our members.",
+    },
   ];
 
   const teamMembers = [
     {
-      name: 'Sarah Johnson',
-      role: 'CEO & Founder',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-      description: '15+ years in fintech and blockchain. Former Goldman Sachs executive.'
+      name: "Sarah Johnson",
+      role: "CEO & Founder",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      description:
+        "15+ years in fintech and blockchain. Former Goldman Sachs executive.",
     },
     {
-      name: 'Michael Chen',
-      role: 'CTO',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-      description: 'Expert in blockchain technology and cybersecurity. MIT graduate.'
+      name: "Michael Chen",
+      role: "CTO",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      description:
+        "Expert in blockchain technology and cybersecurity. MIT graduate.",
     },
     {
-      name: 'Emily Rodriguez',
-      role: 'Head of Investments',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily',
-      description: 'Former hedge fund manager with 12+ years of trading experience.'
+      name: "Emily Rodriguez",
+      role: "Head of Investments",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
+      description:
+        "Former hedge fund manager with 12+ years of trading experience.",
     },
     {
-      name: 'David Kim',
-      role: 'Security Director',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-      description: 'Cybersecurity expert with certifications from leading security firms.'
-    }
+      name: "David Kim",
+      role: "Security Director",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      description:
+        "Cybersecurity expert with certifications from leading security firms.",
+    },
   ];
 
   const benefits = [
     {
       icon: <DollarCircleOutlined />,
-      title: 'High Returns',
-      description: 'Earn up to 0.75% daily returns on your USDT investments'
+      title: "High Returns",
+      description: "Earn up to 0.75% daily returns on your USDT investments",
     },
     {
       icon: <LockOutlined />,
-      title: 'Secure Platform',
-      description: 'Bank-grade security with multi-layer protection'
+      title: "Secure Platform",
+      description: "Bank-grade security with multi-layer protection",
     },
     {
       icon: <GlobalOutlined />,
-      title: '24/7 Access',
-      description: 'Manage your investments anytime, anywhere in the world'
+      title: "24/7 Access",
+      description: "Manage your investments anytime, anywhere in the world",
     },
     {
       icon: <ThunderboltOutlined />,
-      title: 'Fast Withdrawals',
-      description: 'Quick and secure withdrawal process'
+      title: "Fast Withdrawals",
+      description: "Quick and secure withdrawal process",
     },
     {
       icon: <TeamOutlined />,
-      title: 'Expert Management',
-      description: 'Managed by experienced financial professionals'
+      title: "Expert Management",
+      description: "Managed by experienced financial professionals",
     },
     {
       icon: <RiseOutlined />,
-      title: 'Compound Growth',
-      description: 'Watch your investment grow with compound interest'
-    }
+      title: "Compound Growth",
+      description: "Watch your investment grow with compound interest",
+    },
   ];
 
   return (
@@ -132,17 +142,18 @@ const WhyJoinPage = () => {
             <div className="orb orb-3"></div>
           </div>
         </div>
-        
+
         <div className="hero-content">
           <Title level={1} className="hero-title">
             Why Join <span className="gradient-text">SecureUSDT</span>?
           </Title>
-          
+
           <Paragraph className="hero-description">
-            Join thousands of successful investors who have chosen SecureUSDT for their USDT investment needs. 
-            Discover why we're the trusted choice for secure, profitable cryptocurrency investments.
+            Join thousands of successful investors who have chosen SecureUSDT
+            for their USDT investment needs. Discover why we're the trusted
+            choice for secure, profitable cryptocurrency investments.
           </Paragraph>
-          
+
           <Space size="large" className="hero-buttons">
             <Link to="/register">
               <Button type="primary" size="large" className="cta-button">
@@ -167,17 +178,22 @@ const WhyJoinPage = () => {
               Why Choose <span className="gradient-text">SecureUSDT</span>?
             </Title>
             <Paragraph className="section-description">
-              We provide the most comprehensive and secure USDT investment platform with proven results and expert management.
+              We provide the most comprehensive and secure USDT investment
+              platform with proven results and expert management.
             </Paragraph>
           </div>
-          
+
           <Row gutter={[32, 32]}>
             {benefits.map((benefit, index) => (
               <Col xs={24} sm={12} lg={8} key={index}>
                 <Card className="benefit-card" hoverable>
                   <div className="benefit-icon">{benefit.icon}</div>
-                  <Title level={4} className="benefit-title">{benefit.title}</Title>
-                  <Paragraph className="benefit-description">{benefit.description}</Paragraph>
+                  <Title level={4} className="benefit-title">
+                    {benefit.title}
+                  </Title>
+                  <Paragraph className="benefit-description">
+                    {benefit.description}
+                  </Paragraph>
                 </Card>
               </Col>
             ))}
@@ -193,17 +209,22 @@ const WhyJoinPage = () => {
               Our <span className="gradient-text">Core Values</span>
             </Title>
             <Paragraph className="section-description">
-              These fundamental principles guide everything we do and ensure your success.
+              These fundamental principles guide everything we do and ensure
+              your success.
             </Paragraph>
           </div>
-          
+
           <Row gutter={[32, 32]}>
             {coreValues.map((value, index) => (
               <Col xs={24} sm={12} lg={8} key={index}>
                 <Card className="value-card" hoverable>
                   <div className="value-icon">{value.icon}</div>
-                  <Title level={4} className="value-title">{value.title}</Title>
-                  <Paragraph className="value-description">{value.description}</Paragraph>
+                  <Title level={4} className="value-title">
+                    {value.title}
+                  </Title>
+                  <Paragraph className="value-description">
+                    {value.description}
+                  </Paragraph>
                 </Card>
               </Col>
             ))}
@@ -219,23 +240,28 @@ const WhyJoinPage = () => {
               Meet Our <span className="gradient-text">Expert Team</span>
             </Title>
             <Paragraph className="section-description">
-              Our experienced professionals are dedicated to managing your investments with expertise and care.
+              Our experienced professionals are dedicated to managing your
+              investments with expertise and care.
             </Paragraph>
           </div>
-          
+
           <Row gutter={[32, 32]} justify="center">
             {teamMembers.map((member, index) => (
               <Col xs={24} sm={12} md={6} key={index}>
                 <Card className="team-card" hoverable>
                   <div className="team-member">
-                    <Avatar 
-                      size={120} 
+                    <Avatar
+                      size={120}
                       src={member.avatar}
                       className="team-avatar"
                     />
-                    <Title level={4} className="member-name">{member.name}</Title>
+                    <Title level={4} className="member-name">
+                      {member.name}
+                    </Title>
                     <Text className="member-role">{member.role}</Text>
-                    <Paragraph className="member-description">{member.description}</Paragraph>
+                    <Paragraph className="member-description">
+                      {member.description}
+                    </Paragraph>
                   </div>
                 </Card>
               </Col>
@@ -256,7 +282,7 @@ const WhyJoinPage = () => {
             </Col>
             <Col xs={12} sm={6}>
               <div className="stat-item">
-                <div className="stat-number">$5k+</div>
+                <div className="stat-number">$1M+</div>
                 <div className="stat-label">Under Management</div>
               </div>
             </Col>
@@ -268,8 +294,8 @@ const WhyJoinPage = () => {
             </Col>
             <Col xs={12} sm={6}>
               <div className="stat-item">
-                <div className="stat-number">4.9/5</div>
-                <div className="stat-label">User Rating</div>
+                <div className="stat-number">18</div>
+                <div className="stat-label">Countries</div>
               </div>
             </Col>
           </Row>
@@ -281,10 +307,12 @@ const WhyJoinPage = () => {
         <div className="container">
           <div className="cta-content">
             <Title level={2} className="cta-title">
-              Ready to Join Our <span className="gradient-text">Community</span>?
+              Ready to Join Our <span className="gradient-text">Community</span>
+              ?
             </Title>
             <Paragraph className="cta-description">
-              Start your investment journey with SecureUSDT today and experience the benefits of professional USDT management.
+              Start your investment journey with SecureUSDT today and experience
+              the benefits of professional USDT management.
             </Paragraph>
             <Space size="large">
               <Link to="/register">

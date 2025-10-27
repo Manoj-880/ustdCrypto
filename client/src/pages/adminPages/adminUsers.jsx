@@ -238,7 +238,7 @@ const AdminUsers = () => {
   ];
 
   const activeUsers = users.filter((user) => user.status === "active").length;
-  const totalBalance = users.reduce((sum, user) => sum + user.balance, 0);
+  const totalBalance = users.reduce((sum, user) => sum + (Number(user.balance) || 0), 0);
   const usersThisMonth = users.filter((user) => {
     const joinDate = new Date(user.joinDate);
     const currentDate = new Date();
