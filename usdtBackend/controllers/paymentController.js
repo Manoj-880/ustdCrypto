@@ -32,13 +32,20 @@ const makePayment = async (req, res) => {
     let MY_WALLET;
     const activerWallet = await walletRepo.getActiveWallet();
     if (activerWallet) {
-      MY_WALLET = activerWallet.address;
+      MY_WALLET = activerWallet.walletId;
     }
 
     if (!txId || !userId) {
       return res.status(200).send({
         success: false,
         message: "TxID and userId are required",
+      });
+    }
+
+    if (!MY_WALLET) {
+      return res.status(200).send({
+        success: false,
+        message: "No active wallet found in system",
       });
     }
 
@@ -136,6 +143,7 @@ const makePayment = async (req, res) => {
         from: transfer.from_address,
         to: transfer.to_address,
         amount: transferredAmount,
+        updatedBalance: updatedBalance.toFixed(2).toString(),
         transactionData,
       },
     });
