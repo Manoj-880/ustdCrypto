@@ -52,6 +52,7 @@ const Transactions = () => {
       setLoading(true);
       try {
         const response = await getTransactionsByUserId(user._id);
+        console.log(response);
         if (response?.success && Array.isArray(response.data)) {
           // Map backend transaction model to UI shape
           const mapped = response.data.map((t) => {
@@ -98,9 +99,9 @@ const Transactions = () => {
             }
 
             return {
-              id: t.transactionId || t._id,
+              id: t.id || t.transactionId || t._id,
               type: type,
-              amount: Number(t.quantity || 0),
+              amount: Number(t.usdtQuantity || t.quantity || 0),
               status: t.status || "completed",
               date: t.date,
               description: description,

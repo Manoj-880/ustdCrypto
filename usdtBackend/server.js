@@ -105,7 +105,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 corn.schedule(
-  process.env.PROFIT_CRON_SCHEDULE || "0 8 * * *",
+  process.env.PROFIT_CRON_SCHEDULE || "0 * * * *",
   async () => {
     try {
       await paymentController.addProfit();
