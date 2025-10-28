@@ -49,7 +49,7 @@ const OurPlansPage = () => {
       dailyReturn: '0.75%',
       highlights: 'Designed for long-term holders aiming for higher cumulative rewards and compounding benefits.',
       features: ['Highest returns', 'Long-term growth', 'Maximum compounding', 'Premium benefits'],
-      color: '#ff6b6b',
+      color: '#8b5cf6',
       icon: <CrownOutlined />
     }
   ];

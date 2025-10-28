@@ -551,6 +551,20 @@
 /* =========================
    Table Content Styling
 ========================= */
+.transaction-id-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.transaction-id-text {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary) !important;
+  font-size: var(--font-size-sm);
+  flex: 1;
+}
+
 .transaction-id {
   font-family: var(--font-family-mono);
   font-weight: var(--font-weight-bold);
@@ -564,6 +578,32 @@
   gap: var(--space-1);
 }
 
+.amount-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+}
+
+.amount-icon {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.amount-text {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+}
+
+.amount-value.positive {
+  color: var(--color-success);
+}
+
+.amount-value.negative {
+  color: var(--color-error);
+}
+
 .amount {
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-base);
@@ -575,6 +615,12 @@
 
 .amount.negative {
   color: var(--color-error);
+}
+
+.fee-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium);
 }
 
 .fee {

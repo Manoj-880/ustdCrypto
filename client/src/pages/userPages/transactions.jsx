@@ -12,10 +12,8 @@ import {
   Tooltip,
   Row,
   Col,
-  Statistic,
   Modal,
   Divider,
-  Avatar,
   Pagination,
 } from "antd";
 import { SearchOutlined, ReloadOutlined, EyeOutlined } from "@ant-design/icons";
@@ -229,34 +227,40 @@ const Transactions = () => {
       title: "Transaction ID",
       dataIndex: "id",
       key: "id",
-      width: 140,
+      width: 180,
       render: (text) => (
-        <Text copyable={{ text }} className="transaction-id">
-          {text}
-        </Text>
+        <div className="transaction-id-cell">
+          <Text className="transaction-id-text" copyable={{ text }}>
+            {text}
+          </Text>
+        </div>
       ),
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      width: 160,
+      width: 180,
       render: (amount, record) => (
         <div className="amount-cell">
           <div
-            className={`amount ${
+            className={`amount-value ${
               record.type === "withdraw" || record.type === "transfer"
                 ? "negative"
                 : "positive"
             }`}
           >
-            {record.type === "withdraw" || record.type === "transfer"
-              ? "↓"
-              : "↑"}{" "}
-            {formatCurrency(amount)}
+            <span className="amount-icon">
+              {record.type === "withdraw" || record.type === "transfer"
+                ? "↓"
+                : "↑"}
+            </span>
+            <span className="amount-text">
+              {formatCurrency(amount)}
+            </span>
           </div>
           {record.fee > 0 && (
-            <div className="fee">Fee: {formatCurrency(record.fee)}</div>
+            <div className="fee-text">Fee: {formatCurrency(record.fee)}</div>
           )}
         </div>
       ),
@@ -317,23 +321,14 @@ const Transactions = () => {
     },
   ];
 
-  const totalAmount = filteredTransactions.reduce((sum, txn) => {
-    if (txn.type === "deposit" || txn.type === "claimed_profit")
-      return sum + txn.amount;
-    if (txn.type === "withdraw" || txn.type === "transfer")
-      return sum - txn.amount;
-    return sum;
-  }, 0);
-
-  const completedTransactions = filteredTransactions.filter(
-    (txn) => txn.status === "completed"
-  ).length;
 
   const renderMobileCard = (transaction) => (
     <Card key={transaction.id} className="mobile-transaction-card" hoverable>
       <div className="mobile-card-header">
         <div className="transaction-id-section">
-          <Text className="transaction-id">{transaction.id}</Text>
+          <Text className="transaction-id-text" copyable={{ text: transaction.id }}>
+            {transaction.id}
+          </Text>
           <Tag color={transaction.status === 'completed' ? 'success' : transaction.status === 'pending' ? 'warning' : 'error'} className="status-tag">
             {transaction.status.toUpperCase()}
           </Tag>
@@ -356,7 +351,12 @@ const Transactions = () => {
                 strong 
                 className={`stat-value amount-value ${transaction.type === 'deposit' || transaction.type === 'claimed_profit' ? 'positive' : 'negative'}`}
               >
-                {transaction.type === 'deposit' || transaction.type === 'claimed_profit' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                <span className="amount-icon">
+                  {transaction.type === 'deposit' || transaction.type === 'claimed_profit' ? '+' : '-'}
+                </span>
+                <span className="amount-text">
+                  {formatCurrency(transaction.amount)}
+                </span>
               </Text>
             </div>
           </Col>
@@ -409,58 +409,6 @@ const Transactions = () => {
         </Text>
       </div>
 
-      {/* Summary Cards */}
-      <Row gutter={[16, 16]} className="summary-cards">
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="summary-card">
-            <Statistic
-              title="Total Transactions"
-              value={filteredTransactions.length}
-              valueStyle={{ fontSize: "1.5rem" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="summary-card">
-            <Statistic
-              title="Completed"
-              value={completedTransactions}
-              valueStyle={{ fontSize: "1.5rem", color: "#52c41a" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="summary-card">
-            <Statistic
-              title="Net Amount"
-              value={totalAmount}
-              precision={2}
-              suffix=" USDT"
-              valueStyle={{
-                fontSize: "1.5rem",
-                color: totalAmount >= 0 ? "#52c41a" : "#ff4d4f",
-              }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="summary-card">
-            <Statistic
-              title="Success Rate"
-              value={
-                filteredTransactions.length > 0
-                  ? (
-                      (completedTransactions / filteredTransactions.length) *
-                      100
-                    ).toFixed(1)
-                  : 0
-              }
-              suffix="%"
-              valueStyle={{ fontSize: "1.5rem", color: "#1677ff" }}
-            />
-          </Card>
-        </Col>
-      </Row>
 
       {/* Filters */}
       <Card className="filters-card">

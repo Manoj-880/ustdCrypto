@@ -45,7 +45,7 @@ const HomePage = () => {
     },
     {
       icon: <TeamOutlined />,
-      title: "Expert Team",
+      title: "Professional Management",
       description:
         "Managed by experienced financial professionals with years of market expertise.",
     },

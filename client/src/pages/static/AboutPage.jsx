@@ -24,38 +24,6 @@ const AboutPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const teamMembers = [
-    {
-      name: 'Alex Johnson',
-      role: 'CEO & Founder',
-      avatar: 'AJ',
-      description: 'Former Goldman Sachs executive with 15+ years in financial markets and blockchain technology.',
-      experience: '15+ Years'
-    },
-    {
-      name: 'Sarah Chen',
-      role: 'CTO',
-      avatar: 'SC',
-      description: 'Blockchain security expert and former lead developer at Coinbase with expertise in DeFi protocols.',
-      experience: '12+ Years'
-    },
-    {
-      name: 'Michael Rodriguez',
-      role: 'Head of Risk Management',
-      avatar: 'MR',
-      description: 'Quantitative analyst with extensive experience in risk assessment and portfolio optimization.',
-      experience: '10+ Years'
-    },
-    {
-      name: 'Emily Watson',
-      role: 'Head of Operations',
-      avatar: 'EW',
-      description: 'Operations specialist with a background in fintech and customer experience optimization.',
-      experience: '8+ Years'
-    }
-  ];
-
-
   const values = [
     {
       icon: <SafetyOutlined />,
@@ -353,37 +321,6 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="team-section">
-        <div className="container">
-          <div className="section-header">
-            <Title level={2} className="section-title">
-              Meet Our <span className="gradient-text">Expert Team</span>
-            </Title>
-            <Paragraph className="section-description">
-              Our team consists of experienced professionals from top financial institutions and blockchain companies.
-            </Paragraph>
-          </div>
-          
-          <Row gutter={[32, 32]}>
-            {teamMembers.map((member, index) => (
-              <Col xs={24} sm={12} lg={6} key={index}>
-                <Card className="team-card" hoverable>
-                  <div className="team-avatar">
-                    <Avatar size={80} className="member-avatar">
-                      {member.avatar}
-                    </Avatar>
-                    <div className="experience-badge">{member.experience}</div>
-                  </div>
-                  <Title level={4} className="member-name">{member.name}</Title>
-                  <Text className="member-role">{member.role}</Text>
-                  <Paragraph className="member-description">{member.description}</Paragraph>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </div>
-      </section>
 
       {/* How It Works Section */}
       <section className="how-it-works-section">

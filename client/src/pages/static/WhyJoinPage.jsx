@@ -67,37 +67,6 @@ const WhyJoinPage = () => {
     },
   ];
 
-  const teamMembers = [
-    {
-      name: "Sarah Johnson",
-      role: "CEO & Founder",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      description:
-        "15+ years in fintech and blockchain. Former Goldman Sachs executive.",
-    },
-    {
-      name: "Michael Chen",
-      role: "CTO",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      description:
-        "Expert in blockchain technology and cybersecurity. MIT graduate.",
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Head of Investments",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-      description:
-        "Former hedge fund manager with 12+ years of trading experience.",
-    },
-    {
-      name: "David Kim",
-      role: "Security Director",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      description:
-        "Cybersecurity expert with certifications from leading security firms.",
-    },
-  ];
-
   const benefits = [
     {
       icon: <DollarCircleOutlined />,
@@ -232,43 +201,6 @@ const WhyJoinPage = () => {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="team-section">
-        <div className="container">
-          <div className="section-header">
-            <Title level={2} className="section-title">
-              Meet Our <span className="gradient-text">Expert Team</span>
-            </Title>
-            <Paragraph className="section-description">
-              Our experienced professionals are dedicated to managing your
-              investments with expertise and care.
-            </Paragraph>
-          </div>
-
-          <Row gutter={[32, 32]} justify="center">
-            {teamMembers.map((member, index) => (
-              <Col xs={24} sm={12} md={6} key={index}>
-                <Card className="team-card" hoverable>
-                  <div className="team-member">
-                    <Avatar
-                      size={120}
-                      src={member.avatar}
-                      className="team-avatar"
-                    />
-                    <Title level={4} className="member-name">
-                      {member.name}
-                    </Title>
-                    <Text className="member-role">{member.role}</Text>
-                    <Paragraph className="member-description">
-                      {member.description}
-                    </Paragraph>
-                  </div>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </div>
-      </section>
 
       {/* Stats Section */}
       <section className="stats-section">

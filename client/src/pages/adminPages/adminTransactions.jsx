@@ -29,6 +29,7 @@ import {
 import dayjs from "dayjs";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
+import unifiedPdfService from "../../services/unifiedPdfService";
 import "../../styles/pages/adminPages/adminTransactions.css";
 import { getAllTransactions } from "../../api_calls/transactionsApi";
 import { toast } from "react-toastify";
@@ -123,64 +124,13 @@ const AdminTransactions = () => {
   const handleDownloadPDF = () => {
     if (!selectedTransaction) return;
 
-    const pdf = new jsPDF();
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    // Header
-    pdf.setFontSize(20);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Transaction Receipt", pageWidth / 2, 30, { align: "center" });
-
-    // Transaction Details
-    pdf.setFontSize(12);
-    pdf.setFont("helvetica", "normal");
-
-    let yPosition = 60;
-    const lineHeight = 8;
-
-    const details = [
-      { label: "Transaction ID:", value: selectedTransaction.id },
-      { label: "User Name:", value: selectedTransaction.userName },
-      { label: "User Email:", value: selectedTransaction.userEmail },
-      { label: "Type:", value: selectedTransaction.type ? selectedTransaction.type.toUpperCase() : 'UNKNOWN' },
-      {
-        label: "USDT Quantity:",
-        value: `${selectedTransaction.usdtQuantity} USDT`,
-      },
-      {
-        label: "Date:",
-        value: dayjs(selectedTransaction.date).format("MMM DD, YYYY HH:mm"),
-      },
-      { label: "Status:", value: selectedTransaction.status ? selectedTransaction.status.toUpperCase() : 'UNKNOWN' },
-      { label: "Description:", value: selectedTransaction.description },
-      { label: "Fee:", value: `${selectedTransaction.fee} USDT` },
-      { label: "Balance After:", value: `${selectedTransaction.balance} USDT` },
-      {
-        label: "Transaction Hash:",
-        value: selectedTransaction.transactionHash,
-      },
-      { label: "From Address:", value: selectedTransaction.fromAddress },
-      { label: "To Address:", value: selectedTransaction.toAddress },
-    ];
-
-    details.forEach(({ label, value }) => {
-      pdf.text(label, 20, yPosition);
-      pdf.text(value, 80, yPosition);
-      yPosition += lineHeight;
-    });
-
-    // Footer
-    pdf.setFontSize(10);
-    pdf.text(
-      "Generated on: " + dayjs().format("MMM DD, YYYY HH:mm"),
-      pageWidth / 2,
-      pageHeight - 20,
-      { align: "center" }
-    );
-
-    pdf.save(`transaction-${selectedTransaction.id}.pdf`);
-    message.success("PDF downloaded successfully!");
+    try {
+      const doc = unifiedPdfService.generateTransactionInvoice(selectedTransaction);
+      unifiedPdfService.downloadPDF(doc, `Transaction_${selectedTransaction.id}_Receipt.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      message.error('Failed to generate PDF');
+    }
   };
 
   const handleExportExcel = () => {

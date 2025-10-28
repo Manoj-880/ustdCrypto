@@ -56,7 +56,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-6);
+  /* padding: var(--space-6); */
   gap: var(--space-6);
   width: 100%;
   position: relative;
@@ -646,7 +646,7 @@
   .profile-header {
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-4);
+    /* padding: var(--space-4); */
   }
 
   .profile-main {
@@ -701,7 +701,7 @@
   .profile-header {
     flex-direction: column;
     gap: var(--space-4);
-    padding: var(--space-5);
+    /* padding: var(--space-5); */
   }
 
   .profile-main {
@@ -740,9 +740,9 @@
     padding: 0;
   }
 
-  .profile-header {
+  /* .profile-header {
     padding: var(--space-6);
-  }
+  } */
 
   .user-avatar {
     width: 100px;
@@ -781,9 +781,9 @@
     padding: 0;
   }
 
-  .profile-header {
+  /* .profile-header {
     padding: var(--space-6) var(--space-8);
-  }
+  } */
 }
 
 /* 2XL Devices (large desktops, 1200px and up) */
@@ -792,9 +792,9 @@
     padding: 0;
   }
 
-  .profile-header {
+  /* .profile-header {
     padding: var(--space-6) var(--space-8);
-  }
+  } */
 }
 
 /* 3XL Devices (TVs and very large screens, 1400px and up) */
@@ -803,9 +803,9 @@
     padding: 0;
   }
 
-  .profile-header {
+  /* .profile-header {
     padding: var(--space-8);
-  }
+  } */
 
   .page-title {
     font-size: var(--font-size-3xl);

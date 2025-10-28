@@ -32,7 +32,39 @@ const ContactPage = () => {
     loadTurnstile();
   }, []);
 
+  // Handle Turnstile widget rendering
+  useEffect(() => {
+    if (turnstileLoaded && window.turnstile) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const turnstileElement = document.querySelector('.cf-turnstile');
+        if (turnstileElement && !turnstileElement.hasChildNodes()) {
+          window.turnstile.render(turnstileElement);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [turnstileLoaded]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Clean up global callbacks
+      if (window.onTurnstileSuccess) delete window.onTurnstileSuccess;
+      if (window.onTurnstileError) delete window.onTurnstileError;
+      if (window.onTurnstileExpired) delete window.onTurnstileExpired;
+    };
+  }, []);
+
   const loadTurnstile = () => {
+    // Check if script already exists
+    if (document.querySelector('script[src*="turnstile"]')) {
+      setTurnstileLoaded(true);
+      setupTurnstileCallbacks();
+      return;
+    }
+
     // Load Cloudflare Turnstile script
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
@@ -40,20 +72,28 @@ const ContactPage = () => {
     script.defer = true;
     script.onload = () => {
       setTurnstileLoaded(true);
-      // Set up global callbacks
-      window.onTurnstileSuccess = (token) => {
-        setTurnstileToken(token);
-      };
-      window.onTurnstileError = () => {
-        setTurnstileToken(null);
-        message.error('Please complete the security verification');
-      };
-      window.onTurnstileExpired = () => {
-        setTurnstileToken(null);
-        message.warning('Security verification expired. Please try again.');
-      };
+      setupTurnstileCallbacks();
+    };
+    script.onerror = () => {
+      console.error('Failed to load Turnstile script');
+      message.error('Security verification failed to load. Please refresh the page.');
     };
     document.head.appendChild(script);
+  };
+
+  const setupTurnstileCallbacks = () => {
+    // Set up global callbacks
+    window.onTurnstileSuccess = (token) => {
+      setTurnstileToken(token);
+    };
+    window.onTurnstileError = () => {
+      setTurnstileToken(null);
+      message.error('Please complete the security verification');
+    };
+    window.onTurnstileExpired = () => {
+      setTurnstileToken(null);
+      message.warning('Security verification expired. Please try again.');
+    };
   };
 
   const loadFAQs = async () => {
@@ -307,7 +347,7 @@ const ContactPage = () => {
                     required
                   >
                     <div className="turnstile-container">
-                      {turnstileLoaded && (
+                      {turnstileLoaded ? (
                         <div
                           className="cf-turnstile"
                           data-sitekey="0x4AAAAAAB8nkpI8tRRklGxA"
@@ -317,8 +357,7 @@ const ContactPage = () => {
                           data-theme="light"
                           data-size="normal"
                         />
-                      )}
-                      {!turnstileLoaded && (
+                      ) : (
                         <div className="turnstile-loading">
                           <Spin size="small" /> Loading security verification...
                         </div>

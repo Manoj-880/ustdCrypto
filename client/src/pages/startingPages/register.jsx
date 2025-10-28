@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, Typography, Space, Divider, Checkbox } from "antd";
 import { toast } from "react-toastify";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { 
   UserOutlined, 
   MailOutlined, 
@@ -36,6 +36,7 @@ const Register = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
     const { login, isAuthenticated } = useAuth();
 
     // Redirect if already authenticated
@@ -44,6 +45,17 @@ const Register = () => {
             navigate("/app", { replace: true });
         }
     }, [isAuthenticated, navigate]);
+
+    // Handle referral code from URL parameter
+    useEffect(() => {
+        const referralCode = searchParams.get('ref');
+        if (referralCode) {
+            setFormData(prev => ({
+                ...prev,
+                referralCode: referralCode
+            }));
+        }
+    }, [searchParams]);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -65,7 +77,15 @@ const Register = () => {
 
         setIsLoading(true);
 
-        let response = await createUser(formData);
+        // Prepare data for API call - map referralCode to referredBy
+        const userData = {
+            ...formData,
+            referredBy: formData.referralCode || null, // Map referralCode to referredBy
+        };
+        delete userData.referralCode; // Remove the original referralCode field
+        delete userData.confirmPassword; // Remove confirmPassword as it's not needed in backend
+
+        let response = await createUser(userData);
         if(response.success) {
             toast.success("Registration successful! Please check your email to verify your account.", { position: "top-right" });
             // Don't auto-login, user needs to verify email first

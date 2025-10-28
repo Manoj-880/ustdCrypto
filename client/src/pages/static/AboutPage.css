@@ -361,72 +361,6 @@
   margin: 0;
 }
 
-/* Team Section */
-.team-section {
-  padding: 5rem 0;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.team-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 212, 170, 0.2);
-  border-radius: 16px;
-  padding: 2rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  height: 100%;
-}
-
-.team-card:hover {
-  transform: translateY(-5px);
-  border-color: #00d4aa;
-  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
-}
-
-.team-avatar {
-  position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.member-avatar {
-  background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%);
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 1.5rem;
-}
-
-.experience-badge {
-  position: absolute;
-  bottom: -5px;
-  right: -5px;
-  background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%);
-  color: #ffffff;
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
-.member-name {
-  color: #ffffff;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.member-role {
-  color: #00d4aa;
-  font-weight: 500;
-  display: block;
-  margin-bottom: 1rem;
-}
-
-.member-description {
-  color: #b0b0b0;
-  line-height: 1.6;
-  margin: 0;
-}
-
 /* Timeline Section */
 .timeline-section {
   padding: 5rem 0;
@@ -644,7 +578,6 @@
   
   .mission-section,
   .values-section,
-  .team-section,
   .timeline-section,
   .cta-section {
     padding: 3rem 0;
@@ -656,7 +589,6 @@
   
   .stat-card,
   .value-card,
-  .team-card,
   .visual-card {
     padding: 1.5rem;
   }

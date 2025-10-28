@@ -1,5 +1,5 @@
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
-const pdfInvoiceService = require('./pdfInvoiceService');
+const unifiedPdfInvoiceService = require('./unifiedPdfInvoiceService');
 
 // Configure AWS SES
 const createSESClient = () => {
@@ -1395,8 +1395,8 @@ const sendDepositSuccessEmail = async (userEmail, userName, amount, planName, st
     // Generate PDF invoice if user data and transaction data are provided
     if (userData && transactionData) {
       try {
-        const pdfDataUri = await pdfInvoiceService.generateDepositInvoice(userData, transactionData);
-        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+        const pdfDataUri = await unifiedPdfInvoiceService.generateDepositInvoice(userData, transactionData);
+        pdfAttachment = await unifiedPdfInvoiceService.pdfToBuffer(pdfDataUri);
       } catch (pdfError) {
         console.error('Failed to generate deposit PDF invoice:', pdfError);
         // Continue without PDF attachment
@@ -1454,8 +1454,8 @@ const sendWithdrawalSuccessEmail = async (userEmail, userName, amount, txId, com
     // Generate PDF invoice if user data and transaction data are provided
     if (userData && transactionData) {
       try {
-        const pdfDataUri = await pdfInvoiceService.generateWithdrawalInvoice(userData, transactionData, withdrawalData);
-        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+        const pdfDataUri = await unifiedPdfInvoiceService.generateWithdrawalInvoice(userData, transactionData, withdrawalData);
+        pdfAttachment = await unifiedPdfInvoiceService.pdfToBuffer(pdfDataUri);
       } catch (pdfError) {
         console.error('Failed to generate withdrawal PDF invoice:', pdfError);
         // Continue without PDF attachment
@@ -1571,8 +1571,8 @@ const sendAdminBalanceAddedEmail = async (userEmail, userName, amount, newBalanc
     // Generate PDF invoice if user data and transaction data are provided
     if (userData && transactionData) {
       try {
-        const pdfDataUri = await pdfInvoiceService.generateAdminBalanceInvoice(userData, transactionData, adminData, reason);
-        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+        const pdfDataUri = await unifiedPdfInvoiceService.generateAdminBalanceInvoice(userData, transactionData, adminData, reason);
+        pdfAttachment = await unifiedPdfInvoiceService.pdfToBuffer(pdfDataUri);
       } catch (pdfError) {
         console.error('Failed to generate admin balance PDF invoice:', pdfError);
         // Continue without PDF attachment

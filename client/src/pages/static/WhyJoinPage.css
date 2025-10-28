@@ -148,7 +148,6 @@
 /* Section Styles */
 .benefits-section,
 .values-section,
-.team-section,
 .stats-section,
 .cta-section {
   padding: 80px 0;
@@ -241,53 +240,6 @@
   margin: 0 !important;
 }
 
-/* Team Cards */
-.team-card {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(0, 212, 170, 0.2) !important;
-  border-radius: 12px !important;
-  padding: 32px !important;
-  text-align: center;
-  transition: all 0.3s ease;
-  height: 100%;
-}
-
-.team-card:hover {
-  transform: translateY(-5px);
-  border-color: #00d4aa !important;
-  box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
-}
-
-.team-member {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.team-avatar {
-  margin-bottom: 20px;
-  border: 3px solid #00d4aa;
-}
-
-.member-name {
-  color: #ffffff !important;
-  font-size: 1.25rem !important;
-  margin-bottom: 8px !important;
-}
-
-.member-role {
-  color: #00d4aa !important;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.member-description {
-  color: #b0b0b0 !important;
-  margin: 0 !important;
-  font-size: 0.9rem;
-}
-
 /* Stats Section */
 .stats-section {
   background: rgba(0, 212, 170, 0.1);
@@ -370,8 +322,7 @@
   }
   
   .benefit-card,
-  .value-card,
-  .team-card {
+  .value-card {
     padding: 24px !important;
   }
   
