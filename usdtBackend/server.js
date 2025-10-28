@@ -22,8 +22,22 @@ app.set('trust proxy', 1);
 // CORS Configuration
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log(`🌐 CORS check - Origin: ${origin}`);
+    
+    // Development mode - allow all localhost origins
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Development mode: Checking for localhost origins');
+      if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        console.log('✅ CORS: Development mode - allowing localhost origin');
+        return callback(null, true);
+      }
+    }
+    
     // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('✅ CORS: Allowing request with no origin');
+      return callback(null, true);
+    }
 
     const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
       process.env.ALLOWED_ORIGINS.split(',') : [
@@ -36,9 +50,14 @@ const corsOptions = {
         'https://secureusdt.com'
       ];
 
+    console.log(`📋 Allowed origins:`, allowedOrigins);
+    console.log(`🔍 Checking if origin '${origin}' is in allowed list...`);
+
     if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log('✅ CORS: Origin allowed');
       callback(null, true);
     } else {
+      console.log('❌ CORS: Origin not allowed');
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -135,6 +154,16 @@ app.get("/test", (req, res) => {
     message: "API working with IP range rate limit",
     timestamp: new Date().toISOString(),
     ip: req.ip
+  });
+});
+
+// CORS test endpoint
+app.get("/cors-test", (req, res) => {
+  console.log("CORS test endpoint hit");
+  res.json({ 
+    message: "CORS test successful",
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
   });
 });
 
