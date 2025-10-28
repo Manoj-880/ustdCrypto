@@ -110,7 +110,7 @@ const makePayment = async (req, res) => {
     });
     await transactionRepo.createTransaction(transactionData);
 
-    // Send email notification for successful deposit
+    // Send email notification for successful deposit with PDF invoice
     try {
       const emailResult = await sendDepositSuccessEmail(
         user.email,
@@ -119,11 +119,13 @@ const makePayment = async (req, res) => {
         "Deposit", // planName - for regular deposits
         transactionData.date, // startDate
         transactionData.date, // maturityDate (same as start for regular deposits)
-        txId
+        txId,
+        user, // userData for PDF generation
+        transactionData // transactionData for PDF generation
       );
 
       if (emailResult.success) {
-        console.log("Deposit success email sent to:", user.email);
+        console.log("Deposit success email with PDF invoice sent to:", user.email);
       } else {
         console.warn(
           "Failed to send deposit success email:",
@@ -171,6 +173,11 @@ const addProfit = async () => {
     // Loop through each user and update balance
     for (let user of users) {
       const userLockins = await lockinRepo.getLockinsByUserId(user._id);
+      
+      // Skip user if they have no lock-ins
+      if (!userLockins || userLockins.length === 0) {
+        continue;
+      }
 
       // Helper to parse dates as IST if no timezone is present
       const parseIstDate = (dateString) => {
@@ -222,9 +229,9 @@ const addProfit = async () => {
         })
         .reduce((sum, profit) => sum + profit, 0);
 
-      const balance = parseFloat(user.balance);
-      let userProfit = parseFloat(user.profit);
-      if (balance <= 0) continue;
+      const balance = parseFloat(user.balance) || 0;
+      let userProfit = parseFloat(user.profit) || 0;
+      // Note: Users can have 0 balance but still have active lock-ins earning profit
 
       const newBalance = balance + userLockinProfit;
       userProfit = userProfit + userLockinProfit;

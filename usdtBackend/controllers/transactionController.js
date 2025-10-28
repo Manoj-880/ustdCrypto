@@ -40,6 +40,8 @@ const getAllTransactions = async (req, res) => {
                     // Map backend transaction types to frontend expected types
                     switch (transaction.type) {
                         case 'ADMIN_ADD':
+                        case 'cash':
+                        case 'CASH':
                             transactionType = 'deposit';
                             break;
                         case 'TRANSFER_OUT':
@@ -54,6 +56,12 @@ const getAllTransactions = async (req, res) => {
                             break;
                         case 'claimed_profit':
                             transactionType = 'claimed_profit';
+                            break;
+                        case 'DAILY_PROFIT':
+                            transactionType = 'profit';
+                            break;
+                        case 'REFERRAL_BONUS':
+                            transactionType = 'bonus';
                             break;
                         default:
                             transactionType = 'deposit';
@@ -138,6 +146,8 @@ const getAllTransactionsByUserId = async (req, res) => {
                     // Map backend transaction types to frontend expected types
                     switch (transaction.type) {
                         case 'ADMIN_ADD':
+                        case 'cash':
+                        case 'CASH':
                             transactionType = 'deposit';
                             break;
                         case 'TRANSFER_OUT':
@@ -152,6 +162,12 @@ const getAllTransactionsByUserId = async (req, res) => {
                             break;
                         case 'claimed_profit':
                             transactionType = 'claimed_profit';
+                            break;
+                        case 'DAILY_PROFIT':
+                            transactionType = 'profit';
+                            break;
+                        case 'REFERRAL_BONUS':
+                            transactionType = 'bonus';
                             break;
                         default:
                             transactionType = 'deposit';

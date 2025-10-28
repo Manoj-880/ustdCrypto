@@ -57,39 +57,57 @@ const Transactions = () => {
         if (response?.success && Array.isArray(response.data)) {
           // Map backend transaction model to UI shape
           const mapped = response.data.map((t) => {
-            // Determine transaction type based on backend data
-            let type = "transfer";
-            let description = `From ${t.userWalletId} to ${t.activeWalleteId}`;
+            // Use the same mapping logic as backend controller
+            let type = t.type || "deposit";
+            let description = t.description || "";
             
-            // Debug logging
-            console.log("Transaction data:", t);
-            console.log("Transaction type from backend:", t.type);
-            
-            if (t.type === "ADMIN_ADD" || t.type === "cash" || t.type === "CASH") {
-              type = "deposit";
-              description = t.reason || "Admin added balance";
-            } else if (t.type === "DAILY_PROFIT") {
-              type = "profit";
-              description = "Daily profit earned";
-            } else if (t.type === "REFERRAL_BONUS") {
-              type = "bonus";
-              description = "Referral bonus earned";
-            } else if (t.type === "WITHDRAWAL") {
-              type = "withdrawal";
-              description = "Withdrawal request";
+            // Map backend transaction types to frontend expected types
+            switch (t.type) {
+              case 'ADMIN_ADD':
+              case 'cash':
+              case 'CASH':
+                type = "deposit";
+                description = t.description || "Admin added balance";
+                break;
+              case 'TRANSFER_OUT':
+                type = "transfer";
+                description = t.description || `Transfer out to ${t.activeWalleteId}`;
+                break;
+              case 'TRANSFER_IN':
+                type = "deposit";
+                description = t.description || `Transfer in from ${t.userWalletId}`;
+                break;
+              case 'WITHDRAWAL_REQUEST':
+              case 'withdraw':
+                type = "withdraw";
+                description = t.description || "Withdrawal request";
+                break;
+              case 'claimed_profit':
+                type = "profit";
+                description = t.description || "Claimed profit";
+                break;
+              case 'DAILY_PROFIT':
+                type = "profit";
+                description = t.description || "Daily profit earned";
+                break;
+              case 'REFERRAL_BONUS':
+                type = "bonus";
+                description = t.description || "Referral bonus earned";
+                break;
+              default:
+                type = "deposit";
+                description = t.description || "Deposit transaction";
             }
-
-            console.log("Mapped transaction type:", type);
 
             return {
               id: t.transactionId || t._id,
               type: type,
               amount: Number(t.quantity || 0),
-              status: "completed", // All transactions are completed
+              status: t.status || "completed",
               date: t.date,
               description: description,
-              fee: 0,
-              balance: 0,
+              fee: Number(t.fee || 0),
+              balance: Number(t.balance || 0), // Use the balance from backend mapping
             };
           });
           setTransactions(mapped);

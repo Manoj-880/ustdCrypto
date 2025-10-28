@@ -29,7 +29,7 @@ const transactionSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ["deposit", "withdraw", "claimed_profit", "transfer", "ADMIN_ADD", "TRANSFER_OUT", "TRANSFER_IN", "WITHDRAWAL_REQUEST"],
+        enum: ["deposit", "withdraw", "claimed_profit", "transfer", "ADMIN_ADD", "TRANSFER_OUT", "TRANSFER_IN", "WITHDRAWAL_REQUEST", "DAILY_PROFIT", "REFERRAL_BONUS", "cash", "CASH"],
         default: "deposit"
     },
     status: {

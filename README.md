@@ -1,426 +1,342 @@
-# 🚀 SecureUSDT - Cryptocurrency Investment Platform
+# SecureUSDT - Cryptocurrency Investment Platform
 
-<div align="center">
+A comprehensive full-stack cryptocurrency investment platform built with React and Node.js, featuring automated profit distribution, secure wallet management, and professional invoice generation.
 
-![SecureUSDT Logo](client/src/assets/logo.svg)
+## 🚀 Project Overview
 
-**A Full-Stack Cryptocurrency Investment Platform with Advanced Features**
+SecureUSDT is a sophisticated investment platform that allows users to invest in USDT (Tether) through various lock-in plans, earn daily profits, and manage their cryptocurrency portfolio with advanced security features and automated systems.
 
-[![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-Express-green.svg)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Database-green.svg)](https://mongodb.com/)
-[![AWS](https://img.shields.io/badge/AWS-SES-orange.svg)](https://aws.amazon.com/)
+## 🏗️ Architecture
 
-[Live Demo](#) • [Documentation](#) • [Report Bug](#) • [Request Feature](#)
+### Frontend (React + Vite)
+- **Framework**: React 19.1.1 with Vite 7.1.2
+- **UI Library**: Ant Design 5.27.1
+- **Styling**: Bootstrap 5.3.7 + Custom CSS
+- **State Management**: React Context API
+- **Routing**: React Router DOM 7.8.2
+- **HTTP Client**: Axios 1.11.0
 
-</div>
+### Backend (Node.js + Express)
+- **Runtime**: Node.js with Express 5.1.0
+- **Database**: MongoDB with Mongoose 8.17.1
+- **Authentication**: JWT-based authentication
+- **Email Service**: AWS SES integration
+- **PDF Generation**: jsPDF + html2canvas
+- **Blockchain Integration**: TronWeb for USDT transactions
 
----
-
-## 📋 **Project Overview**
-
-**SecureUSDT** is a comprehensive, full-stack cryptocurrency investment platform that enables users to invest in USDT (Tether) with various lock-in plans, track profits, manage transactions, and provides both user and admin interfaces for complete investment management. Built with modern technologies and best practices.
-
-### 🎯 **Key Features**
-- **💰 Investment Management** - Multiple lock-in plans with automated profit calculation
-- **📧 Email Notifications** - Comprehensive email system with AWS SES integration
-- **🔐 Security First** - JWT authentication, rate limiting, and secure API design
-- **📱 Responsive Design** - Mobile-first approach with modern UI/UX
-- **👥 User Management** - Complete user and admin management system
-- **📊 Analytics** - Real-time profit tracking and transaction monitoring
-- **🔄 Real-time Updates** - Live transaction updates and notifications
-
----
-
-## 🏗️ **Architecture & Technology Stack**
-
-### **Frontend Technologies**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **React** | 19.1.1 | Modern UI framework with hooks and context |
-| **Vite** | 7.1.2 | Lightning-fast build tool and dev server |
-| **Ant Design** | 5.27.1 | Professional UI component library |
-| **React Router** | 7.8.2 | Client-side routing and navigation |
-| **Axios** | 1.11.0 | HTTP client for API communication |
-| **React Toastify** | 11.0.5 | Toast notifications and user feedback |
-
-### **Backend Technologies**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Node.js** | Latest | JavaScript runtime environment |
-| **Express** | 5.1.0 | Web application framework |
-| **MongoDB** | Latest | NoSQL database for data storage |
-| **Mongoose** | 8.17.1 | MongoDB object modeling |
-| **JWT** | Latest | Secure authentication tokens |
-| **AWS SES** | Latest | Email service integration |
-| **TronWeb** | 6.0.4 | TRON blockchain integration |
-
-### **Security & Infrastructure**
-- **🔐 JWT Authentication** - Secure user sessions and role-based access
-- **🛡️ Rate Limiting** - API request throttling and DDoS protection
-- **🔒 Environment Variables** - Secure configuration management
-- **📧 AWS SES Integration** - Professional email notifications
-- **🌐 CORS Protection** - Cross-origin security
-- **📊 Request Logging** - Comprehensive API monitoring
-
----
-
-## 🚀 **Key Features & Functionality**
-
-### **👤 User Features**
-- **🔐 Secure Authentication** - JWT-based login/registration system
-- **📊 Investment Dashboard** - Real-time portfolio overview and analytics
-- **💰 Lock-in Plans** - Multiple investment options with different durations
-- **📈 Profit Tracking** - Automated profit calculation and history
-- **💸 Withdrawal System** - Secure withdrawal request and processing
-- **🔄 Internal Transfers** - Wallet-to-wallet transfers between users
-- **👥 Referral System** - User referral program with bonus rewards
-- **📧 Email Notifications** - Automated email alerts for all activities
-- **📱 Mobile Responsive** - Optimized for all device sizes
-
-### **👨‍💼 Admin Features**
-- **📊 Admin Dashboard** - Comprehensive system overview and analytics
-- **👥 User Management** - Complete user account management
-- **💼 Transaction Monitoring** - Real-time transaction tracking
-- **💰 Withdrawal Processing** - Secure withdrawal approval system
-- **📋 Lock-in Plans Management** - Investment plan configuration
-- **❓ FAQ Management** - Dynamic FAQ system
-- **📧 Email System Monitoring** - Email delivery tracking
-- **📈 Financial Reports** - Comprehensive analytics and reporting
-
-### **📧 Email Notification System**
-- **🎉 Welcome Emails** - New user onboarding
-- **✅ Deposit Confirmations** - Investment confirmation emails
-- **🚨 Withdrawal Alerts** - Admin notifications for withdrawal requests
-- **💸 Withdrawal Success** - User confirmation emails
-- **🔄 Transfer Notifications** - Internal transfer confirmations
-- **🎁 Referral Bonuses** - Bonus notification emails
-
----
-
-## 📁 **Project Structure**
+## 📁 Project Structure
 
 ```
-SecureUSDT/
-├── 📁 client/                          # React Frontend Application
-│   ├── 📁 src/
-│   │   ├── 📁 api_calls/              # API integration layer
-│   │   ├── 📁 assets/                 # Images, logos, and static files
-│   │   ├── 📁 components/             # Reusable React components
-│   │   ├── 📁 contexts/               # React Context providers
-│   │   ├── 📁 pages/                  # Page components
-│   │   │   ├── 📁 adminPages/         # Admin interface pages
-│   │   │   ├── 📁 pageLayouts/        # Layout components
-│   │   │   ├── 📁 startingPages/     # Authentication pages
-│   │   │   ├── 📁 static/             # Static content pages
-│   │   │   └── 📁 userPages/          # User interface pages
-│   │   ├── 📁 styles/                 # CSS and styling files
-│   │   └── 📄 App.jsx                 # Main application component
-│   ├── 📄 package.json                # Frontend dependencies
-│   └── 📄 vite.config.js              # Vite configuration
-├── 📁 usdtBackend/                     # Node.js Backend Application
-│   ├── 📁 controllers/                 # API route controllers
-│   │   ├── 📄 userController.js       # User management + Welcome emails
-│   │   ├── 📄 lockinController.js     # Investment management + Deposit emails
-│   │   ├── 📄 withdrawalRequestController.js # Withdrawal + Email alerts
-│   │   ├── 📄 transferController.js   # Internal transfers + Email notifications
-│   │   └── 📄 paymentController.js    # Payment processing + Referral emails
-│   ├── 📁 models/                      # Database models
-│   ├── 📁 repos/                       # Data access layer
-│   ├── 📁 routes/                      # API route definitions
-│   ├── 📁 services/                    # Business logic services
-│   │   └── 📄 emailService.js         # Email templates and sending
-│   ├── 📁 middleware/                  # Custom middleware
-│   ├── 📄 server.js                    # Main server file
-│   ├── 📄 .env                         # Environment variables
-│   └── 📄 package.json                 # Backend dependencies
-└── 📄 README.md                        # Project documentation
+usdt/
+├── client/                    # React Frontend
+│   ├── src/
+│   │   ├── api_calls/        # API integration layer
+│   │   ├── components/       # Reusable UI components
+│   │   ├── contexts/         # React Context providers
+│   │   ├── pages/           # Page components
+│   │   │   ├── adminPages/  # Admin dashboard pages
+│   │   │   ├── userPages/   # User dashboard pages
+│   │   │   ├── static/      # Public pages
+│   │   │   └── startingPages/ # Auth pages
+│   │   └── styles/          # CSS styling
+│   └── dist/                # Production build
+└── usdtBackend/             # Node.js Backend
+    ├── controllers/         # Business logic
+    ├── models/             # Database schemas
+    ├── repos/              # Data access layer
+    ├── routes/             # API endpoints
+    ├── services/           # External services
+    ├── middleware/          # Custom middleware
+    └── logs/               # Application logs
 ```
 
----
+## 🔧 Key Features
 
-## 🛠️ **Installation & Setup**
+### 💰 Investment Management
+- **Lock-in Plans**: Multiple investment plans with different interest rates
+- **Automated Profits**: Daily profit distribution via cron jobs
+- **Referral System**: Bonus rewards for successful referrals
+- **Balance Management**: Real-time balance tracking and updates
 
-### **Prerequisites**
-- Node.js (v16 or higher)
+### 🔐 Security Features
+- **JWT Authentication**: Secure user authentication
+- **Role-based Access**: Separate admin and user interfaces
+- **Rate Limiting**: IP-based request rate limiting
+- **CORS Protection**: Configurable cross-origin resource sharing
+- **Input Validation**: Comprehensive data validation
+
+### 📧 Communication System
+- **Email Notifications**: Automated email system using AWS SES
+- **PDF Invoices**: Professional invoice generation for transactions
+- **Email Templates**: Responsive HTML email templates
+- **Multi-language Support**: Template-based email content
+
+### 📊 Admin Dashboard
+- **User Management**: Complete user administration
+- **Transaction Monitoring**: Real-time transaction tracking
+- **Withdrawal Processing**: Manual withdrawal approval system
+- **Analytics**: Comprehensive dashboard analytics
+- **FAQ Management**: Dynamic FAQ system
+
+### 💳 Payment Integration
+- **USDT Transactions**: TronWeb integration for USDT transfers
+- **Transaction Verification**: Blockchain transaction validation
+- **Internal Transfers**: User-to-user transfer system
+- **Withdrawal Processing**: Secure withdrawal request handling
+
+## 🛠️ Technical Implementation
+
+### Frontend Architecture
+
+#### Component Structure
+- **Layout Components**: Admin and user-specific layouts
+- **Protected Routes**: Role-based route protection
+- **Modal Components**: Reusable modal dialogs
+- **Navigation**: Dynamic navigation based on user role
+
+#### State Management
+```javascript
+// Context-based state management
+const AuthContext = createContext();
+const useAuth = () => useContext(AuthContext);
+```
+
+#### API Integration
+- Centralized API calls in `/api_calls` directory
+- Axios interceptors for request/response handling
+- Error handling and loading states
+
+### Backend Architecture
+
+#### MVC Pattern Implementation
+- **Models**: Mongoose schemas for data modeling
+- **Controllers**: Business logic and request handling
+- **Routes**: API endpoint definitions
+- **Repositories**: Data access abstraction layer
+
+#### Database Design
+```javascript
+// User Model Example
+const userSchema = new Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  balance: { type: String, default: "0" },
+  profit: { type: String, default: "0" },
+  referredBy: { type: String },
+  walletId: { type: String },
+  isVerified: { type: Boolean, default: false }
+});
+```
+
+#### Automated Systems
+- **Cron Jobs**: Daily profit distribution at 8:00 AM IST
+- **Email Automation**: Transaction-based email notifications
+- **PDF Generation**: Automated invoice creation
+- **Logging**: Comprehensive request and error logging
+
+### Security Implementation
+
+#### Authentication Flow
+1. User registration with email verification
+2. JWT token generation upon successful login
+3. Token validation middleware for protected routes
+4. Role-based access control
+
+#### Data Protection
+- Environment variable management for sensitive data
+- Input sanitization and validation
+- SQL injection prevention through Mongoose
+- XSS protection in email templates
+
+## 🔄 Business Logic
+
+### Investment System
+1. **User Registration**: Email verification required
+2. **Deposit Process**: USDT transaction verification via blockchain
+3. **Lock-in Creation**: Investment plan assignment
+4. **Daily Profit Calculation**: Automated profit distribution
+5. **Withdrawal Process**: Admin approval workflow
+
+### Profit Distribution Algorithm
+```javascript
+// Daily profit calculation
+const dailyProfit = activeLockins
+  .filter(lockin => lockin.status === "ACTIVE")
+  .map(lockin => {
+    const dailyRate = lockin.interestRate / 100;
+    return lockin.amount * dailyRate;
+  })
+  .reduce((sum, profit) => sum + profit, 0);
+```
+
+### Referral System
+- Automatic referral bonus calculation
+- Multi-level referral tracking
+- Bonus distribution on successful referrals
+
+## 📱 User Experience
+
+### Responsive Design
+- Mobile-first approach
+- Bootstrap grid system
+- Ant Design responsive components
+- Custom CSS for enhanced styling
+
+### User Interface Features
+- **Dashboard**: Comprehensive user dashboard
+- **Transaction History**: Detailed transaction tracking
+- **Profile Management**: User profile and settings
+- **Investment Tracking**: Real-time investment monitoring
+- **Withdrawal Requests**: Easy withdrawal request system
+
+### Admin Interface
+- **User Management**: Complete user administration
+- **Transaction Monitoring**: Real-time transaction oversight
+- **Withdrawal Processing**: Manual approval workflow
+- **Analytics Dashboard**: Business intelligence metrics
+
+## 🔧 Development Setup
+
+### Prerequisites
+- Node.js (v18+)
 - MongoDB
-- AWS Account (for SES email service)
 - Git
 
-### **Quick Start**
+### Installation Steps
+1. Clone the repository
+2. Install frontend dependencies: `cd client && npm install`
+3. Install backend dependencies: `cd usdtBackend && npm install`
+4. Configure environment variables
+5. Start MongoDB service
+6. Run backend: `npm start`
+7. Run frontend: `npm run dev`
 
-#### **1. Clone the Repository**
-```bash
-git clone https://github.com/yourusername/secureusdt.git
-cd secureusdt
-```
+### Environment Configuration
+- Database connection strings
+- JWT secret keys
+- Email service credentials
+- Blockchain API endpoints
 
-#### **2. Backend Setup**
-```bash
-cd usdtBackend
-npm install
-cp .env.example .env
-# Edit .env with your configuration
-npm start
-```
+## 🚀 Deployment
 
-#### **3. Frontend Setup**
-```bash
-cd client
-npm install
-npm run dev
-```
+### Production Build
+- Frontend: Vite production build with optimization
+- Backend: Node.js with PM2 process management
+- Database: MongoDB Atlas cloud deployment
+- Email: AWS SES production configuration
 
-#### **4. Environment Configuration**
-Create `.env` file in `usdtBackend/` directory:
-```env
-# Database
-MONGODB_URI=mongodb://localhost:27017/secureusdt
+### Security Considerations
+- Environment variable protection
+- HTTPS implementation
+- Database connection security
+- API rate limiting
+- CORS configuration
 
-# JWT Authentication
-JWT_SECRET=your_super_secure_jwt_secret_key
-JWT_EXPIRES_IN=24h
+## 📊 Performance Optimizations
 
-# AWS SES Configuration
-AWS_ACCESS_KEY_ID=your_aws_access_key_id
-AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-AWS_REGION=ap-south-1
+### Frontend Optimizations
+- Code splitting with React.lazy()
+- Image optimization
+- Bundle size optimization
+- Caching strategies
 
-# Email Addresses
-FROM_EMAIL=noreply@secureusdt.com
-PAYMENTS_EMAIL=payments@secureusdt.com
-ADMIN_EMAIL=admin@secureusdt.com
+### Backend Optimizations
+- Database indexing
+- Query optimization
+- Caching mechanisms
+- Connection pooling
 
-# Server Configuration
-PORT=5002
-NODE_ENV=development
-```
+## 🔍 Monitoring & Logging
 
----
+### Application Monitoring
+- Request logging with Morgan
+- Error tracking and reporting
+- Performance metrics
+- User activity monitoring
 
-## 🔧 **API Documentation**
+### Log Management
+- Structured logging format
+- Log rotation and archival
+- Error alerting system
+- Audit trail maintenance
 
-### **Authentication Endpoints**
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/login` | User authentication |
-| `POST` | `/api/register` | User registration (triggers welcome email) |
-| `POST` | `/api/admin/login` | Admin authentication |
+## 🛡️ Security Measures
 
-### **User Endpoints**
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/user/dashboard` | User dashboard data |
-| `POST` | `/api/user/lockin` | Create lock-in investment (triggers deposit email) |
-| `GET` | `/api/user/transactions` | User transaction history |
-| `POST` | `/api/user/withdraw` | Request withdrawal (triggers admin alert email) |
+### Data Security
+- Encryption at rest and in transit
+- Secure password hashing
+- JWT token security
+- Input validation and sanitization
 
-### **Admin Endpoints**
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/admin/users` | Get all users |
-| `GET` | `/api/admin/transactions` | Get all transactions |
-| `PUT` | `/api/admin/withdraw/:id` | Process withdrawal (triggers success email) |
+### API Security
+- Rate limiting per IP
+- CORS policy enforcement
+- Request validation
+- Error handling without data leakage
 
-### **Transfer Endpoints**
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/transfer` | Internal transfer (triggers recipient email) |
+## 📈 Scalability Considerations
 
----
+### Database Scaling
+- MongoDB sharding strategies
+- Index optimization
+- Query performance tuning
+- Connection management
 
-## 📊 **Database Schema**
+### Application Scaling
+- Horizontal scaling with load balancers
+- Microservices architecture potential
+- Caching layer implementation
+- CDN integration for static assets
 
-### **Core Models**
-- **👤 User** - User accounts, profiles, and authentication
-- **👨‍💼 Admin** - Admin user accounts and permissions
-- **💼 Wallet** - User wallet information and balances
-- **💸 Transactions** - All financial transactions and history
-- **🔒 Lockin** - User lock-in investments and plans
-- **📋 LockinPlans** - Available investment plans and configurations
-- **📈 Profit** - Profit calculations and historical data
-- **💸 WithdrawRequest** - Withdrawal requests and processing
-- **❓ FAQ** - Frequently asked questions and answers
+## 🎯 Future Enhancements
 
----
+### Planned Features
+- Mobile application development
+- Advanced analytics dashboard
+- Multi-currency support
+- Enhanced security features
+- API documentation with Swagger
 
-## 🎨 **UI/UX Features**
+### Technical Improvements
+- Microservices migration
+- Container orchestration
+- Advanced monitoring
+- Automated testing suite
 
-### **Design System**
-- **🌙 Dark Theme** - Modern dark color scheme with professional styling
-- **📱 Mobile-First** - Responsive design optimized for all devices
-- **🎯 User-Centric** - Intuitive navigation and user experience
-- **⚡ Performance** - Fast loading and smooth interactions
-- **♿ Accessibility** - WCAG compliant design patterns
+## 📝 Development Guidelines
 
-### **Component Library**
-- **Ant Design Components** - Professional UI components
-- **Custom Styling** - Brand-specific design system
-- **Loading States** - User feedback during operations
-- **Error Handling** - Comprehensive error management
-- **Toast Notifications** - Real-time user feedback
-- **Modal Dialogs** - Interactive user interfaces
+### Code Standards
+- ESLint configuration for code quality
+- Consistent naming conventions
+- Modular component architecture
+- Comprehensive error handling
 
----
+### Testing Strategy
+- Unit testing for business logic
+- Integration testing for APIs
+- End-to-end testing for user flows
+- Performance testing for scalability
 
-## 🔐 **Security Implementation**
+## 🤝 Contributing
 
-### **Authentication & Authorization**
-- **🔑 JWT Tokens** - Secure user sessions and role-based access
-- **🔒 Password Hashing** - Bcrypt encryption for user passwords
-- **🛡️ Rate Limiting** - API request throttling and DDoS protection
-- **🌐 CORS Protection** - Cross-origin resource sharing security
-- **📝 Input Validation** - Data sanitization and validation
-- **🔐 Protected Routes** - Role-based access control
+### Development Workflow
+1. Feature branch creation
+2. Code implementation
+3. Testing and validation
+4. Code review process
+5. Merge to main branch
 
-### **Data Security**
-- **🔒 Environment Variables** - Secure configuration management
-- **🛡️ API Security** - Secure API design and implementation
-- **📊 Request Logging** - Comprehensive API monitoring
-- **🔐 Secret Management** - Secure handling of sensitive data
+### Code Quality
+- Automated linting
+- Code review requirements
+- Documentation standards
+- Performance benchmarks
 
 ---
 
-## 📧 **Email System Architecture**
+## 📞 Contact
 
-### **Email Templates**
-- **🎉 Welcome Email** - New user onboarding and platform introduction
-- **✅ Deposit Success** - Investment confirmation with transaction details
-- **🚨 Withdrawal Request Alert** - Admin notifications for withdrawal requests
-- **💸 Withdrawal Success** - User confirmation for successful withdrawals
-- **🔄 Internal Transfer** - Transfer notifications for recipients
-- **🎁 Referral Bonus** - Bonus notifications for referrers
+For technical inquiries or collaboration opportunities, please reach out through professional channels.
 
-### **Email Features**
-- **📧 AWS SES Integration** - Professional email delivery service
-- **🎨 HTML Templates** - Responsive email designs
-- **📱 Mobile Optimized** - Email templates optimized for mobile devices
-- **🔄 Error Handling** - Non-blocking email sending with retry logic
-- **📊 Delivery Tracking** - Comprehensive email delivery monitoring
-
----
-
-## 🚀 **Deployment & Production**
-
-### **Production Build**
-```bash
-# Frontend Build
-cd client
-npm run build
-
-# Backend Start
-cd usdtBackend
-npm start
-```
-
-### **Environment Configuration**
-- **🌍 Production Environment** - Configure production environment variables
-- **🗄️ Database Setup** - Set up MongoDB production database
-- **📧 Email Service** - Configure AWS SES for production
-- **🔗 Blockchain Integration** - Set up TronWeb for production
-- **🔐 Security** - Implement production security measures
-
----
-
-## 📈 **Performance & Monitoring**
-
-### **Performance Features**
-- **⚡ Fast Loading** - Optimized bundle sizes and lazy loading
-- **📊 Real-time Updates** - Live data updates without page refresh
-- **🔄 Caching** - Intelligent caching for improved performance
-- **📱 Mobile Optimization** - Optimized for mobile devices
-
-### **Monitoring & Analytics**
-- **📊 Request Logging** - Comprehensive API request monitoring
-- **📧 Email Tracking** - Email delivery and bounce monitoring
-- **🔍 Error Tracking** - Error logging and debugging
-- **📈 Performance Metrics** - Application performance monitoring
-
----
-
-## 🧪 **Testing & Quality Assurance**
-
-### **Testing Strategy**
-- **🔍 Manual Testing** - Comprehensive manual testing of all features
-- **📱 Cross-browser Testing** - Testing across different browsers
-- **📱 Mobile Testing** - Mobile device compatibility testing
-- **🔐 Security Testing** - Security vulnerability assessment
-
-### **Quality Assurance**
-- **📝 Code Review** - Peer review process for code quality
-- **🔍 Linting** - Code quality and style enforcement
-- **📊 Performance Testing** - Load testing and performance optimization
-- **🛡️ Security Auditing** - Security best practices implementation
-
----
-
-## 🤝 **Contributing**
-
-### **Development Workflow**
-1. **🍴 Fork the Repository** - Create your own fork
-2. **🌿 Create Feature Branch** - `git checkout -b feature/AmazingFeature`
-3. **💾 Commit Changes** - `git commit -m 'Add some AmazingFeature'`
-4. **📤 Push to Branch** - `git push origin feature/AmazingFeature`
-5. **🔄 Create Pull Request** - Submit a pull request for review
-
-### **Code Standards**
-- **📝 ESLint Configuration** - Consistent code formatting
-- **🎨 Prettier Integration** - Code formatting and style
-- **📚 Documentation** - Comprehensive code documentation
-- **🧪 Testing** - Test coverage for new features
-
----
-
-## 📞 **Support & Contact**
-
-### **Technical Support**
-- **📧 Email Support** - Contact through the application
-- **📚 Documentation** - Comprehensive project documentation
-- **🐛 Bug Reports** - Report issues through GitHub issues
-- **💡 Feature Requests** - Suggest new features and improvements
-
-### **Project Information**
-- **👨‍💻 Developer** - [Your Name](https://github.com/yourusername)
-- **📧 Email** - your.email@example.com
-- **🌐 Portfolio** - [Your Portfolio Website](https://yourportfolio.com)
-- **💼 LinkedIn** - [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-
----
-
-## 📄 **License**
-
-This project is proprietary software. All rights reserved.
-
-**© 2025 SecureUSDT. All rights reserved.**
-
----
-
-## 🏆 **Project Highlights**
-
-### **Technical Achievements**
-- ✅ **Full-Stack Development** - Complete frontend and backend implementation
-- ✅ **Modern Architecture** - Microservices architecture with clean separation
-- ✅ **Security First** - Comprehensive security implementation
-- ✅ **Scalable Design** - Built for growth and scalability
-- ✅ **Production Ready** - Complete deployment and monitoring setup
-
-### **Business Value**
-- 💰 **Revenue Generation** - Complete investment platform with profit tracking
-- 👥 **User Management** - Comprehensive user and admin management
-- 📧 **Communication** - Automated email notification system
-- 📊 **Analytics** - Real-time analytics and reporting
-- 🔒 **Security** - Enterprise-grade security implementation
-
----
-
-<div align="center">
-
-**🚀 SecureUSDT - Secure, Reliable, Profitable Cryptocurrency Investment Platform**
-
-*Built with ❤️ by [Your Name](https://github.com/yourusername)*
-
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/yourusername/secureusdt)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue.svg)](https://linkedin.com/in/yourprofile)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Website-green.svg)](https://yourportfolio.com)
-
-</div>
+**Note**: This project demonstrates full-stack development capabilities with modern web technologies, automated systems, and comprehensive security implementations suitable for production environments.

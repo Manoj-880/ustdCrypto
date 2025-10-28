@@ -1,7 +1,7 @@
 const adminRepo = require("../repos/adminRepo");
 const userRepo = require("../repos/userRepo");
 const transactionRepo = require("../repos/transactionRepo");
-const { sendEmail } = require("../services/emailService");
+const { sendAdminBalanceAddedEmail } = require("../services/emailService");
 
 const createAdmin = async (req, res) => {
   try {
@@ -98,21 +98,28 @@ const addBalance = async (req, res) => {
 
     await transactionRepo.createTransaction(transactionData);
 
-    // Send email notification
+    // Send email notification with PDF invoice
     try {
-      const emailResult = await sendEmail(
+      // Create admin data for PDF generation
+      const adminData = {
+        name: req.user?.name || 'System Admin',
+        email: req.user?.email || 'admin@secureusdt.com'
+      };
+
+      const emailResult = await sendAdminBalanceAddedEmail(
         user.email,
-        "adminBalanceAdded",
-        "payments@secureusdt.com",
         user.firstName,
         parseFloat(amount).toFixed(2),
         newBalance,
         transactionData.transactionId,
-        reason || "Admin added balance"
+        reason || "Admin added balance",
+        user, // userData for PDF generation
+        transactionData, // transactionData for PDF generation
+        adminData // adminData for PDF generation
       );
 
       if (emailResult.success) {
-        console.log("Admin balance added email sent to:", user.email);
+        console.log("Admin balance added email with PDF invoice sent to:", user.email);
       } else {
         console.warn("Failed to send admin balance added email:", emailResult.message);
       }

@@ -1,4 +1,5 @@
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const pdfInvoiceService = require('./pdfInvoiceService');
 
 // Configure AWS SES
 const createSESClient = () => {
@@ -47,7 +48,7 @@ const emailTemplates = {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🔒 SecureUSDT</div>
+              <div class="logo">SecureUSDT</div>
               <h1 class="welcome-title">Welcome to SecureUSDT!</h1>
               <p>Your secure cryptocurrency investment journey begins now</p>
             </div>
@@ -479,7 +480,103 @@ const emailTemplates = {
     };
   },
 
-  // 8. Referral Bonus Notification
+  // 8. Internal Transfer Sent Email
+  internalTransferSent: (senderName, senderEmail, recipientName, amount, txId, currentBalance) => {
+    return {
+      subject: "Transfer Sent – Internal Transfer Completed",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Transfer Sent</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #ffffff; padding: 40px; border-radius: 0 0 10px 10px; }
+            .success-icon { font-size: 48px; margin-bottom: 20px; }
+            .transfer-details { background: #f8f9fa; padding: 30px; border-radius: 8px; margin: 30px 0; }
+            .detail-row { display: flex; justify-content: space-between; margin: 15px 0; padding: 10px 0; border-bottom: 1px solid #eee; }
+            .detail-label { font-weight: bold; color: #666; min-width: 150px; }
+            .detail-value { color: #333; flex: 1; text-align: right; }
+            .amount { font-size: 24px; font-weight: bold; color: #ff6b6b; }
+            .balance { font-size: 20px; font-weight: bold; color: #00a8ff; }
+            .cta-button { background: linear-gradient(135deg, #00d4aa 0%, #00a8ff 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; font-weight: bold; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="success-icon">📤</div>
+              <h1>Transfer Sent!</h1>
+              <p>Internal transfer completed successfully</p>
+            </div>
+            <div class="content">
+              <h2>Hello ${senderName}!</h2>
+              <p>Your internal transfer has been successfully processed and sent to the recipient.</p>
+              
+              <div class="transfer-details">
+                <h3>📊 Transfer Details</h3>
+                <div class="detail-row">
+                  <span class="detail-label">To:</span>
+                  <span class="detail-value">${recipientName}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Amount Sent:</span>
+                  <span class="detail-value amount">-${amount} USDT</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Transaction ID:</span>
+                  <span class="detail-value">${txId}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Current Balance:</span>
+                  <span class="detail-value balance">${currentBalance} USDT</span>
+                </div>
+              </div>
+              
+              <div style="text-align: center;">
+                <a href="https://secureusdt.com/dashboard" class="cta-button">View Dashboard</a>
+              </div>
+              
+              <p>The transfer has been completed and the recipient has been notified. You can view your updated balance in your dashboard.</p>
+              
+              <div class="footer">
+                <p>Best regards,<br>The SecureUSDT Team</p>
+                <p>This is an automated notification email.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Transfer Sent – Internal Transfer Completed
+        
+        Hello ${senderName},
+        
+        Your internal transfer has been successfully processed and sent to the recipient.
+        
+        Transfer Details:
+        To: ${recipientName}
+        Amount Sent: -${amount} USDT
+        Transaction ID: ${txId}
+        Current Balance: ${currentBalance} USDT
+        
+        View dashboard: https://secureusdt.com/dashboard
+        
+        The transfer has been completed and the recipient has been notified.
+        
+        Best regards,
+        The SecureUSDT Team
+      `
+    };
+  },
+
+  // 9. Referral Bonus Notification
   referralBonus: (userName, userEmail, referralName, bonusAmount, walletBalance) => {
     return {
       subject: "You've Earned a New Referral Bonus!",
@@ -711,7 +808,7 @@ const emailTemplates = {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🔒 SecureUSDT</div>
+              <div class="logo">SecureUSDT</div>
               <h1>Withdrawal Request Rejected</h1>
               <p>Your withdrawal request has been reviewed and rejected</p>
             </div>
@@ -820,7 +917,7 @@ const emailTemplates = {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🔒 SecureUSDT</div>
+              <div class="logo">SecureUSDT</div>
               <h1 class="success-title">Balance Added Successfully!</h1>
               <p>Your account has been credited with additional funds</p>
             </div>
@@ -942,7 +1039,7 @@ const emailTemplates = {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🔒 SecureUSDT</div>
+              <div class="logo">SecureUSDT</div>
               <h1 class="verification-title">Verify Your Email Address</h1>
               <p>Complete your account setup to get started</p>
             </div>
@@ -1043,7 +1140,7 @@ const emailTemplates = {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">🎉 SecureUSDT</div>
+              <div class="logo">SecureUSDT</div>
               <h1 class="welcome-title">Welcome to SecureUSDT!</h1>
               <p>Your account is now ready to use</p>
             </div>
@@ -1069,8 +1166,8 @@ const emailTemplates = {
                 </div>
                 <div class="feature-item">
                   <div class="feature-icon">🔒</div>
-                  <h4>Secure Trading</h4>
-                  <p>Trade with confidence using our secure platform</p>
+                  <h4>Secure Investment</h4>
+                  <p>Invest with confidence using our secure platform</p>
                 </div>
                 <div class="feature-item">
                   <div class="feature-icon">📈</div>
@@ -1119,7 +1216,7 @@ const emailTemplates = {
         What You Can Do Now:
         💰 Make Deposits - Start investing with USDT and watch your portfolio grow
         📊 Track Performance - Monitor your investments with real-time analytics
-        🔒 Secure Trading - Trade with confidence using our secure platform
+        🔒 Secure Investment - Invest with confidence using our secure platform
         📈 Earn Profits - Access various investment opportunities
 
         Login to your account: ${loginUrl}
@@ -1196,6 +1293,86 @@ const sendEmail = async (toEmail, templateName, fromEmail = 'noreply@secureusdt.
   }
 };
 
+// Send email with PDF attachment function
+const sendEmailWithAttachment = async (toEmail, templateName, fromEmail = 'noreply@secureusdt.com', ...templateParams) => {
+  try {
+    const sesClient = createSESClient();
+    const template = emailTemplates[templateName];
+    
+    if (!template) {
+      throw new Error(`Email template '${templateName}' not found`);
+    }
+    
+    // Extract PDF attachment and filename from templateParams
+    const pdfAttachment = templateParams[templateParams.length - 2];
+    const pdfFilename = templateParams[templateParams.length - 1];
+    
+    // Remove PDF attachment params from template params
+    const cleanTemplateParams = templateParams.slice(0, -2);
+    
+    const emailContent = typeof template === 'function' ? template(...cleanTemplateParams) : template;
+    
+    const command = new SendEmailCommand({
+      Source: fromEmail,
+      Destination: {
+        ToAddresses: [toEmail],
+      },
+      Message: {
+        Subject: {
+          Data: emailContent.subject,
+          Charset: 'UTF-8',
+        },
+        Body: {
+          Html: {
+            Data: emailContent.html,
+            Charset: 'UTF-8',
+          },
+          Text: {
+            Data: emailContent.text,
+            Charset: 'UTF-8',
+          },
+        },
+      },
+      // Add attachment if PDF is provided
+      ...(pdfAttachment && {
+        Raw: {
+          Data: Buffer.concat([
+            Buffer.from(`From: ${fromEmail}\r\n`),
+            Buffer.from(`To: ${toEmail}\r\n`),
+            Buffer.from(`Subject: ${emailContent.subject}\r\n`),
+            Buffer.from(`MIME-Version: 1.0\r\n`),
+            Buffer.from(`Content-Type: multipart/mixed; boundary="boundary123"\r\n\r\n`),
+            Buffer.from(`--boundary123\r\n`),
+            Buffer.from(`Content-Type: text/html; charset=UTF-8\r\n\r\n`),
+            Buffer.from(emailContent.html),
+            Buffer.from(`\r\n--boundary123\r\n`),
+            Buffer.from(`Content-Type: application/pdf\r\n`),
+            Buffer.from(`Content-Disposition: attachment; filename="${pdfFilename}"\r\n`),
+            Buffer.from(`Content-Transfer-Encoding: base64\r\n\r\n`),
+            pdfAttachment,
+            Buffer.from(`\r\n--boundary123--\r\n`)
+          ])
+        }
+      })
+    });
+
+    const result = await sesClient.send(command);
+    console.log('Email with PDF attachment sent successfully:', result.MessageId);
+    
+    return {
+      success: true,
+      messageId: result.MessageId,
+      message: 'Email with PDF attachment sent successfully'
+    };
+  } catch (error) {
+    console.error('Error sending email with attachment:', error);
+    return {
+      success: false,
+      message: error.message || 'Failed to send email with attachment'
+    };
+  }
+};
+
 // Send contact form email
 const sendContactFormEmail = async (name, email, mobileNumber, subject, message) => {
   return await sendEmail(
@@ -1210,20 +1387,52 @@ const sendContactFormEmail = async (name, email, mobileNumber, subject, message)
   );
 };
 
-// Send deposit success email
-const sendDepositSuccessEmail = async (userEmail, userName, amount, planName, startDate, maturityDate, txId) => {
-  return await sendEmail(
-    userEmail,
-    'depositSuccess',
-    'payments@secureusdt.com',
-    userName,
-    userEmail,
-    amount,
-    planName,
-    startDate,
-    maturityDate,
-    txId
-  );
+// Send deposit success email with PDF invoice
+const sendDepositSuccessEmail = async (userEmail, userName, amount, planName, startDate, maturityDate, txId, userData = null, transactionData = null) => {
+  try {
+    let pdfAttachment = null;
+    
+    // Generate PDF invoice if user data and transaction data are provided
+    if (userData && transactionData) {
+      try {
+        const pdfDataUri = await pdfInvoiceService.generateDepositInvoice(userData, transactionData);
+        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+      } catch (pdfError) {
+        console.error('Failed to generate deposit PDF invoice:', pdfError);
+        // Continue without PDF attachment
+      }
+    }
+
+    return await sendEmailWithAttachment(
+      userEmail,
+      'depositSuccess',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      planName,
+      startDate,
+      maturityDate,
+      txId,
+      pdfAttachment,
+      'Deposit_Invoice.pdf'
+    );
+  } catch (error) {
+    console.error('Error in sendDepositSuccessEmail:', error);
+    // Fallback to regular email without PDF
+    return await sendEmail(
+      userEmail,
+      'depositSuccess',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      planName,
+      startDate,
+      maturityDate,
+      txId
+    );
+  }
 };
 
 // 1. Welcome Email
@@ -1237,18 +1446,48 @@ const sendWelcomeEmail = async (userEmail, userName) => {
   );
 };
 
-// 3. Withdrawal Success Email
-const sendWithdrawalSuccessEmail = async (userEmail, userName, amount, txId, completionTime) => {
-  return await sendEmail(
-    userEmail,
-    'withdrawalSuccess',
-    'payments@secureusdt.com',
-    userName,
-    userEmail,
-    amount,
-    txId,
-    completionTime
-  );
+// 3. Withdrawal Success Email with PDF invoice
+const sendWithdrawalSuccessEmail = async (userEmail, userName, amount, txId, completionTime, userData = null, transactionData = null, withdrawalData = null) => {
+  try {
+    let pdfAttachment = null;
+    
+    // Generate PDF invoice if user data and transaction data are provided
+    if (userData && transactionData) {
+      try {
+        const pdfDataUri = await pdfInvoiceService.generateWithdrawalInvoice(userData, transactionData, withdrawalData);
+        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+      } catch (pdfError) {
+        console.error('Failed to generate withdrawal PDF invoice:', pdfError);
+        // Continue without PDF attachment
+      }
+    }
+
+    return await sendEmailWithAttachment(
+      userEmail,
+      'withdrawalSuccess',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      txId,
+      completionTime,
+      pdfAttachment,
+      'Withdrawal_Invoice.pdf'
+    );
+  } catch (error) {
+    console.error('Error in sendWithdrawalSuccessEmail:', error);
+    // Fallback to regular email without PDF
+    return await sendEmail(
+      userEmail,
+      'withdrawalSuccess',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      txId,
+      completionTime
+    );
+  }
 };
 
 // 5. Withdrawal Request Alert (Admin)
@@ -1274,6 +1513,21 @@ const sendInternalTransferReceivedEmail = async (recipientEmail, recipientName, 
     recipientName,
     recipientEmail,
     senderName,
+    amount,
+    txId,
+    currentBalance
+  );
+};
+
+// 8. Internal Transfer Sent Email
+const sendInternalTransferSentEmail = async (senderEmail, senderName, recipientName, amount, txId, currentBalance) => {
+  return await sendEmail(
+    senderEmail,
+    'internalTransferSent',
+    'payments@secureusdt.com',
+    senderName,
+    senderEmail,
+    recipientName,
     amount,
     txId,
     currentBalance
@@ -1309,15 +1563,64 @@ const sendWithdrawalRejectionEmail = async (userEmail, userName, amount, rejecti
   );
 };
 
+// 11. Admin Balance Added Email with PDF invoice
+const sendAdminBalanceAddedEmail = async (userEmail, userName, amount, newBalance, transactionId, reason, userData = null, transactionData = null, adminData = null) => {
+  try {
+    let pdfAttachment = null;
+    
+    // Generate PDF invoice if user data and transaction data are provided
+    if (userData && transactionData) {
+      try {
+        const pdfDataUri = await pdfInvoiceService.generateAdminBalanceInvoice(userData, transactionData, adminData, reason);
+        pdfAttachment = await pdfInvoiceService.pdfToBuffer(pdfDataUri);
+      } catch (pdfError) {
+        console.error('Failed to generate admin balance PDF invoice:', pdfError);
+        // Continue without PDF attachment
+      }
+    }
+
+    return await sendEmailWithAttachment(
+      userEmail,
+      'adminBalanceAdded',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      newBalance,
+      transactionId,
+      reason,
+      pdfAttachment,
+      'Balance_Addition_Invoice.pdf'
+    );
+  } catch (error) {
+    console.error('Error in sendAdminBalanceAddedEmail:', error);
+    // Fallback to regular email without PDF
+    return await sendEmail(
+      userEmail,
+      'adminBalanceAdded',
+      'payments@secureusdt.com',
+      userName,
+      userEmail,
+      amount,
+      newBalance,
+      transactionId,
+      reason
+    );
+  }
+};
+
 module.exports = {
   sendEmail,
+  sendEmailWithAttachment,
   sendContactFormEmail,
   sendDepositSuccessEmail,
   sendWelcomeEmail,
   sendWithdrawalSuccessEmail,
   sendWithdrawalRequestAlert,
   sendInternalTransferReceivedEmail,
+  sendInternalTransferSentEmail,
   sendReferralBonusEmail,
   sendWithdrawalRejectionEmail,
+  sendAdminBalanceAddedEmail,
   emailTemplates
 };

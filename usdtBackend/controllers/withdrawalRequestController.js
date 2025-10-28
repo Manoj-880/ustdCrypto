@@ -324,18 +324,38 @@ const approveWithdrawalRequest = async (req, res) => {
       approvedAt: new Date(),
     });
 
-    // Send withdrawal success email to user
+    // Send withdrawal success email to user with PDF invoice
     try {
       const user = await userRepo.getUserById(request.userId);
       if (user) {
+        // Create transaction data for PDF generation
+        const transactionData = {
+          quantity: request.amount,
+          date: new Date(),
+          transactionId: transactionId,
+          status: 'completed',
+          fee: 0,
+          userWalletId: request.walletAddress,
+          activeWalleteId: 'WITHDRAWAL'
+        };
+
+        // Create withdrawal data for PDF generation
+        const withdrawalData = {
+          walletAddress: request.walletAddress,
+          processingTime: new Date().toISOString()
+        };
+
         await sendWithdrawalSuccessEmail(
           user.email,
           user.firstName,
           request.amount,
           transactionId,
-          new Date().toISOString()
+          new Date().toISOString(),
+          user, // userData for PDF generation
+          transactionData, // transactionData for PDF generation
+          withdrawalData // withdrawalData for PDF generation
         );
-        console.log('Withdrawal success email sent to:', user.email);
+        console.log('Withdrawal success email with PDF invoice sent to:', user.email);
       }
     } catch (emailError) {
       console.error('Failed to send withdrawal success email:', emailError);

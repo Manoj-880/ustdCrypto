@@ -22,20 +22,15 @@ app.set('trust proxy', 1);
 // CORS Configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(`🌐 CORS check - Origin: ${origin}`);
-    
     // Development mode - allow all localhost origins
     if (process.env.NODE_ENV === 'development') {
-      console.log('🔧 Development mode: Checking for localhost origins');
       if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        console.log('✅ CORS: Development mode - allowing localhost origin');
         return callback(null, true);
       }
     }
     
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) {
-      console.log('✅ CORS: Allowing request with no origin');
       return callback(null, true);
     }
 
@@ -50,14 +45,10 @@ const corsOptions = {
         'https://secureusdt.com'
       ];
 
-    console.log(`📋 Allowed origins:`, allowedOrigins);
-    console.log(`🔍 Checking if origin '${origin}' is in allowed list...`);
-
     if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log('✅ CORS: Origin allowed');
       callback(null, true);
     } else {
-      console.log('❌ CORS: Origin not allowed');
+      console.log('❌ CORS: Origin not allowed -', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -83,14 +74,7 @@ morgan.token('ip', (req) => {
 
 // Log to both console and file
 app.use(morgan('combined', { stream: accessLogStream }));
-app.use(morgan(':timestamp :ip :method :url :status :res[content-length] :response-time ms')); // Console output
-
-// Additional debugging middleware to catch all requests
-app.use((req, res, next) => {
-  console.log(`🔍 Request received: ${req.method} ${req.url} from ${req.ip}`);
-  console.log(`📋 Headers:`, req.headers);
-  next();
-});
+app.use(morgan(':method :url :status :response-time ms')); // Simple console output
 
 // Rate limiter per IP range (/24 subnet)
 const limiter = rateLimit({
