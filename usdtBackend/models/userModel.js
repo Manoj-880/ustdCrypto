@@ -60,6 +60,16 @@ const userSchema = new Schema({
     joinDate: {
         type: Date,
         default: Date.now
+    },
+    currentSessionId: {
+        type: String,
+        default: null,
+        unique: false,
+        sparse: true
+    },
+    lastLoginTime: {
+        type: Date,
+        default: null
     }
 });
 

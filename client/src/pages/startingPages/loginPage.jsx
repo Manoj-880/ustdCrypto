@@ -45,7 +45,8 @@ const LoginPage = () => {
         let response = await userLogin(formData);
         if(response.success) {
             toast.success("Login successful!", { position: "top-right" });
-            login(response.data);
+            // Pass sessionId to login function for single-device login
+            login(response.data, "user", response.sessionId);
             const from = location.state?.from?.pathname || '/app';
             navigate(from, { replace: true });
         } else {

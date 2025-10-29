@@ -25,6 +25,8 @@ import {
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import ScrollToTop from "../../components/ScrollToTop";
+import useIdleTimeout from "../../hooks/useIdleTimeout";
+import useSessionValidation from "../../hooks/useSessionValidation";
 import UserDashboard from "../userPages/userDashboard";
 import Transactions from "../userPages/transactions";
 import Profits from "../userPages/profits";
@@ -73,11 +75,33 @@ const UserLayout = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = (isIdleLogout = false) => {
     logout();
-    toast.success("Logged out successfully!", { position: "top-right" });
+    if (isIdleLogout) {
+      toast.warning("You have been logged out due to inactivity.", { position: "top-right" });
+    } else {
+      toast.success("Logged out successfully!", { position: "top-right" });
+    }
     navigate("/login");
   };
+
+  // Handle idle timeout - logout after 10 minutes of inactivity
+  useIdleTimeout(
+    10 * 60 * 1000, // 10 minutes in milliseconds
+    () => handleLogout(true),
+    !!user // Only enable when user is logged in
+  );
+
+  // Handle session validation - check if logged out from another device
+  useSessionValidation(
+    () => {
+      logout();
+      toast.warning("You have been logged out. Another device has logged in with your account.", { position: "top-right" });
+      navigate("/login");
+    },
+    !!user, // Only enable when user is logged in
+    30000 // Check every 30 seconds
+  );
 
   const menuItems = [
     {

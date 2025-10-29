@@ -41,6 +41,32 @@ const updateUser = async (id, data) => {
     return user;
 };
 
+const updateUserSession = async (userId, sessionId) => {
+    const user = await userModel.findByIdAndUpdate(
+        userId,
+        { 
+            currentSessionId: sessionId,
+            lastLoginTime: new Date()
+        },
+        { new: true }
+    );
+    return user;
+};
+
+const getUserBySessionId = async (sessionId) => {
+    const user = await userModel.findOne({ currentSessionId: sessionId });
+    return user;
+};
+
+const clearUserSession = async (userId) => {
+    const user = await userModel.findByIdAndUpdate(
+        userId,
+        { currentSessionId: null },
+        { new: true }
+    );
+    return user;
+};
+
 const deleteUser = async (id) => {
     const user = await userModel.findByIdAndDelete(id);
     return user;
@@ -56,4 +82,7 @@ module.exports = {
     getUserByVerificationToken,
     updateUser,
     deleteUser,
+    updateUserSession,
+    getUserBySessionId,
+    clearUserSession,
 };

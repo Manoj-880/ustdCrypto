@@ -48,6 +48,7 @@ import ContactPage from "./pages/static/ContactPage";
 import Terms from "./pages/userPages/terms";
 import PrivacyPolicy from "./pages/userPages/privacyPolicy";
 import RiskDisclaimer from "./pages/static/riskDisclaimer";
+import NotFoundPage from "./pages/static/NotFoundPage";
 
 /**
  * Main App Component
@@ -119,7 +120,7 @@ function App() {
               } 
             />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </div>

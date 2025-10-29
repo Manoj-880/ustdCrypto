@@ -135,11 +135,13 @@ export const AuthProvider = ({ children }) => {
    * 
    * Saves user data and role to localStorage with a timestamp for session management.
    * Ensures role is always present and defaults to 'user' if not specified.
+   * Also stores sessionId for single-device login enforcement.
    * 
    * @param {Object} userData - User data object
    * @param {string} role - User role (user/admin)
+   * @param {string} sessionId - Session ID from backend (optional)
    */
-  const setUserInSession = (userData, role) => {
+  const setUserInSession = (userData, role, sessionId) => {
     try {
       const finalRole = role || 'user';
       
@@ -147,6 +149,7 @@ export const AuthProvider = ({ children }) => {
         user: userData,
         role: finalRole,
         timestamp: new Date().toISOString(),
+        sessionId: sessionId || null, // Store sessionId for single-device login
       };
       localStorage.setItem("userSession", JSON.stringify(sessionData));
       setUser(userData);

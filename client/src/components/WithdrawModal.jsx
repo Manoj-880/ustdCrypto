@@ -148,13 +148,13 @@ const WithdrawModal = ({ visible, onClose, user }) => {
                 <Option value="withdraw">
                   <Space>
                     <MinusOutlined />
-                    <span>Withdraw to Bank</span>
+                    <span>Withdraw to your wallet</span>
                   </Space>
                 </Option>
                 <Option value="transfer">
                   <Space>
                     <SwapOutlined />
-                    <span>Transfer to Wallet</span>
+                    <span>Internal Transfer</span>
                   </Space>
                 </Option>
               </Select>
