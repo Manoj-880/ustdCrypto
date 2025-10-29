@@ -274,7 +274,13 @@
   font-family: var(--font-family-mono);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary) !important;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs) !important;
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .user-name {
@@ -309,6 +315,44 @@
 .recent-table {
   height: 200px;
   overflow-y: auto;
+}
+
+.recent-table .ant-table {
+  background: var(--color-bg-card) !important;
+}
+
+.recent-table .ant-table-thead > tr > th {
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-bottom: 1px solid var(--color-border-primary) !important;
+}
+
+.recent-table .ant-table-tbody > tr > td {
+  background: var(--color-bg-card) !important;
+  color: var(--color-text-primary) !important;
+  border-bottom: 1px solid var(--color-border-secondary) !important;
+}
+
+.recent-table .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-tertiary) !important;
+}
+
+.recent-table .ant-table-thead > tr > th:first-child {
+  width: 140px !important;
+  max-width: 140px !important;
+}
+
+.recent-table .ant-table-tbody > tr > td:first-child {
+  width: 140px !important;
+  max-width: 140px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-table .ant-table-thead > tr > th,
+.recent-table .ant-table-tbody > tr > td {
+  font-size: var(--font-size-xs) !important;
 }
 
 .activity-card {

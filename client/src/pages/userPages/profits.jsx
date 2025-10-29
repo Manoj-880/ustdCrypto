@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Statistic, Tag, Typography, Space, Divider, Row, Col, message, Spin } from 'antd'
-import { CheckCircleOutlined, DollarOutlined, TrophyOutlined, HistoryOutlined, RiseOutlined } from '@ant-design/icons'
+import { Card, Statistic, Tag, Typography, Space, Divider, Row, Col, message, Spin, Table, Tooltip } from 'antd'
+import { CheckCircleOutlined, DollarOutlined, TrophyOutlined, HistoryOutlined, RiseOutlined, CopyOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useAuth } from '../../contexts/AuthContext'
 import { getProfitsByUserId } from '../../api_calls/profitApi'
@@ -160,37 +160,117 @@ const Profits = () => {
       <div className="claimed-profits-section">
         <Card className="claimed-profits-card">
           <div className="section-header">
-            <HistoryOutlined className="section-icon" />
             <Title level={4} className="section-title">Profit Transactions History</Title>
           </div>
           
           <Divider />
           
-          {profitTransactions.length === 0 ? (
-            <div className="empty-state">
-              <Text className="empty-text">No profit transactions yet</Text>
-            </div>
-          ) : (
-            <div className="profits-list">
-              {profitTransactions.map((transaction) => (
-                <div key={transaction._id} className="profit-item">
-                  <div className="profit-item-content">
-                    <div className="profit-item-info">
-                      <Text className="profit-amount">+${parseFloat(transaction.quantity).toFixed(2)}</Text>
-                      <Text className="profit-date">
-                        {dayjs(transaction.date).format('MMM DD, YYYY [at] HH:mm')}
-                      </Text>
-                    </div>
-                    <div className="profit-status">
-                      <Tag color="green" icon={<CheckCircleOutlined />}>
-                        Auto-Added
-                      </Tag>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <Table
+            dataSource={profitTransactions}
+            columns={[
+              {
+                title: 'Time',
+                dataIndex: 'date',
+                key: 'time',
+                render: (date) => {
+                  const d = dayjs(date);
+                  const day = d.format('D');
+                  const month = d.format('MMM').toLowerCase();
+                  const year = d.format('YYYY');
+                  const time = d.format('HH.mm');
+                  return `${day} ${month}, ${year} ${time}`;
+                },
+                sorter: (a, b) => dayjs(a.date).unix() - dayjs(b.date).unix(),
+              },
+              {
+                title: 'Amount',
+                dataIndex: 'quantity',
+                key: 'amount',
+                render: (amount) => (
+                  <Text style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success)' }}>
+                    +${parseFloat(amount).toFixed(2)}
+                  </Text>
+                ),
+                sorter: (a, b) => parseFloat(a.quantity) - parseFloat(b.quantity),
+              },
+              {
+                title: 'Source',
+                key: 'source',
+                dataIndex: 'lockinId',
+                render: (lockin) => {
+                  if (!lockin || !lockin.name) {
+                    return <Text type="secondary">N/A</Text>;
+                  }
+                  return <Text style={{ fontWeight: 'var(--font-weight-medium)' }}>{lockin.name}</Text>;
+                },
+              },
+              {
+                title: 'Lockin Plan',
+                key: 'lockinPlan',
+                dataIndex: 'lockinId',
+                render: (lockin) => {
+                  if (!lockin || !lockin.planDuration) {
+                    return <Text type="secondary">N/A</Text>;
+                  }
+                  return <Text>{lockin.planDuration} days</Text>;
+                },
+              },
+              {
+                title: 'Transaction ID',
+                dataIndex: 'transactionId',
+                key: 'transactionId',
+                render: (id, record) => {
+                  const txId = id || record._id;
+                  return (
+                    <Tooltip title={txId}>
+                      <Space>
+                        <Text
+                          style={{
+                            fontFamily: 'var(--font-family-mono)',
+                            maxWidth: '150px',
+                            display: 'inline-block',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {txId}
+                        </Text>
+                        <CopyOutlined
+                          style={{ cursor: 'pointer', color: 'var(--color-primary)' }}
+                          onClick={() => {
+                            navigator.clipboard.writeText(txId);
+                            message.success('Transaction ID copied!');
+                          }}
+                        />
+                      </Space>
+                    </Tooltip>
+                  );
+                },
+              },
+              {
+                title: 'Status',
+                key: 'status',
+                render: () => (
+                  <Tag color="green" icon={<CheckCircleOutlined />}>
+                    Auto Added
+                  </Tag>
+                ),
+              },
+            ]}
+            rowKey="_id"
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showTotal: (total) => `Total ${total} transactions`,
+              position: ['bottomRight'],
+            }}
+            loading={loading}
+            locale={{
+              emptyText: 'No profit transactions yet',
+            }}
+            className="profit-transactions-table"
+          />
         </Card>
       </div>
     </div>

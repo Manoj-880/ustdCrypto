@@ -52,6 +52,11 @@ const lockinSchema = new Schema(
       enum: ["ACTIVE", "COMPLETED", "CANCELLED"],
       default: "ACTIVE",
     },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   { timestamps: true }
 );

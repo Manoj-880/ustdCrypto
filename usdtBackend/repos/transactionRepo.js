@@ -20,6 +20,11 @@ const getAllTransactionsByUserId = async (userId) => {
         select: 'firstName lastName email walletId balance',
         options: { strictPopulate: false }
     })
+    .populate({
+        path: 'lockinId',
+        select: 'name planDuration planName',
+        options: { strictPopulate: false }
+    })
     .sort({ date: -1 }); // latest first
 
   return transactions;

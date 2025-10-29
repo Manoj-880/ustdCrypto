@@ -21,10 +21,16 @@ const updateLockin = async (id, data) => {
   return await lockinModel.findByIdAndUpdate(id, data, { new: true });
 };
 
+const getLockinsByDatePrefix = async (datePrefix) => {
+  // Find all lockins whose name starts with the date prefix (e.g., "LOCKIN2510")
+  return await lockinModel.find({ name: { $regex: `^${datePrefix}` } });
+};
+
 module.exports = {
   getAllLockins,
   getLockinsByUserId,
   createLockin,
   updateLockin,
   deleteLockin,
+  getLockinsByDatePrefix,
 };

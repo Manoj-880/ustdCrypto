@@ -35,7 +35,7 @@ import WithdrawalRequests from "../userPages/withdrawalRequests";
 import Terms from "../userPages/terms";
 import PrivacyPolicy from "../userPages/privacyPolicy";
 import RiskDisclaimer from "../static/riskDisclaimer";
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/short_logo.png";
 import "../../styles/layouts/userLayout.css";
 
 const UserLayout = () => {

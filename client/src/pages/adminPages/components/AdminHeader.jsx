@@ -7,7 +7,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../../contexts/AuthContext";
-import logo from "../../../assets/logo.svg";
+import logo from "../../../assets/short_logo.png";
 import "../../../styles/pages/adminPages/components/adminHeader.css";
 
 const AdminHeader = ({ collapsed, setCollapsed, isMobile }) => {

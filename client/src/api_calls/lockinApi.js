@@ -26,6 +26,17 @@ const getLockinPlanById = async (id) => {
     }
 };
 
+// Get next lock-in name
+const getNextLockinName = async () => {
+    try {
+        const response = await axios.get(`${lockinUrl}/next-name`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching next lock-in name:", error);
+        return error.response?.data || { success: false, message: "Failed to fetch next lock-in name" };
+    }
+};
+
 // Get all lock-ins
 const getAllLockins = async () => {
     try {
@@ -112,5 +123,6 @@ export {
     deleteLockin,
     createLockinPlan,
     updateLockinPlan,
-    deleteLockinPlan
+    deleteLockinPlan,
+    getNextLockinName
 };

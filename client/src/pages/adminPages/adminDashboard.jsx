@@ -23,6 +23,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import "../../styles/pages/adminPages/adminDashboard.css";
 import { adminDashboard } from "../../api_calls/dashboard";
 import { toast } from "react-toastify";
@@ -59,22 +60,42 @@ const AdminDashboard = () => {
       title: "Transaction ID",
       dataIndex: "_id",
       key: "_id",
-      render: (text) => (
-        <Text copyable={{ text }} className="transaction-id">
-          {text}
-        </Text>
-      ),
+      width: 140,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => {
+        if (!text) return '-';
+        const idString = String(text);
+        return (
+          <Text 
+            copyable={{ text: idString }} 
+            className="transaction-id"
+            title={idString}
+          >
+            {idString}
+          </Text>
+        );
+      },
     },
     {
       title: "User",
-      dataIndex: "user",
+      dataIndex: "userId",
       key: "user",
+      render: (userId) => {
+        if (!userId) return '-';
+        if (typeof userId === 'object' && userId.firstName) {
+          const name = `${userId.firstName || ''} ${userId.lastName || ''}`.trim();
+          return name || userId.email || 'Unknown User';
+        }
+        return 'Unknown User';
+      },
     },
     {
       title: "Amount",
-      dataIndex: "amount",
+      dataIndex: "quantity",
       key: "amount",
-      render: (amount) => amount ? `${parseFloat(amount).toFixed(2)} USDT` : '0.00 USDT',
+      render: (quantity) => quantity ? `${parseFloat(quantity).toFixed(2)} USDT` : '0.00 USDT',
     },
   ];
 
@@ -83,6 +104,10 @@ const AdminDashboard = () => {
       title: "Name",
       dataIndex: "firstName",
       key: "firstName",
+      render: (firstName, record) => {
+        const lastName = record.lastName || '';
+        return `${firstName || ''} ${lastName}`.trim() || '-';
+      },
     },
     {
       title: "Email",
@@ -93,6 +118,22 @@ const AdminDashboard = () => {
       title: "Join Date",
       dataIndex: "joinDate",
       key: "joinDate",
+      render: (joinDate) => {
+        if (!joinDate) return '-';
+        const date = dayjs(joinDate);
+        if (!date.isValid()) return '-';
+        // Format: "29 oct, 25 6.29 pm"
+        const day = date.format('DD');
+        const month = date.format('MMM').toLowerCase();
+        const year = date.format('YY');
+        const time = date.format('h:mm a').replace(':', '.');
+        return `${day} ${month}, ${year} ${time}`;
+      },
+      sorter: (a, b) => {
+        const dateA = dayjs(a.joinDate);
+        const dateB = dayjs(b.joinDate);
+        return dateA.unix() - dateB.unix();
+      },
     },
   ];
 

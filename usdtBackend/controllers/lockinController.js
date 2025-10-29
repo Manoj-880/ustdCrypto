@@ -92,6 +92,9 @@ const createLockin = async (req, res) => {
     const endDate = new Date();
     endDate.setDate(startDate.getDate() + plan.duration);
 
+    // Generate lockin name
+    const lockinName = await generateLockinName();
+
     // Create the lockin with all plan details stored
     const newLockin = await lockinRepo.createLockin({
       userId,
@@ -104,6 +107,7 @@ const createLockin = async (req, res) => {
       amount: amount.toString(),
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
+      name: lockinName,
     });
 
     // Subtract amount from user balance
@@ -157,6 +161,51 @@ const createLockin = async (req, res) => {
   }
 };
 
+// Function to generate lockin name: LOCKIN + YY + MM + [A-Z][01-99]
+// Format: LOCKIN + first 2 digits of year + month + letter + sequence
+// Example for Oct 29, 2025: LOCKIN2010A01
+const generateLockinName = async () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // getMonth() returns 0-11
+  
+  // Extract first 2 digits of year (YY) and MM (padded to 2 digits)
+  const yy = String(year).slice(0, 2);
+  const mm = String(month).padStart(2, '0');
+  const datePrefix = `LOCKIN${yy}${mm}`;
+  
+  // Find all lockins created today (same date prefix)
+  const todayLockins = await lockinRepo.getLockinsByDatePrefix(datePrefix);
+  const count = todayLockins.length + 1; // +1 for the new one we're creating
+  
+  // Calculate letter and number
+  // Letter A for 1-99, B for 100-199, C for 200-299, etc.
+  const letterIndex = Math.floor((count - 1) / 99);
+  const letter = String.fromCharCode(65 + letterIndex); // 65 is 'A'
+  
+  // Number is the sequence within the letter range (01-99)
+  const number = ((count - 1) % 99) + 1;
+  const numberStr = String(number).padStart(2, '0');
+  
+  return `${datePrefix}${letter}${numberStr}`;
+};
+
+const getNextLockinName = async (req, res) => {
+  try {
+    const lockinName = await generateLockinName();
+    res.status(200).send({
+      success: true,
+      data: { name: lockinName },
+    });
+  } catch (error) {
+    console.error("Error generating lockin name:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 const deleteLockin = async (req, res) => {
   try {
     const { id } = req.params;
@@ -185,4 +234,5 @@ module.exports = {
   getLockinsByUserId,
   createLockin,
   deleteLockin,
+  getNextLockinName,
 };
