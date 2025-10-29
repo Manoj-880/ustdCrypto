@@ -61,29 +61,13 @@ const transferToWallet = async (req, res) => {
       });
     }
 
-    // Update sender balance (subtract)
-    const newSenderBalance = (senderBalance - transferAmount).toFixed(2);
-    await userRepo.updateUser(fromUserId, { balance: newSenderBalance });
+    // Generate unique transaction ID for the transfer
+    const crypto = require("crypto");
+    const transferTransactionId = `TXN${Date.now()}${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
 
-    // Update recipient balance (add)
-    const recipientBalance = parseFloat(toUser.balance);
-    const newRecipientBalance = (recipientBalance + transferAmount).toFixed(2);
-    await userRepo.updateUser(toUser._id, { balance: newRecipientBalance });
-
-    // Create transfer record
-    const transferData = {
-      fromUserId,
-      toUserId: toUser._id,
-      amount: transferAmount.toFixed(2),
-      recipientEmail,
-      status: "COMPLETED",
-    };
-
-    const newTransfer = await transferRepo.createTransfer(transferData);
-
-    // Create transaction record for sender (outgoing)
+    // Create transaction record for sender (outgoing - debited) FIRST
     const senderTransaction = await transactionRepo.createTransaction({
-      quantity: transferAmount.toFixed(2),
+      quantity: -Math.abs(transferAmount), // Negative for debit
       date: new Date(),
       userId: fromUserId,
       activeWalleteId: "TRANSFER_OUT",
@@ -91,12 +75,14 @@ const transferToWallet = async (req, res) => {
       type: "TRANSFER_OUT",
       status: "completed",
       description: `Transfer to ${toUser.email}`,
-      fee: 0
+      fee: 0,
+      transactionId: `${transferTransactionId}_OUT`
     });
+    console.log('✅ Sender transaction created:', senderTransaction._id, 'Amount debited:', -transferAmount);
 
-    // Create transaction record for recipient (incoming)
+    // Create transaction record for recipient (incoming - credited) SECOND
     const recipientTransaction = await transactionRepo.createTransaction({
-      quantity: transferAmount.toFixed(2),
+      quantity: Math.abs(transferAmount), // Positive for credit
       date: new Date(),
       userId: toUser._id,
       activeWalleteId: "TRANSFER_IN",
@@ -104,8 +90,32 @@ const transferToWallet = async (req, res) => {
       type: "TRANSFER_IN",
       status: "completed",
       description: `Transfer from ${fromUser.email}`,
-      fee: 0
+      fee: 0,
+      transactionId: `${transferTransactionId}_IN`
     });
+    console.log('✅ Recipient transaction created:', recipientTransaction._id, 'Amount credited:', transferAmount);
+
+    // Update sender balance (subtract) AFTER transactions are created
+    const newSenderBalance = (senderBalance - transferAmount).toFixed(2);
+    await userRepo.updateUser(fromUserId, { balance: newSenderBalance });
+
+    // Update recipient balance (add) AFTER transactions are created
+    const recipientBalance = parseFloat(toUser.balance);
+    const newRecipientBalance = (recipientBalance + transferAmount).toFixed(2);
+    await userRepo.updateUser(toUser._id, { balance: newRecipientBalance });
+
+    // Create transfer record with transactionId
+    const transferData = {
+      fromUserId,
+      toUserId: toUser._id,
+      amount: transferAmount.toFixed(2),
+      recipientEmail,
+      status: "COMPLETED",
+      transactionId: transferTransactionId, // Add required transactionId
+    };
+
+    const newTransfer = await transferRepo.createTransfer(transferData);
+    console.log('✅ Transfer record created:', newTransfer._id);
 
     // Send internal transfer received email to recipient
     try {

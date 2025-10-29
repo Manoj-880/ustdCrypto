@@ -33,13 +33,25 @@ const getAllTransactionsByUserId = async (userId) => {
 
 const createTransaction = async (transactionData) => {
     const transaction = new transactionsModel(transactionData);
+    
+    // Set transactionId if not provided
+    if (!transaction.transactionId) {
+        transaction.transactionId = transaction._id ? transaction._id.toString() : null;
+    }
+    
     await transaction.save();
     
-    // Set transactionId to MongoDB _id
-    transaction.transactionId = transaction._id.toString();
-    await transaction.save();
+    // Update transactionId after save if it wasn't set
+    if (!transaction.transactionId) {
+        transaction.transactionId = transaction._id.toString();
+        await transaction.save();
+    }
     
     return transaction;
+};
+
+const deleteTransaction = async (transactionId) => {
+    return await transactionsModel.findByIdAndDelete(transactionId);
 };
 
 const getTransactionById = async (transactionId) => {
@@ -57,5 +69,6 @@ module.exports = {
     getAllTransactionsByUserId,
     createTransaction,
     getTransactionById,
-    getTransactionByTxId
+    getTransactionByTxId,
+    deleteTransaction
 }

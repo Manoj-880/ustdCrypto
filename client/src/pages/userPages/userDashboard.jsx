@@ -271,7 +271,13 @@ const UserDashboard = () => {
       <div className="dashboard-header">
         <Space direction="vertical" size="small">
           <Title level={2} className="dashboard-title">
-            Welcome back to Secure USDT!
+            Hi {user?.firstName && user?.lastName 
+              ? `${user.firstName} ${user.lastName}`
+              : user?.firstName 
+              ? user.firstName
+              : user?.name 
+              ? user.name
+              : 'User'},
           </Title>
           <Text type="secondary" className="dashboard-subtitle">
             Here's an overview of your financial performance
