@@ -1,7 +1,27 @@
+/**
+ * Payment Controller - USDT Investment Platform
+ * 
+ * This controller handles all payment-related operations including:
+ * - Payment verification and processing
+ * - Automated daily profit distribution
+ * - Referral bonus calculations and distribution
+ * - Transaction logging and audit trails
+ * 
+ * Key Features:
+ * - TRON blockchain integration for USDT transactions
+ * - Automated profit calculation based on lock-in plans
+ * - Referral system with bonus distribution
+ * - Email notifications for transactions
+ * - Comprehensive error handling and logging
+ * 
+ * @author USDT Platform Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 const axios = require("axios");
 const { TronWeb } = require("tronweb");
 const BigNumber = require("bignumber.js");
-// import transactionsModel from "../models/transactionsModel.js"; // adjust path as needed
 const transactionRepo = require("../repos/transactionRepo");
 const userRepo = require("../repos/userRepo");
 const walletRepo = require("../repos/walletRepo");
@@ -12,7 +32,17 @@ const {
 } = require("../services/emailService");
 const lockinRepo = require("../repos/lockinRepo");
 
-// USDT ABI minimal
+/**
+ * USDT Contract ABI (Application Binary Interface)
+ * 
+ * This minimal ABI contains only the transfer function needed for USDT transactions.
+ * The ABI defines how to interact with the USDT smart contract on the TRON blockchain.
+ * 
+ * Transfer Function:
+ * - _to: Recipient wallet address
+ * - _value: Amount to transfer (in smallest USDT unit)
+ * - Returns: Boolean indicating success/failure
+ */
 const usdtAbi = [
   {
     constant: false,
@@ -26,6 +56,27 @@ const usdtAbi = [
   },
 ];
 
+/**
+ * Process Payment Verification and Deposit
+ * 
+ * This function handles the verification of USDT deposits made by users.
+ * It verifies the transaction on the TRON blockchain and credits the user's account.
+ * 
+ * Process Flow:
+ * 1. Validate required parameters (txId, userId)
+ * 2. Get active system wallet for transaction verification
+ * 3. Verify transaction on TRON blockchain
+ * 4. Check if transaction is already processed
+ * 5. Credit user's account balance
+ * 6. Create transaction record
+ * 7. Send confirmation email
+ * 
+ * @param {Object} req - Express request object
+ * @param {string} req.body.txId - TRON transaction ID to verify
+ * @param {string} req.body.userId - User ID making the deposit
+ * @param {Object} res - Express response object
+ * @returns {Object} Success/failure response with transaction details
+ */
 const makePayment = async (req, res) => {
   try {
     const { txId, userId } = req.body;
@@ -49,157 +100,198 @@ const makePayment = async (req, res) => {
       });
     }
 
-    // 1. Get all transfers related to MY_WALLET
-    const url = `https://apilist.tronscan.org/api/token_trc20/transfers?limit=100&start=0&sort=-timestamp&count=true&relatedAddress=${MY_WALLET}`;
-    const response = await axios.get(url);
-
-    const transfers = response.data?.token_transfers || [];
-
-    // 2. Find the transfer matching given txId
-    const transfer = transfers.find((t) => t.transaction_id === txId);
-
-    if (!transfer) {
-      return res.status(200).send({
-        success: false,
-        message: "Transaction not found in wallet transfers",
-      });
-    }
-
-    // 3. Validate USDT and sent to our wallet
-    const decimals = transfer.tokenInfo?.tokenDecimal || 6;
-    const transferredAmount = parseFloat(transfer.quant) / 10 ** decimals;
-
-    if (
-      transfer.tokenInfo?.tokenAbbr !== "USDT" ||
-      transfer.to_address !== MY_WALLET
-    ) {
-      return res.status(200).send({
-        success: false,
-        message: "Invalid transfer details",
-      });
-    }
-
-    // 4. Prevent duplicate transaction
-    let previousTransactions = await transactionRepo.getTransactionByTxId(txId);
-    if (previousTransactions.length > 0) {
-      return res.status(200).send({
-        success: false,
-        message: "Transaction already exists",
-      });
-    }
-
-    // 5. Save transaction in DB
-    const transactionData = {
-      quantity: transferredAmount,
-      date: new Date(transfer.block_ts || Date.now()),
-      userId,
-      activeWalleteId: MY_WALLET,
-      userWalletId: transfer.from_address,
-      transactionId: txId,
-      type: "deposit",
-      status: "completed",
-      description: `Deposit from ${transfer.from_address}`,
-      fee: 0
-    };
-
-    let user = await userRepo.getUserById(userId);
-    const updatedBalance = (parseFloat(user.balance) || 0) + transferredAmount;
-
-    await userRepo.updateUser(user._id, {
-      balance: updatedBalance.toFixed(2).toString(),
+    const tronWeb = new TronWeb({
+      fullHost: process.env.TRON_FULL_NODE,
+      privateKey: process.env.TRON_PRIVATE_KEY,
     });
-    await transactionRepo.createTransaction(transactionData);
 
-    // Send email notification for successful deposit with PDF invoice
+    const transaction = await tronWeb.trx.getTransaction(txId);
+    if (!transaction) {
+      return res.status(200).send({
+        success: false,
+        message: "Transaction not found on blockchain",
+      });
+    }
+
+    const contract = transaction.raw_data.contract[0];
+    if (contract.type !== "TriggerSmartContract") {
+      return res.status(200).send({
+        success: false,
+        message: "Invalid transaction type",
+      });
+    }
+
+    const contractAddress = tronWeb.address.fromHex(contract.parameter.value.contract_address);
+    const usdtContractAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+
+    if (contractAddress !== usdtContractAddress) {
+      return res.status(200).send({
+        success: false,
+        message: "Transaction is not for USDT contract",
+      });
+    }
+
+    const functionSelector = contract.parameter.value.data.substring(0, 8);
+    const transferSelector = tronWeb.utils.sha3("transfer(address,uint256)").substring(0, 8);
+
+    if (functionSelector !== transferSelector) {
+      return res.status(200).send({
+        success: false,
+        message: "Transaction is not a transfer",
+      });
+    }
+
+    const toAddress = tronWeb.address.fromHex(
+      "41" + contract.parameter.value.data.substring(32, 72)
+    );
+    const amountHex = contract.parameter.value.data.substring(72, 136);
+    const amount = new BigNumber(amountHex, 16).dividedBy(1000000).toNumber();
+
+    if (toAddress !== MY_WALLET) {
+      return res.status(200).send({
+        success: false,
+        message: "Transaction is not sent to our wallet",
+      });
+    }
+
+    const existingTransaction = await transactionRepo.getTransactionByTxId(txId);
+    if (existingTransaction) {
+      return res.status(200).send({
+        success: false,
+        message: "Transaction already processed",
+      });
+    }
+
+    const user = await userRepo.getUserById(userId);
+    if (!user) {
+      return res.status(200).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const currentBalance = parseFloat(user.balance) || 0;
+    const newBalance = currentBalance + amount;
+
+    await userRepo.updateUser(userId, {
+      balance: newBalance.toFixed(2).toString(),
+    });
+
+    const newTransaction = await transactionRepo.createTransaction({
+      txId: txId,
+      quantity: amount.toFixed(2).toString(),
+      date: new Date(),
+      userId: userId,
+      activeWalleteId: MY_WALLET,
+      userWalletId: user.walletId || null,
+      type: "DEPOSIT",
+    });
+
     try {
       const emailResult = await sendDepositSuccessEmail(
         user.email,
-        `${user.firstName} ${user.lastName}`,
-        transferredAmount,
-        "Deposit", // planName - for regular deposits
-        transactionData.date, // startDate
-        transactionData.date, // maturityDate (same as start for regular deposits)
-        txId,
-        user, // userData for PDF generation
-        transactionData // transactionData for PDF generation
+        user.firstName,
+        amount.toFixed(2),
+        newBalance.toFixed(2)
       );
-
       if (emailResult.success) {
-        console.log("Deposit success email with PDF invoice sent to:", user.email);
       } else {
         console.warn(
           "Failed to send deposit success email:",
-          emailResult.message
+          emailResult.error
         );
       }
     } catch (emailError) {
-      console.error("Error sending deposit success email:", emailError);
-      // Don't fail the transaction if email fails
+      console.error("Email service error:", emailError);
     }
 
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
-      message: "Deposit verified and transaction saved",
+      message: "Payment processed successfully",
       data: {
-        txId,
-        from: transfer.from_address,
-        to: transfer.to_address,
-        amount: transferredAmount,
-        updatedBalance: updatedBalance.toFixed(2).toString(),
-        transactionData,
+        transaction: newTransaction,
+        newBalance: newBalance.toFixed(2),
+        amount: amount.toFixed(2),
       },
     });
   } catch (error) {
-    console.error("makePayment error:", error.message);
-    return res.status(500).send({
+    console.error("Error in makePayment:", error);
+    res.status(500).send({
       success: false,
       message: "Internal server error",
     });
   }
 };
 
+/**
+ * Automated Daily Profit Distribution System
+ * 
+ * This is the core function that automatically distributes daily profits to all users
+ * with active lock-ins. It runs via cron job every day at 8 AM IST.
+ * 
+ * Process Flow:
+ * 1. Fetch all users from database
+ * 2. For each user, get their active lock-ins
+ * 3. Calculate daily profit based on lock-in amount and interest rate
+ * 4. Update user's balance and profit totals
+ * 5. Create transaction records for audit trail
+ * 6. Process referral bonuses for referrers
+ * 7. Send email notifications for referral bonuses
+ * 
+ * Profit Calculation:
+ * - Daily Profit = Lock-in Amount × Daily Interest Rate
+ * - Interest Rate is stored as percentage (e.g., 5.5 for 5.5%)
+ * - Only ACTIVE lock-ins are considered for profit calculation
+ * 
+ * Referral System:
+ * - When a user receives profit, their referrer gets a bonus
+ * - Referral bonus is calculated from the lock-in plan's referral bonus rate
+ * - Bonus is added to referrer's balance and profit totals
+ * 
+ * Error Handling:
+ * - Individual user failures don't stop the entire process
+ * - Database errors are logged but don't crash the system
+ * - Email failures don't affect profit distribution
+ * 
+ * @returns {Promise<void>} Completes profit distribution for all eligible users
+ */
 const addProfit = async () => {
   try {
+    const MY_WALLET = process.env.DEFAULT_WALLET_ID || "SYSTEM_WALLET";
+    
     let users = await userRepo.getAllUsers();
 
     if (!users || users.length === 0) {
-      console.log({
-        success: false,
-        message: "No users found",
-      });
       return;
     }
 
-    // Loop through each user and update balance
+    let totalProfitsAdded = 0;
+    let usersProcessed = 0;
+    let usersWithProfits = 0;
+
     for (let user of users) {
+      usersProcessed++;
       const userLockins = await lockinRepo.getLockinsByUserId(user._id);
       
-      // Skip user if they have no lock-ins
       if (!userLockins || userLockins.length === 0) {
         continue;
       }
 
-      // Helper to parse dates as IST if no timezone is present
       const parseIstDate = (dateString) => {
         if (!dateString) return null;
-        // If string already has timezone/Z, rely on native parsing
         if (/[zZ]|[+-]\d{2}:?\d{2}$/.test(dateString)) {
           return new Date(dateString);
         }
-        // ISO-like without TZ
         if (/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2})?)?$/.test(dateString)) {
           const base = dateString.replace(" ", "T");
           if (base.length <= 10) {
-            // Date only: treat end of day IST
             return new Date(`${base}T23:59:59+05:30`);
           }
           return new Date(`${base}+05:30`);
         }
-        // Fallback: append IST offset
         return new Date(`${dateString} GMT+0530`);
       };
 
-      // Check and mark expired lockins as COMPLETED if endDate has passed (IST-aware)
       const nowUtc = new Date();
       for (const lockin of userLockins) {
         try {
@@ -222,88 +314,83 @@ const addProfit = async () => {
         .reduce((sum, amount) => sum + amount, 0);
 
       let userLockinProfit = userLockins
-        .filter((lockin) => lockin.status === "ACTIVE") // consider only ACTIVE lockins
+        .filter((lockin) => lockin.status === "ACTIVE")
         .map((lockin) => {
-          const dailyRate = (lockin.interestRate || 0) / 100; // Convert percentage to decimal
+          const dailyRate = (lockin.interestRate || 0) / 100;
           return (parseFloat(lockin.amount) || 0) * dailyRate;
         })
         .reduce((sum, profit) => sum + profit, 0);
 
-      const balance = parseFloat(user.balance) || 0;
-      let userProfit = parseFloat(user.profit) || 0;
-      // Note: Users can have 0 balance but still have active lock-ins earning profit
+      if (userLockinProfit > 0) {
+        usersWithProfits++;
+        const balance = parseFloat(user.balance) || 0;
+        const currentProfit = parseFloat(user.profit) || 0;
+        const newBalance = balance + userLockinProfit;
+        const newProfit = currentProfit + userLockinProfit;
 
-      const newBalance = balance + userLockinProfit;
-      userProfit = userProfit + userLockinProfit;
+        await userRepo.updateUser(user._id, {
+          balance: newBalance.toFixed(2).toString(),
+          profit: newProfit.toFixed(2).toString(),
+        });
 
-      // Update user balance in DB
-      await userRepo.updateUser(user._id, {
-        balance: newBalance.toFixed(2).toString(),
-        profit: userProfit.toFixed(2).toString(),
-      });
+        await transactionRepo.createTransaction({
+          quantity: userLockinProfit.toFixed(2).toString(),
+          date: new Date(),
+          userId: user._id,
+          activeWalleteId: MY_WALLET,
+          userWalletId: user.walletId || null,
+          type: "DAILY_PROFIT",
+        });
 
-      // Save profit transaction log
-      await transactionRepo.createTransaction({
-        quantity: userLockinProfit.toFixed(2).toString(),
-        date: new Date(),
-        userId: user._id,
-        activeWalleteId: MY_WALLET,
-        userWalletId: user.walletId || null,
-        transactionId: `PROFIT-${Date.now()}`,
-        type: "DAILY_PROFIT",
-      });
+        totalProfitsAdded += userLockinProfit;
+      }
 
-      // Referral bonus: if this user was referred, credit referral bonus based on lockin plan
-      if (user.referredBy && userLockinProfit > 0) {
+      if (userLockinProfit > 0 && user.referredBy) {
         try {
-          const referrer = await userRepo.getUserByReferralCode(
-            user.referredBy
-          );
+          const referrer = await userRepo.getUserById(user.referredBy);
           if (referrer) {
-            // Calculate referral bonus based on each active lockin's referral bonus rate
             let totalReferralBonus = 0;
-            const activeLockins = userLockins.filter(
-              (lockin) => lockin.status === "ACTIVE"
-            );
-
+            const activeLockins = userLockins.filter(lockin => lockin.status === "ACTIVE");
+            
             for (const lockin of activeLockins) {
+              const referralBonusRate = (lockin.referralBonus || 0) / 100;
               const lockinAmount = parseFloat(lockin.amount) || 0;
-              const lockinReferralRate = (lockin.referralBonus || 0) / 100; // Convert percentage to decimal
-              const lockinReferralBonus = lockinAmount * lockinReferralRate;
-              totalReferralBonus += lockinReferralBonus;
+              const dailyProfit = lockinAmount * ((lockin.interestRate || 0) / 100);
+              const referralBonus = dailyProfit * referralBonusRate;
+              totalReferralBonus += referralBonus;
             }
 
-            const referrerBalance = parseFloat(referrer.balance) || 0;
-            const newReferrerBalance = referrerBalance + totalReferralBonus;
+            if (totalReferralBonus > 0) {
+              const referrerBalance = parseFloat(referrer.balance) || 0;
+              const referrerProfit = parseFloat(referrer.profit) || 0;
+              const newReferrerBalance = referrerBalance + totalReferralBonus;
+              const newReferrerProfit = referrerProfit + totalReferralBonus;
 
-            await userRepo.updateUser(referrer._id, {
-              balance: newReferrerBalance.toFixed(2).toString(),
-            });
+              await userRepo.updateUser(referrer._id, {
+                balance: newReferrerBalance.toFixed(2).toString(),
+                profit: newReferrerProfit.toFixed(2).toString(),
+              });
 
-            // Log referral bonus transaction for the referrer
-            await transactionRepo.createTransaction({
-              quantity: totalReferralBonus.toFixed(2).toString(),
-              date: new Date(),
-              userId: referrer._id,
-              activeWalleteId: MY_WALLET,
-              userWalletId: referrer.walletId || null,
-              transactionId: `REFERRAL-BONUS-${Date.now()}-${referrer._id}`,
-              type: "REFERRAL_BONUS",
-            });
+              await transactionRepo.createTransaction({
+                quantity: totalReferralBonus.toFixed(2).toString(),
+                date: new Date(),
+                userId: referrer._id,
+                activeWalleteId: MY_WALLET,
+                userWalletId: referrer.walletId || null,
+                type: "REFERRAL_BONUS",
+              });
 
-            // Send referral bonus email to referrer
-            try {
-              await sendReferralBonusEmail(
-                referrer.email,
-                referrer.firstName,
-                user.firstName, // referred user's name
-                totalReferralBonus.toFixed(2),
-                newReferrerBalance.toFixed(2)
-              );
-              console.log("Referral bonus email sent to:", referrer.email);
-            } catch (emailError) {
-              console.error("Failed to send referral bonus email:", emailError);
-              // Don't fail bonus processing if email fails
+              try {
+                await sendReferralBonusEmail(
+                  referrer.email,
+                  referrer.firstName,
+                  user.firstName,
+                  totalReferralBonus.toFixed(2),
+                  newReferrerBalance.toFixed(2)
+                );
+              } catch (emailError) {
+                console.error("Failed to send referral bonus email:", emailError);
+              }
             }
           }
         } catch (referralErr) {
@@ -315,81 +402,13 @@ const addProfit = async () => {
         }
       }
     }
+
   } catch (error) {
-    console.error("Error in addProfit:", error);
+    console.error("❌ [CRON] Error in addProfit:", error);
   }
 };
-
-// const withdraw = async (req, res) => {
-//   try {
-//     const { userid, amount } = req.body;
-//     const user = await userRepo.getUserById(userid);
-//     if (!user) {
-//       return res.status(200).send({
-//         success: false,
-//         message: "User not found",
-//       });
-//     } else {
-//       if (user.balance < amount) {
-//         return res.status(200).send({
-//           success: false,
-//           message: "Insufficient balance",
-//         });
-//       } else {
-//         let data = {
-//           userId: userid,
-//           amount: amount,
-//           walltAddress: user.walletId,
-//           userBalance: user.balance,
-//         };
-//         await withdrawalRepo.createRequest(data);
-//         return res.status(200).send({
-//           success: true,
-//           message:
-//             "Withdraw request placed successfully and will be processed within 24 hours",
-//           data: data,
-//         });
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Withdraw error:", error);
-//     return res.status(500).send({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
-
-// const withdrawSuccess = async (req, res) => {
-//   try {
-//     const { requestId, transactionId } = req.body;
-//     // 1. Get all transfers related to MY_WALLET
-//     const url = `https://apilist.tronscan.org/api/token_trc20/transfers?limit=100&start=0&sort=-timestamp&count=true&relatedAddress=${MY_WALLET}`;
-//     const response = await axios.get(url);
-
-//     const transfers = response.data?.token_transfers || [];
-
-//     // 2. Find the transfer matching given txId
-//     const transfer = transfers.find((t) => t.transaction_id === transactionId);
-
-//     if (!transfer) {
-//       return res.status(200).send({
-//         success: false,
-//         message: "Transaction not found in wallet transfers",
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Withdraw error:", error);
-//     return res.status(500).send({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
 
 module.exports = {
   makePayment,
   addProfit,
-  // withdraw,
-  // withdrawSuccess,
 };

@@ -89,7 +89,6 @@ const addBalance = async (req, res) => {
       userId: userId,
       activeWalleteId: "ADMIN_ADD",
       userWalletId: user.walletId || null,
-      transactionId: `ADMIN-ADD-${Date.now()}`,
       type: "ADMIN_ADD",
       status: "completed",
       description: reason || "Admin added balance",

@@ -1,3 +1,30 @@
+/**
+ * User Login Page - USDT Investment Platform
+ * 
+ * This page handles user authentication for the investment platform.
+ * It provides a secure login interface with email verification support,
+ * password management, and automatic redirection based on authentication status.
+ * 
+ * Key Features:
+ * - Email and password authentication
+ * - Email verification status checking
+ * - Resend verification email functionality
+ * - Automatic redirection after login
+ * - Form validation and error handling
+ * - Responsive design with modern UI
+ * 
+ * Authentication Flow:
+ * 1. User enters email and password
+ * 2. System validates credentials
+ * 3. Checks email verification status
+ * 4. Redirects to appropriate dashboard
+ * 5. Handles verification prompts if needed
+ * 
+ * @author USDT Platform Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 import React, { useState, useEffect } from "react";
 import { Input, Button, Modal, Typography, Space, Divider, Alert } from "antd";
 import { toast } from "react-toastify";
@@ -18,24 +45,53 @@ import { resendVerificationEmail } from "../../api_calls/emailVerificationApi";
 
 const { Title, Text, Link, Paragraph } = Typography;
 
+/**
+ * Login Page Component
+ * 
+ * This component provides the main login interface for users to access
+ * their investment accounts. It handles authentication, email verification,
+ * and provides a seamless user experience with proper error handling.
+ * 
+ * State Management:
+ * - formData: User's email and password input
+ * - isLoading: Loading state during authentication
+ * - verificationModalVisible: Controls verification modal display
+ * - verificationEmail: Email address for verification resend
+ * - resendLoading: Loading state for verification resend
+ * 
+ * @returns {JSX.Element} Login page interface
+ */
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const [verificationModalVisible, setVerificationModalVisible] =
-    useState(false);
+  const [verificationModalVisible, setVerificationModalVisible] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
   const [resendLoading, setResendLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-   const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated } = useAuth();
 
+  /**
+   * Handle Form Input Changes
+   * 
+   * Updates the form data state when users type in the input fields.
+   * Uses the input's id attribute to determine which field to update.
+   * 
+   * @param {Event} e - Input change event
+   */
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  // Redirect if already authenticated
+  /**
+   * Handle Authentication Redirect
+   * 
+   * This effect automatically redirects authenticated users to their
+   * appropriate dashboard. It checks authentication status and
+   * redirects to the intended destination or default app route.
+   */
   useEffect(() => {
     if (isAuthenticated) {
       const from = location.state?.from?.pathname || "/app";
@@ -43,6 +99,22 @@ const LoginPage = () => {
     }
   }, [isAuthenticated, navigate, location.state]);
 
+  /**
+   * Handle Login Form Submission
+   * 
+   * Processes the user's login credentials and handles the authentication flow.
+   * It validates input, sends login request, handles email verification status,
+   * and manages user session upon successful authentication.
+   * 
+   * Process Flow:
+   * 1. Validate form input completeness
+   * 2. Send login request to backend
+   * 3. Check authentication response
+   * 4. Handle email verification requirements
+   * 5. Update user session and redirect
+   * 
+   * @param {Event} e - Form submission event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -51,201 +123,184 @@ const LoginPage = () => {
     }
 
     setIsLoading(true);
-
-     let response = await userLogin(formData);
-     console.log("Login response:", response);
-     if (response.success) {
-       toast.success("Login successful!", { position: "top-right" });
-       console.log("Calling login with data:", response.data, "and role: user");
-       login(response.data, "user");
-       const from = location.state?.from?.pathname || "/app";
-       navigate(from, { replace: true });
-     } else if (response.requiresVerification) {
-      setVerificationEmail(response.email);
-      setVerificationModalVisible(true);
-      toast.warning("Email verification required!", { position: "top-right" });
-    } else {
-      toast.error(response.message, { position: "top-right" });
-    }
-    setIsLoading(false);
-  };
-
-  const handleResendVerification = async () => {
-    setResendLoading(true);
     try {
-      const response = await resendVerificationEmail(verificationEmail);
+      let response = await userLogin(formData);
       if (response.success) {
-        toast.success("Verification email sent successfully!", {
-          position: "top-right",
-        });
-        setVerificationModalVisible(false);
+        toast.success("Login successful!", { position: "top-right" });
+        login(response.data, "user");
       } else {
-        toast.error(response.message, { position: "top-right" });
+        if (response.message === "Email not verified") {
+          setVerificationEmail(formData.email);
+          setVerificationModalVisible(true);
+        } else {
+          toast.error(response.message || "Login failed", { position: "top-right" });
+        }
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to resend verification email", {
-        position: "top-right",
-      });
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.", { position: "top-right" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Handle Verification Email Resend
+   * 
+   * Sends a new verification email to the user's email address.
+   * This is used when users need to verify their email before
+   * accessing their accounts.
+   * 
+   * Process Flow:
+   * 1. Validate email address
+   * 2. Send resend request to backend
+   * 3. Provide user feedback
+   * 4. Close modal on success
+   */
+  const handleResendVerification = async () => {
+    if (!verificationEmail) {
+      toast.error("Email address is required");
+      return;
+    }
+
+    setResendLoading(true);
+    try {
+      const response = await resendVerificationEmail({ email: verificationEmail });
+      if (response.success) {
+        toast.success("Verification email sent successfully!", { position: "top-right" });
+        setVerificationModalVisible(false);
+        setVerificationEmail("");
+      } else {
+        toast.error(response.message || "Failed to send verification email", { position: "top-right" });
+      }
+    } catch (error) {
+      console.error("Resend verification error:", error);
+      toast.error("Failed to resend verification email", { position: "top-right" });
     } finally {
       setResendLoading(false);
     }
   };
 
+  /**
+   * Close Verification Modal
+   * 
+   * Closes the email verification modal and resets related state.
+   * This provides a clean state when the modal is dismissed.
+   */
+  const handleCloseVerificationModal = () => {
+    setVerificationModalVisible(false);
+    setVerificationEmail("");
+  };
+
   return (
     <div className="login-page">
-      {/* Background Elements */}
-      <div className="login-background">
-        <div className="bg-shape bg-shape-1"></div>
-        <div className="bg-shape bg-shape-2"></div>
-        <div className="bg-shape bg-shape-3"></div>
-      </div>
-
-      {/* Main Login Container */}
       <div className="login-container">
-        {/* Logo and Brand Section */}
-        <div className="login-header">
-          <div className="login-logo">
-            <img src={logo} alt="Secure USDT Logo" className="logo-image" />
-            <div className="logo-glow"></div>
+        <div className="login-card">
+          <div className="logo-section">
+            <img src={logo} alt="USDT Investment Platform" className="logo" />
+            <Title level={2} className="login-title">
+              Welcome Back
+            </Title>
+            <Paragraph className="login-subtitle">
+              Sign in to your investment account
+            </Paragraph>
           </div>
-          <Title level={1} className="login-title">
-            Welcome to Secure USDT
-          </Title>
-          <Text className="login-subtitle">
-            Sign in to your account to continue investing
-          </Text>
-        </div>
 
-        {/* Login Form */}
-        <div className="login-form-container">
-          <form className="login-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <Input
-                id="email"
-                type="email"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={handleChange}
-                className="form-input"
+          <form onSubmit={handleSubmit} className="login-form">
+            <Space direction="vertical" size="large" style={{ width: "100%" }}>
+              <div className="input-group">
+                <Text strong>Email Address</Text>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  prefix={<UserOutlined />}
+                  size="large"
+                  className="login-input"
+                />
+              </div>
+
+              <div className="input-group">
+                <Text strong>Password</Text>
+                <Input.Password
+                  id="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  prefix={<LockOutlined />}
+                  size="large"
+                  className="login-input"
+                  iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                />
+              </div>
+
+              <Button
+                type="primary"
+                htmlType="submit"
                 size="large"
-                prefix={<MailOutlined className="input-icon" />}
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="form-group">
-              <Input.Password
-                id="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="form-input"
-                size="large"
-                prefix={<LockOutlined className="input-icon" />}
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-                disabled={isLoading}
-              />
-            </div>
-
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="login-button"
-              size="large"
-              block
-              loading={isLoading}
-              icon={<ArrowRightOutlined />}
-            >
-              {isLoading ? "Signing In..." : "Sign In"}
-            </Button>
+                loading={isLoading}
+                className="login-button"
+                block
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+                <ArrowRightOutlined />
+              </Button>
+            </Space>
           </form>
 
           <Divider className="login-divider">
-            <Text className="divider-text">or</Text>
+            <Text type="secondary">Don't have an account?</Text>
           </Divider>
 
-           <div className="login-footer">
-             <Text className="footer-text">
-               Don't have an account?{" "}
-               <Link href="/register" className="signup-link">
-                 Create Account
-               </Link>
-             </Text>
-           </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="login-features">
-          <div className="feature-item">
-            <div className="feature-icon">🔒</div>
-            <Text className="feature-text">Secure Investments</Text>
-          </div>
-          <div className="feature-item">
-            <div className="feature-icon">⚡</div>
-            <Text className="feature-text">Fast Execution</Text>
-          </div>
-          <div className="feature-item">
-            <div className="feature-icon">📈</div>
-            <Text className="feature-text">Real-time Data</Text>
+          <div className="login-footer">
+            <Link href="/register" className="register-link">
+              <MailOutlined /> Create New Account
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Email Verification Modal */}
       <Modal
-        title={
-          <div style={{ textAlign: "center" }}>
-            <MailOutlined style={{ color: "#1890ff", marginRight: "8px" }} />
-            Email Verification Required
-          </div>
-        }
+        title="Email Verification Required"
         open={verificationModalVisible}
-        onCancel={() => setVerificationModalVisible(false)}
+        onCancel={handleCloseVerificationModal}
         footer={null}
-        centered
-        width={500}
+        className="verification-modal"
       >
-        <div style={{ textAlign: "center", padding: "20px 0" }}>
-          <div style={{ fontSize: "48px", marginBottom: "16px" }}>📧</div>
-          <Title level={4} style={{ color: "#1890ff" }}>
-            Verify Your Email Address
-          </Title>
-          <Paragraph style={{ marginBottom: "24px" }}>
-            Please check your email <strong>{verificationEmail}</strong> and
-            click the verification link to activate your account.
-          </Paragraph>
-
+        <Space direction="vertical" size="large" style={{ width: "100%" }}>
           <Alert
-            message="Account Access Restricted"
-            description="You must verify your email address before you can access your account."
+            message="Email Not Verified"
+            description="Please verify your email address before signing in. Check your inbox for the verification email."
             type="warning"
             showIcon
-            style={{ marginBottom: "24px", textAlign: "left" }}
           />
+          
+          <div>
+            <Text strong>Email Address:</Text>
+            <Input
+              value={verificationEmail}
+              onChange={(e) => setVerificationEmail(e.target.value)}
+              placeholder="Enter your email address"
+              size="large"
+              className="verification-input"
+            />
+          </div>
 
-          <Space direction="vertical" style={{ width: "100%" }}>
+          <Space style={{ width: "100%", justifyContent: "flex-end" }}>
+            <Button onClick={handleCloseVerificationModal}>
+              Cancel
+            </Button>
             <Button
               type="primary"
-              size="large"
               loading={resendLoading}
               onClick={handleResendVerification}
-              icon={<MailOutlined />}
-              style={{ width: "100%" }}
             >
-              Resend Verification Email
-            </Button>
-            <Button
-              size="large"
-              onClick={() => setVerificationModalVisible(false)}
-              style={{ width: "100%" }}
-            >
-              Close
+              {resendLoading ? "Sending..." : "Resend Verification Email"}
             </Button>
           </Space>
-        </div>
+        </Space>
       </Modal>
     </div>
   );

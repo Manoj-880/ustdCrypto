@@ -77,19 +77,17 @@ const transferToWallet = async (req, res) => {
       amount: transferAmount.toFixed(2),
       recipientEmail,
       status: "COMPLETED",
-      transactionId: `TRANSFER-${Date.now()}`,
     };
 
     const newTransfer = await transferRepo.createTransfer(transferData);
 
     // Create transaction record for sender (outgoing)
-    await transactionRepo.createTransaction({
+    const senderTransaction = await transactionRepo.createTransaction({
       quantity: transferAmount.toFixed(2),
       date: new Date(),
       userId: fromUserId,
       activeWalleteId: "TRANSFER_OUT",
       userWalletId: fromUser.walletId || null,
-      transactionId: `TRANSFER-${Date.now()}`,
       type: "TRANSFER_OUT",
       status: "completed",
       description: `Transfer to ${toUser.email}`,
@@ -97,13 +95,12 @@ const transferToWallet = async (req, res) => {
     });
 
     // Create transaction record for recipient (incoming)
-    await transactionRepo.createTransaction({
+    const recipientTransaction = await transactionRepo.createTransaction({
       quantity: transferAmount.toFixed(2),
       date: new Date(),
       userId: toUser._id,
       activeWalleteId: "TRANSFER_IN",
       userWalletId: toUser.walletId || null,
-      transactionId: `TRANSFER-${Date.now()}`,
       type: "TRANSFER_IN",
       status: "completed",
       description: `Transfer from ${fromUser.email}`,
@@ -112,13 +109,12 @@ const transferToWallet = async (req, res) => {
 
     // Send internal transfer received email to recipient
     try {
-      const transactionId = `TRANSFER-${Date.now()}-${fromUserId}`;
       await sendInternalTransferReceivedEmail(
         toUser.email,
         toUser.firstName,
         fromUser.firstName,
         transferAmount.toFixed(2),
-        transactionId,
+        recipientTransaction.transactionId,
         newRecipientBalance
       );
       console.log('Internal transfer received email sent to:', toUser.email);
@@ -129,13 +125,12 @@ const transferToWallet = async (req, res) => {
 
     // Send internal transfer sent email to sender
     try {
-      const transactionId = `TRANSFER-${Date.now()}-${fromUserId}`;
       await sendInternalTransferSentEmail(
         fromUser.email,
         fromUser.firstName,
         toUser.firstName,
         transferAmount.toFixed(2),
-        transactionId,
+        senderTransaction.transactionId,
         newSenderBalance
       );
       console.log('Internal transfer sent email sent to:', fromUser.email);

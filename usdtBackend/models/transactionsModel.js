@@ -25,7 +25,7 @@ const transactionSchema = new Schema({
     },
     transactionId: {
         type: String,
-        required: true,
+        required: false,
     },
     type: {
         type: String,

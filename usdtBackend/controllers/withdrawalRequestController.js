@@ -153,7 +153,6 @@ const createWithdrawalRequest = async (req, res) => {
       userId: userId,
       activeWalleteId: "WITHDRAWAL_REQUEST",
       userWalletId: user.walletId || null,
-      transactionId: `WITHDRAWAL-${Date.now()}`,
       type: "withdraw",
       status: "pending",
       description: `Withdrawal request to ${walletAddress}`,

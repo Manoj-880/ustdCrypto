@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Button, Statistic, Tag, Progress, Typography, Space, Divider, Row, Col, message, Spin } from 'antd'
-import { ClockCircleOutlined, CheckCircleOutlined, DollarOutlined, TrophyOutlined, HistoryOutlined } from '@ant-design/icons'
+import { Card, Statistic, Tag, Typography, Space, Divider, Row, Col, message, Spin } from 'antd'
+import { CheckCircleOutlined, DollarOutlined, TrophyOutlined, HistoryOutlined, RiseOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useAuth } from '../../contexts/AuthContext'
-import { getProfitsByUserId, claimProfit } from '../../api_calls/profitApi'
+import { getProfitsByUserId } from '../../api_calls/profitApi'
 import '../../styles/pages/userPages/profits.css'
 
 const { Title, Text } = Typography
 
 const Profits = () => {
-  const [timeLeft, setTimeLeft] = useState(null)
-  const [canClaim, setCanClaim] = useState(false)
-  const [claimedProfits, setClaimedProfits] = useState([])
-  const [totalProfits, setTotalProfits] = useState(0)
-  const [currentProfit, setCurrentProfit] = useState(0)
+  const [profitTransactions, setProfitTransactions] = useState([])
+  const [totalProfitsEarned, setTotalProfitsEarned] = useState(0)
+  const [currentBalance, setCurrentBalance] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [claiming, setClaiming] = useState(false)
-  const [nextClaimTime, setNextClaimTime] = useState(null)
-  const [lastClaimedTime, setLastClaimedTime] = useState(null)
+  const [lastProfitAdded, setLastProfitAdded] = useState(null)
   
   const { user } = useAuth()
 
@@ -31,14 +27,12 @@ const Profits = () => {
     try {
       const response = await getProfitsByUserId(user._id)
       if (response.success) {
-        const { profits, currentProfit, totalClaimed, nextClaimTime, lastClaimed, canClaim } = response.data
+        const { currentProfit, totalProfitsEarned, profitTransactions, lastProfitAdded } = response.data
         
-        setClaimedProfits(profits.filter(profit => profit.status === 'CLAIMED'))
-        setCurrentProfit(currentProfit)
-        setTotalProfits(totalClaimed)
-        setNextClaimTime(nextClaimTime ? dayjs(nextClaimTime) : null)
-        setLastClaimedTime(lastClaimed ? dayjs(lastClaimed.claimedAt) : null)
-        setCanClaim(canClaim)
+        setCurrentBalance(user.balance ? parseFloat(user.balance) : 0)
+        setTotalProfitsEarned(totalProfitsEarned)
+        setProfitTransactions(profitTransactions)
+        setLastProfitAdded(lastProfitAdded ? dayjs(lastProfitAdded) : null)
       } else {
         message.error(response.message || 'Failed to load profits data')
       }
@@ -53,65 +47,6 @@ const Profits = () => {
   useEffect(() => {
     loadProfitsData()
   }, [user])
-
-  useEffect(() => {
-    if (!nextClaimTime) return
-
-    // Calculate time left
-    const calculateTimeLeft = () => {
-      const now = dayjs()
-      const timeDiff = nextClaimTime.diff(now)
-
-      if (timeDiff <= 0) {
-        setTimeLeft(null)
-        setCanClaim(true)
-      } else {
-        const hours = Math.floor(timeDiff / (1000 * 60 * 60))
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000)
-        setTimeLeft({ hours, minutes, seconds })
-        setCanClaim(false)
-      }
-    }
-
-    calculateTimeLeft()
-    const timer = setInterval(calculateTimeLeft, 1000)
-
-    return () => clearInterval(timer)
-  }, [nextClaimTime])
-
-  const handleClaimProfit = async () => {
-    if (!canClaim || !user || !user._id) return
-
-    setClaiming(true)
-    try {
-      const response = await claimProfit(user._id)
-      if (response.success) {
-        message.success(`Successfully claimed $${parseFloat(response.data.amount).toFixed(2)} profit!`)
-        // Reload profits data to get updated information
-        await loadProfitsData()
-      } else {
-        message.error(response.message || 'Failed to claim profit')
-      }
-    } catch (error) {
-      console.error('Error claiming profit:', error)
-      message.error('Failed to claim profit')
-    } finally {
-      setClaiming(false)
-    }
-  }
-
-  const formatTimeLeft = () => {
-    if (!timeLeft) return 'Ready to claim!'
-    return `${timeLeft.hours.toString().padStart(2, '0')}:${timeLeft.minutes.toString().padStart(2, '0')}:${timeLeft.seconds.toString().padStart(2, '0')}`
-  }
-
-  const getProgressPercentage = () => {
-    if (!timeLeft) return 100
-    const totalSeconds = 24 * 60 * 60
-    const remainingSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds
-    return ((totalSeconds - remainingSeconds) / totalSeconds) * 100
-  }
 
   if (loading) {
     return (
@@ -137,76 +72,48 @@ const Profits = () => {
         <Text className="page-subtitle">Track your profit performance and earnings</Text>
       </div>
       
-      {/* Main Profit Claim Section */}
+      {/* Main Profit Display Section */}
       <div className="main-profit-section">
         <Card className="main-profit-card">
           <div className="main-profit-content">
             <div className="profit-header">
               <div className="profit-icon">
-                <TrophyOutlined />
+                <RiseOutlined />
               </div>
               <div className="profit-info">
-                <Title level={3} className="profit-title">Current Profit</Title>
-                <Text className="profit-subtitle">Available for claiming</Text>
+                <Title level={3} className="profit-title">Auto-Added Profits</Title>
+                <Text className="profit-subtitle">Profits are automatically added to your balance</Text>
               </div>
             </div>
             
             <div className="profit-amount">
               <Statistic
-                value={currentProfit}
+                value={totalProfitsEarned}
                 prefix={<DollarOutlined />}
                 precision={2}
                 valueStyle={{ 
-                  color: canClaim ? '#52c41a' : '#1890ff',
+                  color: '#52c41a',
                   fontSize: '2.5rem',
                   fontWeight: 'bold'
                 }}
               />
             </div>
 
-            <div className="timer-section">
-              {canClaim ? (
-                <div className="claim-ready">
-                  <CheckCircleOutlined className="ready-icon" />
-                  <Text className="ready-text">Ready to claim!</Text>
-                </div>
-              ) : (
-                <div className="timer-container">
-                  <div className="timer-icon">
-                    <ClockCircleOutlined />
-                  </div>
-                  <div className="timer-content">
-                    <Text className="timer-label">Time remaining</Text>
-                    <Text className="timer-value">{formatTimeLeft()}</Text>
-                  </div>
+            <div className="auto-profit-info">
+              <div className="auto-profit-status">
+                <CheckCircleOutlined className="auto-icon" />
+                <Text className="auto-text">Profits automatically added to balance</Text>
+              </div>
+              
+              {lastProfitAdded && (
+                <div className="last-profit-info">
+                  <Text className="last-profit-label">Last profit added:</Text>
+                  <Text className="last-profit-date">
+                    {lastProfitAdded.format('MMM DD, YYYY [at] HH:mm')}
+                  </Text>
                 </div>
               )}
-              
-              <div className="progress-container">
-                <Progress
-                  percent={getProgressPercentage()}
-                  strokeColor={{
-                    '0%': '#1890ff',
-                    '100%': '#52c41a',
-                  }}
-                  trailColor="#2a2a2a"
-                  size={8}
-                  showInfo={false}
-                />
-              </div>
             </div>
-
-            <Button
-              type="primary"
-              size="large"
-              className="claim-button"
-              disabled={!canClaim || claiming}
-              loading={claiming}
-              onClick={handleClaimProfit}
-              icon={<DollarOutlined />}
-            >
-              {claiming ? 'Claiming...' : canClaim ? 'Claim Profit' : 'Wait for Timer'}
-            </Button>
           </div>
         </Card>
       </div>
@@ -217,8 +124,8 @@ const Profits = () => {
           <Col xs={24} sm={12} md={8}>
             <Card className="profit-summary-card">
               <Statistic
-                title="Total Claimed"
-                value={totalProfits}
+                title="Total Earned"
+                value={totalProfitsEarned}
                 prefix={<DollarOutlined />}
                 precision={2}
                 valueStyle={{ color: '#52c41a' }}
@@ -228,19 +135,19 @@ const Profits = () => {
           <Col xs={24} sm={12} md={8}>
             <Card className="profit-summary-card">
               <Statistic
-                title="Available Now"
-                value={currentProfit}
+                title="Current Balance"
+                value={currentBalance}
                 prefix={<DollarOutlined />}
                 precision={2}
-                valueStyle={{ color: canClaim ? '#52c41a' : '#1890ff' }}
+                valueStyle={{ color: '#1890ff' }}
               />
             </Card>
           </Col>
           <Col xs={24} sm={12} md={8}>
             <Card className="profit-summary-card">
               <Statistic
-                title="Total Claims"
-                value={claimedProfits.length}
+                title="Profit Transactions"
+                value={profitTransactions.length}
                 prefix={<TrophyOutlined />}
                 valueStyle={{ color: '#722ed1' }}
               />
@@ -249,34 +156,34 @@ const Profits = () => {
         </Row>
       </div>
 
-      {/* Claimed Profits History */}
+      {/* Profit Transactions History */}
       <div className="claimed-profits-section">
         <Card className="claimed-profits-card">
           <div className="section-header">
             <HistoryOutlined className="section-icon" />
-            <Title level={4} className="section-title">Claimed Profits History</Title>
+            <Title level={4} className="section-title">Profit Transactions History</Title>
           </div>
           
           <Divider />
           
-          {claimedProfits.length === 0 ? (
+          {profitTransactions.length === 0 ? (
             <div className="empty-state">
-              <Text className="empty-text">No profits claimed yet</Text>
+              <Text className="empty-text">No profit transactions yet</Text>
             </div>
           ) : (
             <div className="profits-list">
-              {claimedProfits.map((profit) => (
-                <div key={profit.id} className="profit-item">
+              {profitTransactions.map((transaction) => (
+                <div key={transaction._id} className="profit-item">
                   <div className="profit-item-content">
                     <div className="profit-item-info">
-                      <Text className="profit-amount">${parseFloat(profit.amount).toFixed(2)}</Text>
+                      <Text className="profit-amount">+${parseFloat(transaction.quantity).toFixed(2)}</Text>
                       <Text className="profit-date">
-                        {dayjs(profit.claimedAt).format('MMM DD, YYYY [at] HH:mm')}
+                        {dayjs(transaction.date).format('MMM DD, YYYY [at] HH:mm')}
                       </Text>
                     </div>
                     <div className="profit-status">
                       <Tag color="green" icon={<CheckCircleOutlined />}>
-                        Claimed
+                        Auto-Added
                       </Tag>
                     </div>
                   </div>

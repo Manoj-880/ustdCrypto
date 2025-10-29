@@ -18,7 +18,7 @@ const getAllUsers = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in addUser:", error);
         res.status(500).send({ 
             success: false, 
             message: "Internal server error",
@@ -43,7 +43,7 @@ const getUserById = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in addUser:", error);
         res.status(500).send({ 
             success: false, 
             message: "Internal server error",
@@ -97,35 +97,17 @@ const createUser = async (req, res) => {
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
         
-        console.log('Generated verification token:', verificationToken);
-        console.log('Token expires at:', verificationExpires);
-        
         // Add verification fields to user
         user.isEmailVerified = false;
         user.emailVerificationToken = verificationToken;
         user.emailVerificationExpires = verificationExpires;
 
         let createUserStatus = await userRepo.addUser(user);
-        console.log('User created successfully:', createUserStatus ? 'Yes' : 'No');
         if(createUserStatus) {
-            console.log('Created user email:', createUserStatus.email);
-            console.log('Created user verification token:', createUserStatus.emailVerificationToken);
-            console.log('Created user verification expires:', createUserStatus.emailVerificationExpires);
-            
-            // Verify the token was actually saved by querying the database
-            const verifyUser = await userRepo.getUserByVerificationToken(verificationToken);
-            console.log('Verification - User found by token after creation:', verifyUser ? 'Yes' : 'No');
-            if (verifyUser) {
-                console.log('Verification - User email:', verifyUser.email);
-                console.log('Verification - Token matches:', verifyUser.emailVerificationToken === verificationToken);
-            }
             // Send verification email instead of welcome email
             try {
                 const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? 'https://secureusdt.com' : 'http://localhost:5173');
                 const verificationLink = `${frontendUrl}/verify-email?token=${verificationToken}`;
-                console.log('Environment:', process.env.NODE_ENV);
-                console.log('Frontend URL:', frontendUrl);
-                console.log('Generated verification link:', verificationLink);
                 
                 const emailResult = await sendEmail(
                     user.email,
@@ -137,7 +119,7 @@ const createUser = async (req, res) => {
                 );
 
                 if (emailResult.success) {
-                    console.log('Verification email sent successfully to:', user.email);
+                    // Verification email sent successfully
                 } else {
                     console.error('Failed to send verification email:', emailResult.message);
                 }
@@ -162,7 +144,7 @@ const createUser = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in addUser:", error);
         res.status(500).send({ 
             success: false, 
             message: "Internal server error",
@@ -187,7 +169,7 @@ const updateUser = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in addUser:", error);
         res.status(500).send({
             success: false,
             message: "Internal server error",
@@ -211,7 +193,7 @@ const deleteUser = async (req, res) => {
             });
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in addUser:", error);
         res.status(500).send({
             success: false,
             message: "Internal server error",

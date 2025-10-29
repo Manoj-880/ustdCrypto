@@ -1,9 +1,42 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-refresh/only-export-components */
+/**
+ * Authentication Context - USDT Investment Platform
+ * 
+ * This context provides authentication state management for the entire application.
+ * It handles user sessions, role-based access control, and session persistence
+ * using localStorage for seamless user experience across browser sessions.
+ * 
+ * Key Features:
+ * - User authentication state management
+ * - Role-based access control (user/admin)
+ * - Session persistence with localStorage
+ * - Automatic session expiry handling
+ * - Legacy session format migration
+ * - Session validation and cleanup
+ * 
+ * Session Management:
+ * - Sessions expire after 24 hours
+ * - Automatic cleanup of expired sessions
+ * - Legacy format migration for backward compatibility
+ * - Role enforcement and validation
+ * 
+ * @author USDT Platform Team
+ * @version 1.0.0
+ * @since 2024
+ */
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
+/**
+ * Custom hook to access authentication context
+ * 
+ * This hook provides access to the authentication context and ensures
+ * it's only used within an AuthProvider component.
+ * 
+ * @returns {Object} Authentication context with user data and methods
+ * @throws {Error} If used outside of AuthProvider
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -12,43 +45,81 @@ export const useAuth = () => {
   return context;
 };
 
+/**
+ * Authentication Provider Component
+ * 
+ * This component wraps the entire application and provides authentication
+ * state and methods to all child components through React Context.
+ * 
+ * State Management:
+ * - user: Current authenticated user data
+ * - userRole: User's role (user/admin)
+ * - isLoading: Loading state during authentication checks
+ * 
+ * Session Features:
+ * - 24-hour session expiry
+ * - Automatic session validation
+ * - Legacy format migration
+ * - Role enforcement and defaults
+ * 
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ * @returns {JSX.Element} Authentication context provider
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if session is valid
+  /**
+   * Validate Session Expiry
+   * 
+   * Checks if a session is still valid based on its timestamp.
+   * Sessions expire after 24 hours for security purposes.
+   * 
+   * @param {Object} sessionData - Session data object
+   * @param {string} sessionData.timestamp - Session creation timestamp
+   * @returns {boolean} True if session is valid, false if expired
+   */
   const isSessionValid = (sessionData) => {
     if (!sessionData) return false;
 
     const now = new Date().getTime();
     const sessionTime = new Date(sessionData.timestamp).getTime();
-    const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    const twentyFourHours = 24 * 60 * 60 * 1000;
 
     return now - sessionTime < twentyFourHours;
   };
 
-  // Get user from local storage
+  /**
+   * Retrieve User Session from localStorage
+   * 
+   * Attempts to retrieve and validate the user session from localStorage.
+   * Handles session expiry, data corruption, and legacy format migration.
+   * 
+   * Process Flow:
+   * 1. Retrieve session data from localStorage
+   * 2. Parse JSON data safely
+   * 3. Validate session expiry
+   * 4. Ensure role is present (default to 'user')
+   * 5. Return validated session or null
+   * 
+   * @returns {Object|null} Valid session data or null if invalid/expired
+   */
   const getUserFromSession = () => {
     try {
       const sessionData = localStorage.getItem("userSession");
-      console.log("Raw localStorage data:", sessionData);
 
       if (sessionData) {
         const parsedData = JSON.parse(sessionData);
-        console.log("Parsed session data:", parsedData);
 
         if (isSessionValid(parsedData)) {
-          // Always ensure role exists, default to 'user' if missing
           const role = parsedData.role || "user";
-          console.log("Session valid, role:", role);
           return {
             user: parsedData.user,
             role: role,
           };
         } else {
-          // Session expired, clear it
-          console.log("Session expired, clearing localStorage");
           localStorage.removeItem("userSession");
         }
       }
@@ -59,88 +130,85 @@ export const AuthProvider = ({ children }) => {
     return null;
   };
 
-  // Set user in local storage
+  /**
+   * Store User Session in localStorage
+   * 
+   * Saves user data and role to localStorage with a timestamp for session management.
+   * Ensures role is always present and defaults to 'user' if not specified.
+   * 
+   * @param {Object} userData - User data object
+   * @param {string} role - User role (user/admin)
+   */
   const setUserInSession = (userData, role) => {
     try {
-      console.log("setUserInSession called with:");
-      console.log("userData:", userData);
-      console.log("role:", role);
-      console.log("role type:", typeof role);
-      
-      // Ensure role is always set, default to 'user' if undefined
       const finalRole = role || 'user';
-      console.log("Final role after fallback:", finalRole);
       
       const sessionData = {
         user: userData,
         role: finalRole,
         timestamp: new Date().toISOString(),
       };
-      console.log("Setting user in session with role:", finalRole);
-      console.log("Session data:", sessionData);
       localStorage.setItem("userSession", JSON.stringify(sessionData));
       setUser(userData);
       setUserRole(finalRole);
-      console.log("User and role set successfully");
     } catch (error) {
       console.error("Error saving to local storage:", error);
     }
   };
 
-  // Clear user session
+  /**
+   * Clear User Session
+   * 
+   * Removes user session from localStorage and resets authentication state.
+   * Used for logout functionality and session cleanup.
+   */
   const clearUserSession = () => {
     try {
       localStorage.removeItem("userSession");
       setUser(null);
       setUserRole(null);
-      console.log("Session cleared successfully");
     } catch (error) {
       console.error("Error clearing local storage:", error);
     }
   };
 
-  // Check authentication status on app load
+  /**
+   * Initialize Authentication State
+   * 
+   * This effect runs on component mount to check for existing sessions
+   * and initialize the authentication state. It handles:
+   * - Session validation and restoration
+   * - Legacy format migration
+   * - Role enforcement and defaults
+   * - Session cleanup for invalid data
+   */
   useEffect(() => {
     const checkAuthStatus = () => {
       setIsLoading(true);
       const sessionData = getUserFromSession();
-      console.log("Raw session data:", sessionData);
 
       if (sessionData) {
         setUser(sessionData.user);
-        // Handle legacy sessions without role - default to 'user' role
         const role = sessionData.role || "user";
-        console.log("Session data role:", sessionData.role);
-        console.log("Assigned role:", role);
         setUserRole(role);
 
-        // ALWAYS update the session to ensure role is present
         const currentSession = JSON.parse(localStorage.getItem("userSession"));
         if (currentSession) {
           if (!currentSession.role) {
-            console.log("FORCING role addition to session");
             const updatedSession = {
               ...currentSession,
               role: "user",
             };
             localStorage.setItem("userSession", JSON.stringify(updatedSession));
-            console.log("FORCED update completed:", updatedSession);
             setUserRole("user");
-          } else {
-            console.log("Session already has role:", currentSession.role);
           }
         }
       } else {
-        // Check if there's a direct user object in localStorage (legacy format)
         const directUserData = localStorage.getItem("userSession");
         if (directUserData) {
           try {
             const parsedUser = JSON.parse(directUserData);
-            // If it's a user object directly (not wrapped in session structure)
             if (parsedUser._id && parsedUser.email && !parsedUser.user) {
-              console.log(
-                "Detected legacy direct user format, converting to new format"
-              );
               const newSessionData = {
                 user: parsedUser,
                 role: "user",
@@ -152,7 +220,6 @@ export const AuthProvider = ({ children }) => {
               );
               setUser(parsedUser);
               setUserRole("user");
-              console.log("Converted legacy session:", newSessionData);
             }
           } catch (error) {
             console.error("Error parsing legacy user data:", error);
@@ -170,7 +237,12 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  // Auto-logout when session expires
+  /**
+   * Automatic Session Expiry Monitoring
+   * 
+   * This effect monitors session expiry and automatically logs out users
+   * when their session expires. It runs every minute to check session validity.
+   */
   useEffect(() => {
     if (user) {
       const checkSessionExpiry = () => {
@@ -183,26 +255,43 @@ export const AuthProvider = ({ children }) => {
         }
       };
 
-      // Check every minute
       const interval = setInterval(checkSessionExpiry, 60000);
       return () => clearInterval(interval);
     }
   }, [user]);
 
-  // Helper functions for role checking
+  /**
+   * Role Checking Helper Functions
+   * 
+   * These functions provide convenient ways to check user roles
+   * for conditional rendering and access control.
+   * 
+   * @param {string} role - Role to check for
+   * @returns {boolean} True if user has the specified role
+   */
   const hasRole = (role) => userRole === role;
   const hasAnyRole = (roles) => roles.includes(userRole);
 
-  // Temporary function to clear current session and force fresh login
+  /**
+   * Force Session Clear and Reload
+   * 
+   * Clears the current session and reloads the page to force
+   * a fresh authentication state. Used for debugging and
+   * session troubleshooting.
+   */
   const clearCurrentSession = () => {
-    console.log("Clearing current session to force fresh login...");
     clearUserSession();
     window.location.reload();
   };
 
-  // Force update current session with role
+  /**
+   * Force Session Update with Role
+   * 
+   * Forces an update to the current session to ensure role
+   * is present and reloads the page. Used for legacy session
+   * migration and role enforcement.
+   */
   const forceUpdateSessionWithRole = () => {
-    console.log("Force updating current session with role...");
     const currentSession = JSON.parse(localStorage.getItem("userSession"));
     if (currentSession) {
       const updatedSession = {
@@ -211,11 +300,16 @@ export const AuthProvider = ({ children }) => {
       };
       localStorage.setItem("userSession", JSON.stringify(updatedSession));
       setUserRole("user");
-      console.log("Session force updated:", updatedSession);
       window.location.reload();
     }
   };
 
+  /**
+   * Context Value Object
+   * 
+   * This object contains all the authentication state and methods
+   * that are provided to child components through the context.
+   */
   const value = {
     user,
     userRole,

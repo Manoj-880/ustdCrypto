@@ -52,7 +52,6 @@ const Transactions = () => {
       setLoading(true);
       try {
         const response = await getTransactionsByUserId(user._id);
-        console.log(response);
         if (response?.success && Array.isArray(response.data)) {
           // Map backend transaction model to UI shape
           const mapped = response.data.map((t) => {
@@ -441,7 +440,7 @@ const Transactions = () => {
             >
               <Option value="all">All Types</Option>
               <Option value="deposit">Deposit</Option>
-              <Option value="claimed_profit">Claimed Profit</Option>
+              <Option value="profit">Profit</Option>
               <Option value="withdraw">Withdraw</Option>
               <Option value="transfer">Transfer</Option>
             </Select>

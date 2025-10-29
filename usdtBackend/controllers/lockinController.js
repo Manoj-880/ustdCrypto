@@ -12,7 +12,7 @@ const getAllLockins = async (req, res) => {
       data: lockins,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in createLockin:", error);
     res.status(500).send({
       success: false,
       message: "Internal server error",
@@ -39,7 +39,7 @@ const getLockinsByUserId = async (req, res) => {
       data: lockins,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in createLockin:", error);
     res.status(500).send({
       success: false,
       message: "Internal server error",
@@ -48,7 +48,6 @@ const getLockinsByUserId = async (req, res) => {
 };
 
 const createLockin = async (req, res) => {
-  console.log(req.body);
   try {
     const { userId, planId, amount } = req.body;
     if (!userId || !planId || !amount) {
@@ -128,7 +127,6 @@ const createLockin = async (req, res) => {
         maturityDateFormatted,
         transactionId
       );
-      console.log('Deposit success email sent to:', user.email);
     } catch (emailError) {
       console.error('Failed to send deposit success email:', emailError);
       // Don't fail lockin creation if email fails
@@ -151,7 +149,7 @@ const createLockin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in createLockin:", error);
     res.status(500).send({
       success: false,
       message: "Internal server error",
@@ -174,7 +172,7 @@ const deleteLockin = async (req, res) => {
       message: "Lock-in deleted successfully",
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in createLockin:", error);
     res.status(500).send({
       success: false,
       message: "Internal server error",

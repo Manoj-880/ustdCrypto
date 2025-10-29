@@ -6,10 +6,9 @@ const fileUrl = `${url}/users`;
 const getAllUsers = async () => {
     try {
         let response = await axios.get(fileUrl);
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error in getUser:", error);
         return error.response.data;
     }
 }
@@ -17,10 +16,10 @@ const getAllUsers = async () => {
 const getUserById = async (id) => {
     try {
         let response = await axios.get(`${fileUrl}/${id}`);
-        console.log(response.data);
+        return response.data;
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error in getUser:", error);
         return error.response.data;
     }
 }
@@ -43,7 +42,7 @@ const updateUser = async (id, payload) => {
         console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
+        console.error("Error in getUser:", error);
         return error.response.data;
     }
 }

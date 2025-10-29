@@ -93,7 +93,7 @@ const UserDashboard = () => {
               );
             }
           } catch (e) {
-            console.log(e);
+            console.error("Error fetching lockin balance:", e);
             totalLockinBalance = 0;
           }
 
@@ -234,11 +234,6 @@ const UserDashboard = () => {
 
   const handleLockinSubmit = async (values) => {
     setLockinLoading(true);
-    console.log({
-      userId: user._id,
-      planId: values.planId,
-      amount: parseFloat(values.amount),
-    });
     try {
       const response = await createLockin({
         userId: user._id,

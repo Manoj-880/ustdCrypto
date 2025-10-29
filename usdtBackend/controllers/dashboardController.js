@@ -13,7 +13,7 @@ const tronWeb = new TronWeb({
 
 // Test TronWeb connection
 tronWeb.isConnected().then((connected) => {
-  console.log("TronWeb connected:", connected);
+  // TronWeb connection status
 }).catch((err) => {
   console.error("TronWeb connection error:", err);
 });
@@ -31,9 +31,7 @@ const adminDashboard = async (req, res) => {
     
     try {
       const contractAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; // Official TRON USDT contract
-      console.log("Attempting to load USDT contract at:", contractAddress);
       usdtContract = await tronWeb.contract().at(contractAddress);
-      console.log("Contract loaded successfully");
 
       // Validate contract is loaded
       if (!usdtContract) {
@@ -52,7 +50,6 @@ const adminDashboard = async (req, res) => {
           const decimals = 6; // USDT has 6 decimals on TRON
           const balance = Number(rawBalance.toString()) / 10 ** decimals;
           totalBalance += balance;
-          console.log(`Wallet ${wallet.walletId} balance: ${balance} USDT`);
         } catch (err) {
           console.error(
             `Error fetching balance for wallet ${wallet.walletId}:`,
@@ -65,7 +62,6 @@ const adminDashboard = async (req, res) => {
       console.error("Failed to load contract or fetch balances:", err);
       // Continue without balance calculation - set totalBalance to 0
       totalBalance = 0;
-      console.log("Proceeding without balance calculation due to contract error");
     }
 
     // latest 5 users
@@ -114,28 +110,27 @@ const userDashboard = async (req, res) => {
       return res.status(404).send({ success: false, message: "User not found" });
     }
 
-    // Monthly profit: sum of CLAIMED profits in current month
-    const profits = await profitRepo.getProfitsByUserId(userId);
+    // Monthly profit: sum of DAILY_PROFIT transactions in current month
+    const userTransactions = await transactionRepo.getAllTransactionsByUserId(userId);
     const now = new Date();
     const som = startOfMonth(now);
     const eom = endOfMonth(now);
-    const monthlyProfit = profits
-      .filter(p => p.status === "CLAIMED" && p.claimedAt && p.claimedAt >= som && p.claimedAt <= eom)
-      .reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+    const monthlyProfit = userTransactions
+      .filter(t => t.type === "DAILY_PROFIT" && t.date && t.date >= som && t.date <= eom)
+      .reduce((sum, t) => sum + parseFloat(t.quantity || 0), 0);
 
     // Total profit from user model
     const totalProfit = parseFloat(user.profit || 0);
 
-    // Active days = number of CLAIMED profit records
-    const activeDays = profits.filter(p => p.status === "CLAIMED").length;
+    // Active days = number of DAILY_PROFIT transactions
+    const activeDays = userTransactions.filter(t => t.type === "DAILY_PROFIT").length;
 
     // Success rate = activeDays / days since registered (inclusive) * 100
     const registeredDate = new Date(user.joinDate);
     const daysSinceRegistered = Math.max(1, Math.ceil((now - registeredDate) / (24 * 60 * 60 * 1000)));
     const successRate = (activeDays / daysSinceRegistered) * 100;
 
-    // Total transactions by user
-    const userTransactions = await transactionRepo.getAllTransactionsByUserId(userId);
+    // Total transactions by user (already fetched above)
     const totalTransactions = userTransactions?.length || 0;
 
     // Avg daily profit = totalProfit / daysSinceRegistered

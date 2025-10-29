@@ -29,6 +29,11 @@ const getAllTransactionsByUserId = async (userId) => {
 const createTransaction = async (transactionData) => {
     const transaction = new transactionsModel(transactionData);
     await transaction.save();
+    
+    // Set transactionId to MongoDB _id
+    transaction.transactionId = transaction._id.toString();
+    await transaction.save();
+    
     return transaction;
 };
 
