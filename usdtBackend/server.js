@@ -155,9 +155,9 @@ app.use(limiter);
  * Automated Profit Distribution Cron Job
  * 
  * This cron job automatically distributes daily profits to all users with active lock-ins.
- * It runs daily at 8:00 AM Indian Standard Time (IST) to ensure consistent profit distribution.
+ * It runs every minute to ensure frequent profit distribution.
  * 
- * Schedule: "0 8 * * *" (daily at 8 AM)
+ * Schedule: "* * * * *" (every minute)
  * Timezone: Asia/Kolkata (IST)
  * 
  * The job calls paymentController.addProfit() which:
@@ -170,7 +170,7 @@ app.use(limiter);
  * Error handling ensures the job continues even if individual user processing fails.
  */
 corn.schedule(
-  process.env.PROFIT_CRON_SCHEDULE || "0 8 * * *",
+  process.env.PROFIT_CRON_SCHEDULE || "* * * * *",
   async () => {
     try {
       console.log("⏰ [CRON] Cron job triggered at:", new Date().toISOString());
@@ -184,7 +184,7 @@ corn.schedule(
   }
 );
 
-console.log("🕐 [CRON] Profit cron job scheduled:", process.env.PROFIT_CRON_SCHEDULE || "0 8 * * *");
+console.log("🕐 [CRON] Profit cron job scheduled:", process.env.PROFIT_CRON_SCHEDULE || "* * * * *");
 console.log("🌍 [CRON] Cron timezone:", process.env.CRON_TIMEZONE || "Asia/Kolkata");
 
 /**

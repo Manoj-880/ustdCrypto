@@ -160,39 +160,52 @@ const generateDailyProfit = async (req, res) => {
 
     for (let user of users) {
       const userLockins = await lockinRepo.getLockinsByUserId(user._id);
+      const activeLockins = userLockins.filter((lockin) => lockin.status === "ACTIVE");
       
-      const userLockinProfit = userLockins
-        .filter((lockin) => lockin.status === "ACTIVE")
-        .map((lockin) => {
-          const dailyRate = parseFloat(lockin.interestRate) / 100;
-          return (parseFloat(lockin.amount) || 0) * dailyRate;
-        })
-        .reduce((sum, profit) => sum + profit, 0);
+      let totalUserProfit = 0;
+      const transactionTimestamp = new Date();
+      const transactionRepo = require("../repos/transactionRepo");
 
-      if (userLockinProfit > 0) {
+      // Process each lockin separately and create individual transactions
+      for (const lockin of activeLockins) {
+        const dailyRate = parseFloat(lockin.interestRate) / 100;
+        const lockinAmount = parseFloat(lockin.amount) || 0;
+        const lockinProfit = lockinAmount * dailyRate;
+
+        if (lockinProfit > 0) {
+          // Create transaction for this specific lockin
+          await transactionRepo.createTransaction({
+            quantity: lockinProfit.toFixed(2).toString(),
+            date: transactionTimestamp,
+            userId: user._id,
+            activeWalleteId: "DAILY_PROFIT",
+            userWalletId: user.walletId || null,
+            type: "DAILY_PROFIT",
+            lockinId: lockin._id,
+            description: `Daily profit from ${lockin.planName || 'Lock-in Plan'} (${lockinProfit.toFixed(2)} USDT)`,
+            status: "completed",
+          });
+
+          totalUserProfit += lockinProfit;
+        }
+      }
+
+      // Update user balance once with all accumulated profits
+      if (totalUserProfit > 0) {
         const currentBalance = parseFloat(user.balance) || 0;
         const currentProfit = parseFloat(user.profit) || 0;
-        const newBalance = currentBalance + userLockinProfit;
-        const newProfit = currentProfit + userLockinProfit;
+        const newBalance = currentBalance + totalUserProfit;
+        const newProfit = currentProfit + totalUserProfit;
         
         await userRepo.updateUser(user._id, {
           balance: newBalance.toFixed(2).toString(),
           profit: newProfit.toFixed(2).toString(),
         });
 
-        const transactionRepo = require("../repos/transactionRepo");
-        await transactionRepo.createTransaction({
-          quantity: userLockinProfit.toFixed(2).toString(),
-          date: new Date(),
-          userId: user._id,
-          activeWalleteId: "DAILY_PROFIT",
-          userWalletId: user.walletId || null,
-          type: "DAILY_PROFIT",
-        });
-
         generatedProfits.push({
           userId: user._id,
-          amount: userLockinProfit,
+          amount: totalUserProfit,
+          transactions: activeLockins.length,
         });
       }
     }

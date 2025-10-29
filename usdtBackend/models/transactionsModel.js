@@ -44,6 +44,11 @@ const transactionSchema = new Schema({
     fee: {
         type: Number,
         default: 0
+    },
+    lockinId: {
+        type: Schema.Types.ObjectId,
+        ref: "Lockin",
+        required: false
     }
 });
 

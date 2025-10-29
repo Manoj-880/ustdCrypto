@@ -175,7 +175,7 @@ const WithdrawalRequests = () => {
 
   return (
     <div className="withdrawal-requests-page">
-      <div className="page-header">
+      <div className="withdrawal-requests-header">
         <Title level={2} className="page-title">
           Withdrawal Requests
         </Title>

@@ -228,9 +228,9 @@ const Profile = () => {
             }
           >
             <div className="referral-content-compact">
-              <div className="referral-code-container-compact">
-                <Text code className="referral-code-compact">
-                  {userData?.referralCode || '-'}
+              <div className="referral-link-container-compact">
+                <Text className="referral-link-text">
+                  {generateReferralLink}
                 </Text>
               </div>
               <div className="referral-actions-compact">
