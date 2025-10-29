@@ -143,6 +143,23 @@ const Lockins = () => {
 
   const columns = [
     {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (name) => (
+        <Text 
+          strong 
+          style={{ 
+            fontFamily: 'var(--font-family-mono)', 
+            color: 'var(--color-primary)',
+            fontWeight: 'var(--font-weight-semibold)'
+          }}
+        >
+          {name || 'N/A'}
+        </Text>
+      ),
+    },
+    {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
