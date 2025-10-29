@@ -27,6 +27,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import ScrollToTop from "../../components/ScrollToTop";
 import useIdleTimeout from "../../hooks/useIdleTimeout";
 import useSessionValidation from "../../hooks/useSessionValidation";
+import LockinMaturityModal from "../../components/LockinMaturityModal";
+import { getCompletedLockins } from "../../api_calls/lockinApi";
 import UserDashboard from "../userPages/userDashboard";
 import Transactions from "../userPages/transactions";
 import Profits from "../userPages/profits";
@@ -50,6 +52,9 @@ const UserLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [showMaturityModal, setShowMaturityModal] = useState(false);
+  const [currentMatureLockin, setCurrentMatureLockin] = useState(null);
+  const [matureLockins, setMatureLockins] = useState([]);
 
   // Helper function to strip HTML tags and clean text
   const stripHtmlTags = (text) => {
@@ -102,6 +107,58 @@ const UserLayout = () => {
     !!user, // Only enable when user is logged in
     30000 // Check every 30 seconds
   );
+
+  // Check for completed lock-ins on mount and when user changes
+  useEffect(() => {
+    const checkMatureLockins = async () => {
+      if (!user || !user._id) return;
+
+      try {
+        const response = await getCompletedLockins(user._id);
+        if (response.success && response.data && response.data.length > 0) {
+          setMatureLockins(response.data);
+          // Show modal for first completed lock-in
+          setCurrentMatureLockin(response.data[0]);
+          setShowMaturityModal(true);
+        }
+      } catch (error) {
+        console.error('Error checking for mature lock-ins:', error);
+      }
+    };
+
+    if (user) {
+      // Delay check to allow page to load
+      const timer = setTimeout(() => {
+        checkMatureLockins();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const handleMaturityModalClose = () => {
+    setShowMaturityModal(false);
+    // If there are more mature lock-ins, show the next one
+    if (matureLockins.length > 1) {
+      const currentIndex = matureLockins.findIndex(l => l._id === currentMatureLockin?._id);
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < matureLockins.length) {
+        setCurrentMatureLockin(matureLockins[nextIndex]);
+        setShowMaturityModal(true);
+      } else {
+        setCurrentMatureLockin(null);
+        setMatureLockins([]);
+      }
+    } else {
+      setCurrentMatureLockin(null);
+      setMatureLockins([]);
+    }
+  };
+
+  const handleMaturitySuccess = () => {
+    // Remove processed lock-in from list
+    setMatureLockins(prev => prev.filter(l => l._id !== currentMatureLockin?._id));
+    handleMaturityModalClose();
+  };
 
   const menuItems = [
     {
@@ -251,6 +308,14 @@ const UserLayout = () => {
         </div>
       </div>
       <ScrollToTop />
+      
+      {/* Lock-in Maturity Modal */}
+      <LockinMaturityModal
+        visible={showMaturityModal}
+        lockin={currentMatureLockin}
+        onClose={handleMaturityModalClose}
+        onSuccess={handleMaturitySuccess}
+      />
     </div>
   );
 };

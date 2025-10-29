@@ -302,7 +302,34 @@ const addProfit = async () => {
             !isNaN(endIst.getTime()) &&
             nowUtc > endIst
           ) {
+            // Mark lock-in as completed
             await lockinRepo.updateLockin(lockin._id, { status: "COMPLETED" });
+            
+            // Send maturity email notification
+            try {
+              const { sendEmail } = require("../services/emailService");
+              const maturityDate = endIst.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+              
+              await sendEmail(
+                user.email,
+                "lockinMaturity",
+                "payments@secureusdt.com",
+                user.firstName || user.email,
+                user.email,
+                lockin.name || `Lock-In #${lockin._id}`,
+                parseFloat(lockin.amount).toFixed(2),
+                lockin.planDuration || 'N/A',
+                maturityDate
+              );
+              console.log(`✅ Maturity email sent for lock-in: ${lockin.name || lockin._id}`);
+            } catch (emailError) {
+              console.error(`Failed to send maturity email for lock-in ${lockin._id}:`, emailError);
+              // Don't fail profit distribution if email fails
+            }
           }
         } catch (e) {
           console.error("Error updating lockin status:", lockin._id, e);

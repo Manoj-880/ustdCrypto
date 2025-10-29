@@ -21,6 +21,7 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import AddFundsModal from "../../components/AddFundsModal";
 import WithdrawModal from "../../components/WithdrawModal";
+import { updateUserSession } from "../../utils/sessionUtils";
 import "../../styles/pages/userPages/userDashboard.css";
 import {
   WalletOutlined,
@@ -62,9 +63,7 @@ const UserDashboard = () => {
     totalGrowth: 0,
     profitPercentage: 0,
     activeDays: 0,
-    successRate: 0,
     totalTransactions: 0,
-    avgDailyProfit: 0,
   });
 
   // Load dashboard data
@@ -97,12 +96,10 @@ const UserDashboard = () => {
             totalLockinBalance = 0;
           }
 
-          const sessionData = {
+          updateUserSession({
             user: updatedUser,
             lockinTotal: totalLockinBalance,
-            timestamp: new Date().toISOString(),
-          };
-          localStorage.setItem("userSession", JSON.stringify(sessionData));
+          });
           login(updatedUser);
           setDashboardData((prev) => ({
             ...prev,
@@ -157,19 +154,19 @@ const UserDashboard = () => {
       const dashboardResp = await getUserDashboard(user._id);
       const kpis = dashboardResp?.success ? dashboardResp.data : null;
 
+      // Total profit comes from user model's profit field
+      const totalProfit = user?.profit ? parseFloat(user.profit) : 0;
+
       setDashboardData({
         walletBalance: walletBalance,
         totalLockinBalance: totalLockinBalance,
         monthlyProfit: kpis?.monthlyProfit || 0,
-        totalProfit:
-          kpis?.totalProfit || (user?.profit ? parseFloat(user.profit) : 0),
+        totalProfit: totalProfit, // Always from user model profit field
         monthlyGrowth: 0,
         totalGrowth: 0,
         profitPercentage: 0,
         activeDays: kpis?.activeDays || 0,
-        successRate: kpis?.successRate || 0,
         totalTransactions: kpis?.totalTransactions || 0,
-        avgDailyProfit: kpis?.avgDailyProfit || 0,
       });
     } catch (error) {
       console.error("Error loading dashboard data:", error);
@@ -245,11 +242,9 @@ const UserDashboard = () => {
         // Update user data in localStorage with new balance
         if (response.data.user) {
           const updatedUser = response.data.user;
-          const sessionData = {
+          updateUserSession({
             user: updatedUser,
-            timestamp: new Date().toISOString(),
-          };
-          localStorage.setItem("userSession", JSON.stringify(sessionData));
+          });
 
           // Update the user context
           login(updatedUser);
@@ -462,7 +457,7 @@ const UserDashboard = () => {
 
       {/* Quick Stats */}
       <Row gutter={[16, 16]} className="quick-stats">
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={12}>
           <Card size="small" className="stat-card">
             <Statistic
               title="Active Days"
@@ -472,33 +467,11 @@ const UserDashboard = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="stat-card">
-            <Statistic
-              title="Success Rate"
-              value={dashboardData.successRate}
-              precision={1}
-              suffix="%"
-              valueStyle={{ fontSize: "1.5rem", color: "#52c41a" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
+        <Col xs={24} sm={12} md={12}>
           <Card size="small" className="stat-card">
             <Statistic
               title="Total Transactions"
               value={dashboardData.totalTransactions}
-              valueStyle={{ fontSize: "1.5rem" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card size="small" className="stat-card">
-            <Statistic
-              title="Avg. Daily Profit"
-              value={dashboardData.avgDailyProfit}
-              precision={2}
-              suffix=" USDT"
               valueStyle={{ fontSize: "1.5rem" }}
             />
           </Card>

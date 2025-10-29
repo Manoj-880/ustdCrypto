@@ -229,10 +229,252 @@ const deleteLockin = async (req, res) => {
   }
 };
 
+/**
+ * Get completed lock-ins for a user (not yet processed)
+ */
+const getCompletedLockins = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    if (!userId || userId === 'undefined') {
+      return res.status(400).send({
+        success: false,
+        message: "Valid user ID is required",
+      });
+    }
+    
+    // Get all completed lock-ins (status: COMPLETED and not yet processed)
+    const allLockins = await lockinRepo.getLockinsByUserId(userId);
+    const completedLockins = allLockins.filter(lockin => 
+      lockin.status === "COMPLETED" && !lockin.isProcessed
+    );
+    
+    res.status(200).send({
+      success: true,
+      message: "Completed lock-ins fetched successfully",
+      data: completedLockins,
+    });
+  } catch (error) {
+    console.error("Error in getCompletedLockins:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+/**
+ * Add lock-in amount to wallet balance
+ */
+const addToWallet = async (req, res) => {
+  try {
+    const { lockinId, userId } = req.body;
+    
+    if (!lockinId || !userId) {
+      return res.status(400).send({
+        success: false,
+        message: "Lock-in ID and user ID are required",
+      });
+    }
+    
+    // Get lock-in
+    const lockin = await lockinRepo.getLockinsByUserId(userId).then(lockins => 
+      lockins.find(l => l._id.toString() === lockinId.toString())
+    );
+    
+    if (!lockin) {
+      return res.status(404).send({
+        success: false,
+        message: "Lock-in not found",
+      });
+    }
+    
+    if (lockin.status !== "COMPLETED") {
+      return res.status(400).send({
+        success: false,
+        message: "Lock-in must be completed before adding to wallet",
+      });
+    }
+    
+    // Check if already processed (we'll add a flag later, for now just check status)
+    // For now, we'll update status to mark as processed
+    
+    // Get user
+    const user = await userRepo.getUserById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    
+    // Add lock-in amount to wallet balance
+    const lockinAmount = parseFloat(lockin.amount) || 0;
+    const currentBalance = parseFloat(user.balance) || 0;
+    const newBalance = currentBalance + lockinAmount;
+    
+    // Update user balance
+    const updatedUser = await userRepo.updateUser(userId, {
+      balance: newBalance.toFixed(2).toString(),
+    });
+    
+    // Mark lock-in as processed
+    await lockinRepo.updateLockin(lockin._id, {
+      status: "PROCESSED",
+      isProcessed: true,
+    });
+    
+    res.status(200).send({
+      success: true,
+      message: "Lock-in amount added to wallet successfully",
+      data: {
+        user: {
+          _id: updatedUser._id,
+          balance: updatedUser.balance,
+        },
+        lockin: {
+          _id: lockin._id,
+          amount: lockin.amount,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error in addToWallet:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+/**
+ * Relock - Create new lock-in from completed lock-in
+ */
+const relock = async (req, res) => {
+  try {
+    const { lockinId, userId, planId } = req.body;
+    
+    if (!lockinId || !userId || !planId) {
+      return res.status(400).send({
+        success: false,
+        message: "Lock-in ID, user ID, and plan ID are required",
+      });
+    }
+    
+    // Get the completed lock-in
+    const allLockins = await lockinRepo.getLockinsByUserId(userId);
+    const completedLockin = allLockins.find(l => 
+      l._id.toString() === lockinId.toString() && l.status === "COMPLETED"
+    );
+    
+    if (!completedLockin) {
+      return res.status(404).send({
+        success: false,
+        message: "Completed lock-in not found",
+      });
+    }
+    
+    // Get the new plan
+    const plan = await lockinPlanRepo.getLockinPlanById(planId);
+    if (!plan) {
+      return res.status(404).send({
+        success: false,
+        message: "Lock-in plan not found",
+      });
+    }
+    
+    // Get user
+    const user = await userRepo.getUserById(userId);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    
+    // Use the completed lock-in amount for the new lock-in
+    const lockinAmount = parseFloat(completedLockin.amount) || 0;
+    
+    // Calculate start and end dates for new lock-in
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + plan.duration);
+    
+    // Generate lockin name
+    const lockinName = await generateLockinName();
+    
+    // Create new lock-in
+    const newLockin = await lockinRepo.createLockin({
+      userId,
+      planId,
+      planName: plan.planName,
+      planDuration: plan.duration,
+      interestRate: plan.interestRate,
+      referralBonus: plan.referralBonus || 0,
+      planDescription: plan.description || '',
+      amount: lockinAmount.toString(),
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+      name: lockinName,
+    });
+    
+    // Mark the completed lock-in as processed
+    await lockinRepo.updateLockin(completedLockin._id, {
+      status: "PROCESSED",
+      isProcessed: true,
+    });
+    
+    // Send deposit success email for relock
+    try {
+      const transactionId = newLockin._id.toString();
+      const startDateFormatted = startDate.toLocaleDateString();
+      const maturityDateFormatted = endDate.toLocaleDateString();
+      
+      await sendDepositSuccessEmail(
+        user.email,
+        user.firstName,
+        lockinAmount,
+        `${plan.duration} days`,
+        startDateFormatted,
+        maturityDateFormatted,
+        transactionId
+      );
+    } catch (emailError) {
+      console.error('Failed to send relock deposit email:', emailError);
+    }
+    
+    res.status(201).send({
+      success: true,
+      message: "Lock-in relocked successfully",
+      data: {
+        lockin: newLockin,
+        user: {
+          _id: user._id,
+          balance: user.balance,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          walletId: user.walletId,
+          profit: user.profit,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error in relock:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   getAllLockins,
   getLockinsByUserId,
   createLockin,
   deleteLockin,
   getNextLockinName,
+  getCompletedLockins,
+  addToWallet,
+  relock,
 };

@@ -145,13 +145,28 @@ export const AuthProvider = ({ children }) => {
     try {
       const finalRole = role || 'user';
       
+      // Preserve existing sessionId if new one is not provided and we're updating
+      let finalSessionId = sessionId;
+      if (!finalSessionId) {
+        try {
+          const existingSession = localStorage.getItem("userSession");
+          if (existingSession) {
+            const parsed = JSON.parse(existingSession);
+            finalSessionId = parsed.sessionId || null;
+          }
+        } catch (e) {
+          // Ignore errors when reading existing session
+        }
+      }
+      
       const sessionData = {
         user: userData,
         role: finalRole,
         timestamp: new Date().toISOString(),
-        sessionId: sessionId || null, // Store sessionId for single-device login
+        sessionId: finalSessionId, // Store sessionId for single-device login
       };
       localStorage.setItem("userSession", JSON.stringify(sessionData));
+      console.log("✅ [AuthContext] Session saved with sessionId:", finalSessionId ? finalSessionId.substring(0, 10) + "..." : "null");
       setUser(userData);
       setUserRole(finalRole);
     } catch (error) {
@@ -197,13 +212,19 @@ export const AuthProvider = ({ children }) => {
 
         const currentSession = JSON.parse(localStorage.getItem("userSession"));
         if (currentSession) {
-          if (!currentSession.role) {
+          // Ensure role and sessionId are preserved
+          const needsUpdate = !currentSession.role || !currentSession.sessionId;
+          if (needsUpdate) {
             const updatedSession = {
               ...currentSession,
-              role: "user",
+              role: currentSession.role || "user",
+              // Preserve existing sessionId if present, don't overwrite it
+              sessionId: currentSession.sessionId || null,
             };
             localStorage.setItem("userSession", JSON.stringify(updatedSession));
-            setUserRole("user");
+            if (!currentSession.role) {
+              setUserRole("user");
+            }
           }
         }
       } else {
@@ -212,10 +233,13 @@ export const AuthProvider = ({ children }) => {
           try {
             const parsedUser = JSON.parse(directUserData);
             if (parsedUser._id && parsedUser.email && !parsedUser.user) {
+              // Preserve existing sessionId if present
+              const existingSessionId = parsedUser.sessionId || null;
               const newSessionData = {
                 user: parsedUser,
                 role: "user",
                 timestamp: new Date().toISOString(),
+                sessionId: existingSessionId, // Preserve sessionId during migration
               };
               localStorage.setItem(
                 "userSession",

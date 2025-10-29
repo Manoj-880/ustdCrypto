@@ -26,6 +26,13 @@ PORT=5002
 # AWS_REGION=us-east-1
 # ALLOWED_ORIGINS=https://secureusdt.com,https://www.secureusdt.com
 
+# Cron Job Configuration (profit distribution)
+# Schedule format: "minute hour day month weekday"
+# Default: "0 9 * * *" (9:00 AM IST daily)
+# PROFIT_CRON_SCHEDULE=0 9 * * *
+# CRON_TIMEZONE=Asia/Kolkata
+# USE_INTERVAL_BACKUP=false
+
 EOF
 
 echo "Production environment variables added to .env file"

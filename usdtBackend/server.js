@@ -155,9 +155,9 @@ app.use(limiter);
  * Automated Profit Distribution Cron Job
  * 
  * This cron job automatically distributes daily profits to all users with active lock-ins.
- * It runs every minute to ensure frequent profit distribution.
+ * It runs once daily at 9:00 AM IST (Indian Standard Time).
  * 
- * Schedule: "* * * * *" (every minute)
+ * Schedule: "0 9 * * *" (9:00 AM every day)
  * Timezone: Asia/Kolkata (IST)
  * 
  * The job calls paymentController.addProfit() which:
@@ -170,7 +170,7 @@ app.use(limiter);
  * Error handling ensures the job continues even if individual user processing fails.
  */
 corn.schedule(
-  process.env.PROFIT_CRON_SCHEDULE || "* * * * *",
+  process.env.PROFIT_CRON_SCHEDULE || "0 9 * * *",
   async () => {
     try {
       console.log("⏰ [CRON] Cron job triggered at:", new Date().toISOString());
@@ -184,19 +184,19 @@ corn.schedule(
   }
 );
 
-console.log("🕐 [CRON] Profit cron job scheduled:", process.env.PROFIT_CRON_SCHEDULE || "* * * * *");
+console.log("🕐 [CRON] Profit cron job scheduled:", process.env.PROFIT_CRON_SCHEDULE || "0 9 * * *");
 console.log("🌍 [CRON] Cron timezone:", process.env.CRON_TIMEZONE || "Asia/Kolkata");
 
 /**
  * Backup Interval-Based Profit Distribution
  * 
  * This serves as a fallback mechanism in case the cron job fails or is disabled.
- * It calculates the exact time until the next 8 AM IST and schedules the profit distribution.
+ * It calculates the exact time until the next 9 AM IST and schedules the profit distribution.
  * 
  * Activation: Controlled by USE_INTERVAL_BACKUP environment variable
  * 
  * The system:
- * 1. Calculates milliseconds until next 8 AM IST
+ * 1. Calculates milliseconds until next 9 AM IST
  * 2. Schedules profit distribution using setTimeout
  * 3. Automatically reschedules for the next day after completion
  * 4. Continues scheduling even if individual runs fail
@@ -205,22 +205,22 @@ console.log("🌍 [CRON] Cron timezone:", process.env.CRON_TIMEZONE || "Asia/Kol
  */
 let cronInterval = null;
 if (process.env.USE_INTERVAL_BACKUP === 'true') {
-  console.log("🔄 [BACKUP] Starting interval-based profit addition (daily at 8 AM IST)");
+  console.log("🔄 [BACKUP] Starting interval-based profit addition (daily at 9 AM IST)");
   
-  const getNext8AM = () => {
+  const getNext9AM = () => {
     const now = new Date();
-    const ist8AM = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-    ist8AM.setHours(8, 0, 0, 0);
+    const ist9AM = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    ist9AM.setHours(9, 0, 0, 0);
     
-    if (ist8AM <= now) {
-      ist8AM.setDate(ist8AM.getDate() + 1);
+    if (ist9AM <= now) {
+      ist9AM.setDate(ist9AM.getDate() + 1);
     }
     
-    return ist8AM.getTime() - now.getTime();
+    return ist9AM.getTime() - now.getTime();
   };
   
   const scheduleNext = () => {
-    const delay = getNext8AM();
+    const delay = getNext9AM();
     console.log(`⏰ [INTERVAL] Next profit addition scheduled in ${Math.round(delay / 1000 / 60)} minutes`);
     
     cronInterval = setTimeout(async () => {

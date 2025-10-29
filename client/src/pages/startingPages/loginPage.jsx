@@ -44,9 +44,21 @@ const LoginPage = () => {
 
         let response = await userLogin(formData);
         if(response.success) {
+            // Verify sessionId is present in response
+            if (!response.sessionId) {
+                console.error("⚠️ Login response missing sessionId:", response);
+                toast.error("Login failed: Missing session information");
+                setIsLoading(false);
+                return;
+            }
+            
             toast.success("Login successful!", { position: "top-right" });
             // Pass sessionId to login function for single-device login
             login(response.data, "user", response.sessionId);
+            
+            // Small delay to ensure localStorage is updated before navigation
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const from = location.state?.from?.pathname || '/app';
             navigate(from, { replace: true });
         } else {

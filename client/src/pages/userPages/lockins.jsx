@@ -21,10 +21,14 @@ import {
   DollarOutlined,
   PercentageOutlined,
   ClockCircleOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  WalletOutlined,
+  ReloadOutlined
 } from '@ant-design/icons';
-import { getLockinsByUserId } from '../../api_calls/lockinApi';
+import { getLockinsByUserId, addLockinToWallet, relock, getAllLockinPlans } from '../../api_calls/lockinApi';
 import { useAuth } from '../../contexts/AuthContext';
+import { updateUserSession } from '../../utils/sessionUtils';
+import LockinMaturityModal from '../../components/LockinMaturityModal';
 import '../../styles/pages/userPages/lockins.css';
 
 const { Title, Text } = Typography;
@@ -38,7 +42,10 @@ const Lockins = () => {
     pageSize: 10,
     total: 0,
   });
-  const { user } = useAuth();
+  const { user, login } = useAuth();
+  const [showMaturityModal, setShowMaturityModal] = useState(false);
+  const [selectedLockin, setSelectedLockin] = useState(null);
+  const [actionLoading, setActionLoading] = useState({});
 
   useEffect(() => {
     loadLockins();
@@ -108,12 +115,17 @@ const Lockins = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'active':
+    const statusUpper = (status || '').toUpperCase();
+    switch (statusUpper) {
+      case 'ACTIVE':
         return 'success';
-      case 'completed':
+      case 'COMPLETED':
         return 'blue';
-      case 'pending':
+      case 'PROCESSED':
+        return 'default';
+      case 'CANCELLED':
+        return 'error';
+      case 'PENDING':
         return 'warning';
       default:
         return 'default';
@@ -121,12 +133,17 @@ const Lockins = () => {
   };
 
   const getStatusText = (status) => {
-    switch (status) {
-      case 'active':
+    const statusUpper = (status || '').toUpperCase();
+    switch (statusUpper) {
+      case 'ACTIVE':
         return 'Active';
-      case 'completed':
+      case 'COMPLETED':
         return 'Completed';
-      case 'pending':
+      case 'PROCESSED':
+        return 'Processed';
+      case 'CANCELLED':
+        return 'Cancelled';
+      case 'PENDING':
         return 'Pending';
       default:
         return status;
@@ -235,13 +252,101 @@ const Lockins = () => {
         </Tag>
       ),
       filters: [
-        { text: 'Active', value: 'active' },
-        { text: 'Completed', value: 'completed' },
-        { text: 'Pending', value: 'pending' },
+        { text: 'Active', value: 'ACTIVE' },
+        { text: 'Completed', value: 'COMPLETED' },
+        { text: 'Processed', value: 'PROCESSED' },
+        { text: 'Cancelled', value: 'CANCELLED' },
       ],
-      onFilter: (value, record) => record.status === value,
+      onFilter: (value, record) => (record.status || '').toUpperCase() === value,
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => {
+        // Only show actions for COMPLETED lock-ins that haven't been processed
+        const status = (record.status || '').toUpperCase();
+        if (status === 'COMPLETED' && !record.isProcessed) {
+          return (
+            <Space>
+              <Button
+                type="primary"
+                size="small"
+                icon={<WalletOutlined />}
+                onClick={() => handleAddToWallet(record)}
+                loading={actionLoading[`wallet-${record._id}`]}
+                style={{
+                  background: 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)',
+                  border: 'none'
+                }}
+              >
+                Add to Wallet
+              </Button>
+              <Button
+                type="primary"
+                size="small"
+                icon={<ReloadOutlined />}
+                onClick={() => handleRelockClick(record)}
+                loading={actionLoading[`relock-${record._id}`]}
+                style={{
+                  background: 'linear-gradient(135deg, #1677ff 0%, #40a9ff 100%)',
+                  border: 'none'
+                }}
+              >
+                Relock
+              </Button>
+            </Space>
+          );
+        }
+        return <Text type="secondary">-</Text>;
+      },
     },
   ];
+
+  const handleAddToWallet = async (lockin) => {
+    if (!lockin || !user) return;
+
+    setActionLoading(prev => ({ ...prev, [`wallet-${lockin._id}`]: true }));
+    try {
+      const response = await addLockinToWallet(lockin._id, user._id);
+      
+      if (response.success) {
+        message.success('Lock-in amount added to wallet successfully!');
+        
+        // Update user session with new balance
+        if (response.data?.user) {
+          updateUserSession({
+            user: response.data.user,
+          });
+          login(response.data.user);
+        }
+        
+        // Reload lock-ins to reflect updated status
+        loadLockins();
+      } else {
+        message.error(response.message || 'Failed to add to wallet');
+      }
+    } catch (error) {
+      console.error('Error adding to wallet:', error);
+      message.error('Failed to add lock-in to wallet');
+    } finally {
+      setActionLoading(prev => ({ ...prev, [`wallet-${lockin._id}`]: false }));
+    }
+  };
+
+  const handleRelockClick = (lockin) => {
+    setSelectedLockin(lockin);
+    setShowMaturityModal(true);
+  };
+
+  const handleMaturityModalClose = () => {
+    setShowMaturityModal(false);
+    setSelectedLockin(null);
+  };
+
+  const handleMaturitySuccess = () => {
+    loadLockins(); // Reload to show updated status
+    handleMaturityModalClose();
+  };
 
   return (
     <div className="lockins-page">
@@ -282,7 +387,7 @@ const Lockins = () => {
           <Card className="summary-card">
             <Statistic
               title="Active Lock-Ins"
-              value={lockins.filter(lockin => lockin.status === 'ACTIVE').length}
+              value={lockins.filter(lockin => (lockin.status || '').toUpperCase() === 'ACTIVE').length}
               prefix={<CheckCircleOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -339,6 +444,14 @@ const Lockins = () => {
           </>
         )}
       </Card>
+
+      {/* Lock-in Maturity Modal for relock action */}
+      <LockinMaturityModal
+        visible={showMaturityModal}
+        lockin={selectedLockin}
+        onClose={handleMaturityModalClose}
+        onSuccess={handleMaturitySuccess}
+      />
     </div>
   );
 };

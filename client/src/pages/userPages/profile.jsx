@@ -103,11 +103,9 @@ const Profile = () => {
         const latest = await getUserById(userData._id);
         if (latest?.success && latest.data) {
           setUserData(latest.data);
-          const sessionData = {
+          updateUserSession({
             user: latest.data,
-            timestamp: new Date().toISOString(),
-          };
-          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          });
           login(latest.data);
         }
         setShowEditModal(false);

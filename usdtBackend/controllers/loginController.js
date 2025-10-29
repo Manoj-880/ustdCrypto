@@ -34,8 +34,23 @@ const login = async (req, res) => {
       // Update user with new session
       await userRepo.updateUserSession(user._id, newSessionId);
       
-      // Fetch updated user data
+      // Fetch updated user data to verify session was saved
       const updatedUser = await userRepo.getUserById(user._id);
+      
+      // Verify session was saved correctly
+      if (updatedUser.currentSessionId !== newSessionId) {
+        console.error("⚠️ Session ID mismatch after update:", {
+          expected: newSessionId,
+          actual: updatedUser.currentSessionId
+        });
+        // Still send response but log the error
+      }
+      
+      console.log("✅ Login successful:", {
+        userId: user._id,
+        email: user.email,
+        sessionId: newSessionId
+      });
       
       res.status(200).send({
         success: true,
@@ -92,6 +107,7 @@ const checkSessionStatus = async (req, res) => {
     const { sessionId, userId } = req.body;
 
     if (!sessionId || !userId) {
+      console.warn("⚠️ [Session Check] Missing sessionId or userId:", { sessionId, userId });
       return res.status(400).send({
         success: false,
         message: "SessionId and userId are required",
@@ -101,6 +117,7 @@ const checkSessionStatus = async (req, res) => {
     const user = await userRepo.getUserById(userId);
 
     if (!user) {
+      console.warn("⚠️ [Session Check] User not found:", userId);
       return res.status(404).send({
         success: false,
         message: "User not found",
@@ -110,6 +127,13 @@ const checkSessionStatus = async (req, res) => {
 
     // Check if sessionId matches user's currentSessionId
     const isValid = user.currentSessionId === sessionId;
+    
+    console.log("🔍 [Session Check]:", {
+      userId,
+      providedSessionId: sessionId.substring(0, 10) + "...",
+      dbSessionId: user.currentSessionId ? user.currentSessionId.substring(0, 10) + "..." : null,
+      isValid
+    });
 
     res.status(200).send({
       success: true,
@@ -117,7 +141,7 @@ const checkSessionStatus = async (req, res) => {
       message: isValid ? "Session is valid" : "Session has been invalidated",
     });
   } catch (error) {
-    console.log(error);
+    console.error("❌ [Session Check] Error:", error);
     res.status(500).send({
       success: false,
       message: "Internal Server Error",

@@ -114,6 +114,46 @@ const deleteLockinPlan = async (id) => {
     }
 };
 
+// Get completed lock-ins for user
+const getCompletedLockins = async (userId) => {
+    try {
+        const response = await axios.get(`${lockinUrl}/completed/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching completed lock-ins for user ${userId}:`, error);
+        return error.response?.data || { success: false, message: "Failed to fetch completed lock-ins" };
+    }
+};
+
+// Add lock-in amount to wallet
+const addLockinToWallet = async (lockinId, userId) => {
+    try {
+        const response = await axios.post(`${lockinUrl}/add-to-wallet`, {
+            lockinId,
+            userId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error adding lock-in to wallet:", error);
+        return error.response?.data || { success: false, message: "Failed to add lock-in to wallet" };
+    }
+};
+
+// Relock - Create new lock-in from completed one
+const relock = async (lockinId, userId, planId) => {
+    try {
+        const response = await axios.post(`${lockinUrl}/relock`, {
+            lockinId,
+            userId,
+            planId,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error relocking:", error);
+        return error.response?.data || { success: false, message: "Failed to relock" };
+    }
+};
+
 export {
     getAllLockinPlans,
     getLockinPlanById,
@@ -124,5 +164,8 @@ export {
     createLockinPlan,
     updateLockinPlan,
     deleteLockinPlan,
-    getNextLockinName
+    getNextLockinName,
+    getCompletedLockins,
+    addLockinToWallet,
+    relock
 };

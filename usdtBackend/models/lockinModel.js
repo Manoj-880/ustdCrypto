@@ -49,8 +49,12 @@ const lockinSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["ACTIVE", "COMPLETED", "CANCELLED"],
+      enum: ["ACTIVE", "COMPLETED", "CANCELLED", "PROCESSED"],
       default: "ACTIVE",
+    },
+    isProcessed: {
+      type: Boolean,
+      default: false,
     },
     name: {
       type: String,

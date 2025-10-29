@@ -122,12 +122,14 @@ const userDashboard = async (req, res) => {
     // Total profit from user model
     const totalProfit = parseFloat(user.profit || 0);
 
-    // Active days = number of DAILY_PROFIT transactions
-    const activeDays = userTransactions.filter(t => t.type === "DAILY_PROFIT").length;
-
-    // Success rate = activeDays / days since registered (inclusive) * 100
+    // Active days = days passed from join date to today's date
     const registeredDate = new Date(user.joinDate);
     const daysSinceRegistered = Math.max(1, Math.ceil((now - registeredDate) / (24 * 60 * 60 * 1000)));
+    const activeDays = daysSinceRegistered;
+
+    // Success rate = activeDays / days since registered (inclusive) * 100
+    // Note: Since activeDays now equals daysSinceRegistered, successRate will always be 100%
+    // Keeping this for backward compatibility, but it can be removed if not needed
     const successRate = (activeDays / daysSinceRegistered) * 100;
 
     // Total transactions by user (already fetched above)

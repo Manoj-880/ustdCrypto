@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Row, Col, Typography, Input, Button, Select, Space, Divider, Alert, Card, Form, message } from 'antd';
 import { MinusOutlined, SwapOutlined, DollarOutlined, InfoCircleOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
+import { updateUserSession } from '../utils/sessionUtils';
 import { createWithdrawalRequest, transferToWallet } from '../api_calls/withdrawalApi';
 import '../styles/components/WithdrawModal.css';
 
@@ -53,11 +54,9 @@ const WithdrawModal = ({ visible, onClose, user }) => {
             ...user,
             balance: (parseFloat(user.balance) - parseFloat(values.amount)).toFixed(2)
           };
-          const sessionData = {
+          updateUserSession({
             user: updatedUser,
-            timestamp: new Date().toISOString()
-          };
-          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          });
           login(updatedUser);
         } else {
           message.error(result.message || 'Withdrawal request failed');
@@ -77,11 +76,9 @@ const WithdrawModal = ({ visible, onClose, user }) => {
             ...user,
             balance: (parseFloat(user.balance) - parseFloat(values.amount)).toFixed(2)
           };
-          const sessionData = {
+          updateUserSession({
             user: updatedUser,
-            timestamp: new Date().toISOString()
-          };
-          localStorage.setItem('userSession', JSON.stringify(sessionData));
+          });
           login(updatedUser);
         } else {
           message.error(result.message || 'Transfer failed');
