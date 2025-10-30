@@ -405,7 +405,8 @@ const addProfit = async () => {
 
       if (totalUserProfit > 0 && user.referredBy) {
         try {
-          const referrer = await userRepo.getUserById(user.referredBy);
+          // referredBy stores the referrer's referralCode, not userId
+          const referrer = await userRepo.getUserByReferralCode(user.referredBy);
           if (referrer) {
             let totalReferralBonus = 0;
             const activeLockins = userLockins.filter(lockin => lockin.status === "ACTIVE");
