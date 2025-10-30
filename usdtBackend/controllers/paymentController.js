@@ -105,52 +105,70 @@ const makePayment = async (req, res) => {
       privateKey: process.env.TRON_PRIVATE_KEY,
     });
 
-    const transaction = await tronWeb.trx.getTransaction(txId);
-    if (!transaction) {
-      return res.status(200).send({
-        success: false,
-        message: "Transaction not found on blockchain",
-      });
-    }
+    // New verification flow:
+    // 1) Fetch active wallet's TRC20 USDT transactions for today via TronGrid
+    // 2) Check whether provided txId is present among those transactions to our wallet
+    // 3) Extract amount from that record and proceed
 
-    const contract = transaction.raw_data.contract[0];
-    if (contract.type !== "TriggerSmartContract") {
-      return res.status(200).send({
-        success: false,
-        message: "Invalid transaction type",
-      });
-    }
-
-    const contractAddress = tronWeb.address.fromHex(contract.parameter.value.contract_address);
     const usdtContractAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
 
-    if (contractAddress !== usdtContractAddress) {
+    const startOfDayUtc = new Date();
+    startOfDayUtc.setUTCHours(0, 0, 0, 0);
+    const endOfDayUtc = new Date();
+    endOfDayUtc.setUTCHours(23, 59, 59, 999);
+
+    // TronGrid API for TRC20 transfers to/from the wallet for USDT
+    // We will page through a reasonable window if needed; first attempt with limit=200
+    const tronGridUrl = `https://api.trongrid.io/v1/accounts/${MY_WALLET}/transactions/trc20?limit=200&contract_address=${usdtContractAddress}`;
+
+    let walletTxs = [];
+    try {
+      const resp = await fetch(tronGridUrl, {
+        headers: { 'TRON-PRO-API-KEY': process.env.TRON_PRO_API_KEY || '21503d89-f582-4167-82eb-a16da6104342' }
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data?.data)) {
+          walletTxs = data.data;
+        }
+      } else {
+        console.warn("TronGrid response not ok", await resp.text());
+      }
+    } catch (e) {
+      console.error("Failed to fetch TronGrid transactions:", e);
+    }
+
+    // Filter to today's UTC date range
+    const todaysTxs = walletTxs.filter(tx => {
+      const ts = typeof tx.block_timestamp === 'number' ? tx.block_timestamp : 0;
+      return ts >= startOfDayUtc.getTime() && ts <= endOfDayUtc.getTime();
+    });
+
+    // Try to find the provided txId in today's TRC20 USDT transfers
+    const matched = todaysTxs.find(tx => tx?.transaction_id === txId);
+
+    if (!matched) {
       return res.status(200).send({
         success: false,
-        message: "Transaction is not for USDT contract",
+        message: "Transaction not found for our wallet today",
       });
     }
 
-    const functionSelector = contract.parameter.value.data.substring(0, 8);
-    const transferSelector = tronWeb.utils.sha3("transfer(address,uint256)").substring(0, 8);
-
-    if (functionSelector !== transferSelector) {
-      return res.status(200).send({
-        success: false,
-        message: "Transaction is not a transfer",
-      });
-    }
-
-    const toAddress = tronWeb.address.fromHex(
-      "41" + contract.parameter.value.data.substring(32, 72)
-    );
-    const amountHex = contract.parameter.value.data.substring(72, 136);
-    const amount = new BigNumber(amountHex, 16).dividedBy(1000000).toNumber();
-
-    if (toAddress !== MY_WALLET) {
+    // Validate it is USDT and inbound to our wallet
+    const isToOurWallet = (matched?.to || '').toLowerCase() === (MY_WALLET || '').toLowerCase();
+    if (!isToOurWallet) {
       return res.status(200).send({
         success: false,
         message: "Transaction is not sent to our wallet",
+      });
+    }
+
+    const trc20Value = matched?.value || "0"; // integer in 6 decimals
+    const amount = new BigNumber(trc20Value).dividedBy(1000000).toNumber();
+    if (!(amount > 0)) {
+      return res.status(200).send({
+        success: false,
+        message: "Invalid transfer amount",
       });
     }
 
