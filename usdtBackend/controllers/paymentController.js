@@ -173,7 +173,7 @@ const makePayment = async (req, res) => {
     }
 
     const existingTransaction = await transactionRepo.getTransactionByTxId(txId);
-    if (existingTransaction) {
+    if (Array.isArray(existingTransaction) ? existingTransaction.length > 0 : !!existingTransaction) {
       return res.status(200).send({
         success: false,
         message: "Transaction already processed",
@@ -196,7 +196,7 @@ const makePayment = async (req, res) => {
     });
 
     const newTransaction = await transactionRepo.createTransaction({
-      txId: txId,
+      transactionId: txId,
       quantity: amount.toFixed(2).toString(),
       date: new Date(),
       userId: userId,
