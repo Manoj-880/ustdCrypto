@@ -152,40 +152,27 @@ const limiter = rateLimit({
 app.use(limiter);
 
 /**
- * Automated Profit Distribution Cron Job
- * 
- * This cron job automatically distributes daily profits to all users with active lock-ins.
- * It runs once daily at 9:00 AM IST (Indian Standard Time).
- * 
- * Schedule: "0 9 * * *" (9:00 AM every day)
- * Timezone: Asia/Kolkata (IST)
- * 
- * The job calls paymentController.addProfit() which:
- * 1. Fetches all users with active lock-ins
- * 2. Calculates daily profit based on interest rates
- * 3. Updates user balances and profit totals
- * 4. Creates transaction records for audit trail
- * 5. Handles referral bonus distribution
- * 
- * Error handling ensures the job continues even if individual user processing fails.
+ * Automated Profit Distribution Cron Job (UTC-based)
+ *
+ * Requirement: Run daily when IST is 9:00 AM. IST is UTC+5:30, so 09:00 IST = 03:30 UTC.
+ * We schedule the cron in UTC without specifying a timezone to avoid double runs.
+ *
+ * Default Schedule (UTC): "30 3 * * *" (03:30 UTC every day)
  */
+const PROFIT_CRON_SCHEDULE_UTC = process.env.PROFIT_CRON_SCHEDULE_UTC || "30 3 * * *";
 corn.schedule(
-  process.env.PROFIT_CRON_SCHEDULE || "0 9 * * *",
+  PROFIT_CRON_SCHEDULE_UTC,
   async () => {
     try {
-      console.log("⏰ [CRON] Cron job triggered at:", new Date().toISOString());
+      console.log("⏰ [CRON] (UTC) Cron job triggered at:", new Date().toISOString());
       await paymentController.addProfit();
     } catch (error) {
       console.error("Error running addProfit cron:", error);
     }
-  },
-  {
-    timezone: process.env.CRON_TIMEZONE || "Asia/Kolkata",
   }
 );
 
-console.log("🕐 [CRON] Profit cron job scheduled:", process.env.PROFIT_CRON_SCHEDULE || "0 9 * * *");
-console.log("🌍 [CRON] Cron timezone:", process.env.CRON_TIMEZONE || "Asia/Kolkata");
+console.log("🕐 [CRON] Profit cron job scheduled (UTC):", PROFIT_CRON_SCHEDULE_UTC);
 
 /**
  * Backup Interval-Based Profit Distribution

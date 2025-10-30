@@ -28,7 +28,9 @@ PORT=5002
 
 # Cron Job Configuration (profit distribution)
 # Schedule format: "minute hour day month weekday"
-# Default: "0 9 * * *" (9:00 AM IST daily)
+# UTC-based schedule to run when IST is 9:00 AM → 03:30 UTC
+PROFIT_CRON_SCHEDULE_UTC=30 3 * * *
+# If you still use timezone-based cron, you can set the below instead
 # PROFIT_CRON_SCHEDULE=0 9 * * *
 # CRON_TIMEZONE=Asia/Kolkata
 # USE_INTERVAL_BACKUP=false
