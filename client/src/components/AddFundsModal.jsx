@@ -29,28 +29,8 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Steps,
-  Input,
-  Button,
-  Typography,
-  Card,
-  Space,
-  Alert,
-  Divider,
-  QRCode,
-  Row,
-  Col,
-} from "antd";
-import {
-  QrcodeOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CopyOutlined,
-  ReloadOutlined,
-  DollarOutlined,
-} from "@ant-design/icons";
+import { Modal, Input, Button, Typography, Space, Alert, QRCode } from "antd";
+import { CheckCircleOutlined, ClockCircleOutlined, CopyOutlined, ReloadOutlined, DollarOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 import { verifyPayment } from "../api_calls/paymentApi";
@@ -206,189 +186,125 @@ const AddFundsModal = ({ visible, onClose, user }) => {
     }
   };
 
-  /**
-   * Determine Current Step
-   * 
-   * Calculates the current step in the deposit process based on user actions.
-   * This is used to display the appropriate step indicator and content.
-   * 
-   * @returns {number} Current step number (0-2)
-   */
-  const getCurrentStep = () => {
-    if (isVerified) return 2;
-    if (transactionId.trim()) return 1;
-    return 0;
-  };
-
-  /**
-   * Render Step Content
-   * 
-   * Renders the appropriate content based on the current step in the deposit process.
-   * Each step provides different information and actions for the user.
-   * 
-   * @param {number} step - Current step number
-   * @returns {JSX.Element} Step-specific content
-   */
-  const renderStepContent = (step) => {
-    switch (step) {
-      case 0:
-        return (
-          <div className="step-content">
-            <Title level={4}>Step 1: Send USDT to Our Wallet</Title>
-            <Paragraph>
-              Send USDT to the wallet address below. You can scan the QR code
-              with your mobile wallet or copy the address manually.
-            </Paragraph>
-            
-            {isLoadingWallet ? (
-              <div className="loading-container">
-                <ClockCircleOutlined spin className="loading-icon" />
-                <Text>Loading wallet information...</Text>
-              </div>
-            ) : activeWallet ? (
-              <Card className="wallet-card">
-                <Space direction="vertical" size="large" style={{ width: "100%" }}>
-                  <div className="wallet-address-section">
-                    <Text strong>Wallet Address:</Text>
-                    <div className="address-container">
-                      <Text code className="wallet-address">
-                        {activeWallet.walletId}
-                      </Text>
-                      <Button
-                        type="text"
-                        icon={<CopyOutlined />}
-                        onClick={copyWalletAddress}
-                        className="copy-button"
-                      />
-                    </div>
-                  </div>
-                  
-                  <Divider>OR</Divider>
-                  
-                  <div className="qr-section">
-                    <Text strong>Scan QR Code:</Text>
-                    <div className="qr-container">
-                      <QRCode
-                        value={activeWallet.walletId}
-                        size={200}
-                        icon={<DollarOutlined />}
-                      />
-                    </div>
-                  </div>
-                </Space>
-              </Card>
-            ) : (
-              <Alert
-                message="Error"
-                description="Failed to load wallet information. Please try again."
-                type="error"
-                action={
-                  <Button size="small" onClick={fetchActiveWallet}>
-                    <ReloadOutlined /> Retry
-                  </Button>
-                }
-              />
-            )}
+  const renderContent = () => {
+    if (isVerified) {
+      return (
+        <div className="success-content">
+          <div className="success-icon">
+            <CheckCircleOutlined />
           </div>
-        );
-
-      case 1:
-        return (
-          <div className="step-content">
-            <Title level={4}>Step 2: Verify Your Transaction</Title>
-            <Paragraph>
-              Enter the transaction ID (TXID) from your USDT transfer to verify
-              and credit your account.
-            </Paragraph>
-            
-            <Space direction="vertical" size="large" style={{ width: "100%" }}>
-              <div>
-                <Text strong>Transaction ID:</Text>
-                <TextArea
-                  value={transactionId}
-                  onChange={(e) => setTransactionId(e.target.value)}
-                  placeholder="Enter your transaction ID here..."
-                  rows={3}
-                  className="transaction-input"
-                />
-              </div>
-              
-              <Button
-                type="primary"
-                size="large"
-                loading={isVerifying}
-                onClick={handleVerifyPayment}
-                disabled={!transactionId.trim()}
-                className="verify-button"
-              >
-                {isVerifying ? "Verifying..." : "Verify Payment"}
-              </Button>
-            </Space>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="step-content success-content">
-            <div className="success-icon">
-              <CheckCircleOutlined />
-            </div>
-            <Title level={4}>Payment Verified Successfully!</Title>
-            <Paragraph>
-              Your USDT deposit has been verified and added to your account balance.
-              You can now use these funds to make investments.
-            </Paragraph>
-            <Text type="secondary">
-              This window will close automatically in a few seconds...
-            </Text>
-          </div>
-        );
-
-      default:
-        return null;
+          <Title level={4}>Payment Verified Successfully!</Title>
+          <Paragraph>
+            Your USDT deposit has been verified and added to your account balance.
+          </Paragraph>
+          <Text type="secondary">This window will close in a moment…</Text>
+        </div>
+      );
     }
+
+    return (
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        <div>
+          <Title level={4} style={{ marginBottom: 8 }}>Send USDT to Our Wallet</Title>
+          <Paragraph>
+            Send USDT to the wallet address below and paste your transaction ID to verify.
+          </Paragraph>
+
+          {isLoadingWallet ? (
+            <div className="loading-container">
+              <ClockCircleOutlined spin className="loading-icon" />
+              <Text>Loading wallet information...</Text>
+            </div>
+          ) : activeWallet ? (
+            <div className="wallet-address-section">
+              <Text strong>Wallet Address:</Text>
+              <div className="address-container">
+                <Text code className="wallet-address">{activeWallet.walletId}</Text>
+                <Button type="text" icon={<CopyOutlined />} onClick={copyWalletAddress} className="copy-button" />
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <Text strong>Scan QR Code:</Text>
+                <div className="qr-container" style={{ marginTop: 8 }}>
+                  <QRCode
+                    value={activeWallet.walletId}
+                    size={200}
+                    color="#000000"
+                    bgColor="#ffffff"
+                    bordered={false}
+                    errorLevel="M"
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Alert
+              message="Failed to load wallet information"
+              type="error"
+              action={
+                <Button size="small" onClick={fetchActiveWallet}>
+                  <ReloadOutlined /> Retry
+                </Button>
+              }
+            />
+          )}
+        </div>
+
+        <Alert
+          className="timer-alert"
+          type="info"
+          message="Note"
+          description="Verify your payment within 10 minutes for faster addition to your wallet."
+          showIcon
+        />
+
+        <div>
+          <Text strong>Transaction ID (TXID):</Text>
+          <TextArea
+            value={transactionId}
+            onChange={(e) => setTransactionId(e.target.value)}
+            placeholder="Enter your transaction ID here..."
+            rows={3}
+            className="transaction-input"
+          />
+        </div>
+
+        <div className="modal-actions">
+          <Button size="large" onClick={onClose} className="cancel-button" block>
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            loading={isVerifying}
+            onClick={handleVerifyPayment}
+            disabled={!transactionId.trim()}
+            className="verify-btn"
+            block
+          >
+            {isVerifying ? "Verifying..." : "Verify Payment"}
+          </Button>
+        </div>
+      </Space>
+    );
   };
 
   return (
     <Modal
       title={
-        <Space>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <DollarOutlined />
           <span>Add Funds</span>
-        </Space>
+        </div>
       }
       open={visible}
       onCancel={onClose}
       footer={null}
       width={600}
       className="add-funds-modal"
+      centered
     >
-      <div className="modal-content">
-        <Steps
-          current={getCurrentStep()}
-          items={[
-            {
-              title: "Send USDT",
-              description: "Transfer to our wallet",
-              icon: <QrcodeOutlined />,
-            },
-            {
-              title: "Verify",
-              description: "Submit transaction ID",
-              icon: <ClockCircleOutlined />,
-            },
-            {
-              title: "Complete",
-              description: "Funds added to account",
-              icon: <CheckCircleOutlined />,
-            },
-          ]}
-          className="deposit-steps"
-        />
-        
-        <div className="step-content-wrapper">
-          {renderStepContent(getCurrentStep())}
-        </div>
+      <div className="add-funds-content">
+        {renderContent()}
       </div>
     </Modal>
   );

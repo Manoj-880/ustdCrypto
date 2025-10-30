@@ -258,6 +258,16 @@
   background: var(--color-primary-bg);
 }
 
+/* Improve alert text contrast for visibility across themes */
+.timer-alert .ant-alert-message {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.timer-alert .ant-alert-description {
+  color: var(--color-text-primary) !important;
+}
+
 /* =========================
    Verification Card
 ========================= */
