@@ -202,7 +202,7 @@ const makePayment = async (req, res) => {
       userId: userId,
       activeWalleteId: MY_WALLET,
       userWalletId: user.walletId || null,
-      type: "DEPOSIT",
+      type: "deposit",
     });
 
     try {
