@@ -60,7 +60,13 @@ const getTransactionById = async (transactionId) => {
 };
 
 const getTransactionByTxId = async (txid) => {
-  const transaction = await transactionsModel.find({transactionId: txid});
+  // Support both legacy field `transactionId` and current `txId`
+  const transaction = await transactionsModel.findOne({
+    $or: [
+      { txId: txid },
+      { transactionId: txid }
+    ]
+  });
   return transaction;
 }
 
