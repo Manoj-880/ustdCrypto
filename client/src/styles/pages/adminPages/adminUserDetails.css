@@ -1000,6 +1000,32 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Edit User Modal - Save Changes Button (Primary) */
+.edit-user-modal .modal-actions .submit-btn,
+.edit-user-modal .modal-actions .ant-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: var(--radius-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  transition: all var(--transition-normal) !important;
+  min-width: 140px;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.edit-user-modal .modal-actions .submit-btn:hover,
+.edit-user-modal .modal-actions .ant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.edit-user-modal .modal-actions .submit-btn:active,
+.edit-user-modal .modal-actions .ant-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
 .balance-notice {
   background: var(--color-info-bg);
   padding: var(--space-4);

@@ -39,7 +39,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminUserDetails.css";
-import { getUserById, addBalance, deleteUser } from "../../api_calls/userApi";
+import { getUserById, addBalance, deleteUser, updateUser } from "../../api_calls/userApi";
 import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
@@ -49,8 +49,10 @@ const AdminUserDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [editForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [addBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
   const [addBalanceLoading, setAddBalanceLoading] = useState(false);
@@ -73,34 +75,60 @@ const AdminUserDetails = () => {
   };
 
   const handleEdit = () => {
-    setEditing(true);
+    // Populate edit form with current user data
+    editForm.setFieldsValue({
+      firstName: userData?.firstName,
+      lastName: userData?.lastName,
+      walletId: userData?.walletId,
+      mobile: userData?.mobile,
+    });
+    setEditModalVisible(true);
   };
 
-  const handleSave = async () => {
+  const handleEditSave = async () => {
     try {
-      const values = await form.validateFields();
-      setLoading(true);
+      const values = await editForm.validateFields();
+      setEditLoading(true);
 
-      // Simulate API call
-      setTimeout(() => {
-        setUserData({ ...userData, ...values });
-        setEditing(false);
-        setLoading(false);
+      // Prepare update payload
+      const updatePayload = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        walletId: values.walletId,
+        mobile: values.mobile,
+      };
+
+      // Call updateUser API
+      const response = await updateUser(userData._id, updatePayload);
+      
+      if (response.success) {
+        // Refresh user data
+        await fetchUserData();
+        setEditModalVisible(false);
+        editForm.resetFields();
         message.success("User updated successfully!");
-      }, 1000);
+        toast.success("User details updated successfully!");
+      } else {
+        message.error(response.message || "Failed to update user");
+        toast.error(response.message || "Failed to update user");
+      }
     } catch (error) {
-      console.error("Validation failed:", error);
+      console.error("Validation failed or update error:", error);
+      if (error.errorFields) {
+        // Form validation errors
+        message.error("Please fill in all required fields correctly");
+      } else {
+        message.error("Failed to update user. Please try again.");
+        toast.error("Failed to update user. Please try again.");
+      }
+    } finally {
+      setEditLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    // Convert date string to dayjs object for DatePicker
-    const formData = {
-      ...userData,
-      joinDate: dayjs(userData.joinDate),
-    };
-    form.setFieldsValue(formData);
-    setEditing(false);
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    editForm.resetFields();
   };
 
   const handleDelete = () => {
@@ -202,58 +230,35 @@ const AdminUserDetails = () => {
             </div>
           </div>
           <div className="profile-actions">
-            {!editing ? (
-              <div className="action-buttons">
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  onClick={handleEdit}
-                  className="edit-btn"
-                  size="large"
-                >
-                  Edit User
-                </Button>
-                <Button
-                  type="default"
-                  icon={<PlusOutlined />}
-                  onClick={handleAddBalance}
-                  className="add-balance-btn"
-                  size="large"
-                >
-                  Add Balance
-                </Button>
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDelete}
-                  className="delete-btn"
-                  size="large"
-                >
-                  Delete User
-                </Button>
-              </div>
-            ) : (
-              <div className="action-buttons">
-                <Button
-                  type="primary"
-                  icon={<SaveOutlined />}
-                  onClick={handleSave}
-                  loading={loading}
-                  className="save-btn"
-                  size="large"
-                >
-                  Save Changes
-                </Button>
-                <Button
-                  icon={<CloseOutlined />}
-                  onClick={handleCancel}
-                  className="cancel-btn"
-                  size="large"
-                >
-                  Cancel
-                </Button>
-              </div>
-            )}
+            <div className="action-buttons">
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={handleEdit}
+                className="edit-btn"
+                size="large"
+              >
+                Edit User
+              </Button>
+              <Button
+                type="default"
+                icon={<PlusOutlined />}
+                onClick={handleAddBalance}
+                className="add-balance-btn"
+                size="large"
+              >
+                Add Balance
+              </Button>
+              <Button
+                danger
+                icon={<DeleteOutlined />}
+                onClick={handleDelete}
+                className="delete-btn"
+                size="large"
+              >
+                Delete User
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
@@ -593,6 +598,131 @@ const AdminUserDetails = () => {
               <li>Send an email notification to {userData?.email}</li>
             </ul>
           </div>
+        </div>
+      </Modal>
+
+      {/* Edit User Details Modal */}
+      <Modal
+        title="Edit User Details"
+        open={editModalVisible}
+        onCancel={handleEditCancel}
+        footer={null}
+        className="edit-user-modal"
+        width={600}
+        centered
+      >
+        <div className="edit-user-content">
+          <div className="user-info-header">
+            <Text type="secondary">Editing details for:</Text>
+            <Text strong>{userData?.firstName} {userData?.lastName} ({userData?.email})</Text>
+          </div>
+
+          <Form
+            form={editForm}
+            onFinish={handleEditSave}
+            layout="vertical"
+            className="edit-user-form"
+          >
+            <Row gutter={16}>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  name="firstName"
+                  label="First Name"
+                  rules={[
+                    { required: true, message: 'Please enter first name' },
+                    { min: 2, message: 'First name must be at least 2 characters' },
+                    { max: 50, message: 'First name cannot exceed 50 characters' }
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter first name"
+                    prefix={<UserOutlined />}
+                    size="large"
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  name="lastName"
+                  label="Last Name"
+                  rules={[
+                    { required: true, message: 'Please enter last name' },
+                    { min: 2, message: 'Last name must be at least 2 characters' },
+                    { max: 50, message: 'Last name cannot exceed 50 characters' }
+                  ]}
+                >
+                  <Input
+                    placeholder="Enter last name"
+                    prefix={<UserOutlined />}
+                    size="large"
+                    className="form-input"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Form.Item
+              name="walletId"
+              label="Wallet ID"
+              rules={[
+                { required: true, message: 'Please enter wallet ID' },
+                { min: 10, message: 'Wallet ID must be at least 10 characters' },
+                { max: 100, message: 'Wallet ID cannot exceed 100 characters' }
+              ]}
+            >
+              <Input
+                placeholder="Enter wallet ID"
+                prefix={<IdcardOutlined />}
+                size="large"
+                className="form-input"
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="mobile"
+              label="Mobile Number"
+              rules={[
+                { required: true, message: 'Please enter mobile number' },
+                { 
+                  pattern: /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
+                  message: 'Please enter a valid mobile number' 
+                }
+              ]}
+            >
+              <Input
+                placeholder="Enter mobile number"
+                prefix={<PhoneOutlined />}
+                size="large"
+                className="form-input"
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+
+            <div className="modal-actions">
+              <Button
+                type="default"
+                onClick={handleEditCancel}
+                size="large"
+                className="cancel-btn"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={editLoading}
+                size="large"
+                className="submit-btn"
+                icon={<SaveOutlined />}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </Form>
         </div>
       </Modal>
     </div>

@@ -72,6 +72,11 @@ const deleteUser = async (id) => {
     return user;
 }
 
+const getUsersByReferralCode = async (referralCode) => {
+    const users = await userModel.find({ referredBy: referralCode }).select('firstName lastName email joinDate').sort({ joinDate: -1 });
+    return users;
+};
+
 module.exports = {
     getAllUsers,
     addUser,
@@ -85,4 +90,5 @@ module.exports = {
     updateUserSession,
     getUserBySessionId,
     clearUserSession,
+    getUsersByReferralCode,
 };

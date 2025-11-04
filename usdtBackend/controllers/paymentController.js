@@ -1,19 +1,19 @@
 /**
  * Payment Controller - USDT Investment Platform
- * 
+ *
  * This controller handles all payment-related operations including:
  * - Payment verification and processing
  * - Automated daily profit distribution
  * - Referral bonus calculations and distribution
  * - Transaction logging and audit trails
- * 
+ *
  * Key Features:
  * - TRON blockchain integration for USDT transactions
  * - Automated profit calculation based on lock-in plans
  * - Referral system with bonus distribution
  * - Email notifications for transactions
  * - Comprehensive error handling and logging
- * 
+ *
  * @author USDT Platform Team
  * @version 1.0.0
  * @since 2024
@@ -34,10 +34,10 @@ const lockinRepo = require("../repos/lockinRepo");
 
 /**
  * USDT Contract ABI (Application Binary Interface)
- * 
+ *
  * This minimal ABI contains only the transfer function needed for USDT transactions.
  * The ABI defines how to interact with the USDT smart contract on the TRON blockchain.
- * 
+ *
  * Transfer Function:
  * - _to: Recipient wallet address
  * - _value: Amount to transfer (in smallest USDT unit)
@@ -58,10 +58,10 @@ const usdtAbi = [
 
 /**
  * Process Payment Verification and Deposit
- * 
+ *
  * This function handles the verification of USDT deposits made by users.
  * It verifies the transaction on the TRON blockchain and credits the user's account.
- * 
+ *
  * Process Flow:
  * 1. Validate required parameters (txId, userId)
  * 2. Get active system wallet for transaction verification
@@ -70,7 +70,7 @@ const usdtAbi = [
  * 5. Credit user's account balance
  * 6. Create transaction record
  * 7. Send confirmation email
- * 
+ *
  * @param {Object} req - Express request object
  * @param {string} req.body.txId - TRON transaction ID to verify
  * @param {string} req.body.userId - User ID making the deposit
@@ -124,7 +124,11 @@ const makePayment = async (req, res) => {
     let walletTxs = [];
     try {
       const resp = await fetch(tronGridUrl, {
-        headers: { 'TRON-PRO-API-KEY': process.env.TRON_PRO_API_KEY || '21503d89-f582-4167-82eb-a16da6104342' }
+        headers: {
+          "TRON-PRO-API-KEY":
+            process.env.TRON_PRO_API_KEY ||
+            "21503d89-f582-4167-82eb-a16da6104342",
+        },
       });
       if (resp.ok) {
         const data = await resp.json();
@@ -139,13 +143,14 @@ const makePayment = async (req, res) => {
     }
 
     // Filter to today's UTC date range
-    const todaysTxs = walletTxs.filter(tx => {
-      const ts = typeof tx.block_timestamp === 'number' ? tx.block_timestamp : 0;
+    const todaysTxs = walletTxs.filter((tx) => {
+      const ts =
+        typeof tx.block_timestamp === "number" ? tx.block_timestamp : 0;
       return ts >= startOfDayUtc.getTime() && ts <= endOfDayUtc.getTime();
     });
 
     // Try to find the provided txId in today's TRC20 USDT transfers
-    const matched = todaysTxs.find(tx => tx?.transaction_id === txId);
+    const matched = todaysTxs.find((tx) => tx?.transaction_id === txId);
 
     if (!matched) {
       return res.status(200).send({
@@ -155,7 +160,8 @@ const makePayment = async (req, res) => {
     }
 
     // Validate it is USDT and inbound to our wallet
-    const isToOurWallet = (matched?.to || '').toLowerCase() === (MY_WALLET || '').toLowerCase();
+    const isToOurWallet =
+      (matched?.to || "").toLowerCase() === (MY_WALLET || "").toLowerCase();
     if (!isToOurWallet) {
       return res.status(200).send({
         success: false,
@@ -172,8 +178,14 @@ const makePayment = async (req, res) => {
       });
     }
 
-    const existingTransaction = await transactionRepo.getTransactionByTxId(txId);
-    if (Array.isArray(existingTransaction) ? existingTransaction.length > 0 : !!existingTransaction) {
+    const existingTransaction = await transactionRepo.getTransactionByTxId(
+      txId
+    );
+    if (
+      Array.isArray(existingTransaction)
+        ? existingTransaction.length > 0
+        : !!existingTransaction
+    ) {
       return res.status(200).send({
         success: false,
         message: "Transaction already processed",
@@ -243,10 +255,10 @@ const makePayment = async (req, res) => {
 
 /**
  * Automated Daily Profit Distribution System
- * 
+ *
  * This is the core function that automatically distributes daily profits to all users
  * with active lock-ins. It runs via cron job every day at 8 AM IST.
- * 
+ *
  * Process Flow:
  * 1. Fetch all users from database
  * 2. For each user, get their active lock-ins
@@ -255,28 +267,28 @@ const makePayment = async (req, res) => {
  * 5. Create transaction records for audit trail
  * 6. Process referral bonuses for referrers
  * 7. Send email notifications for referral bonuses
- * 
+ *
  * Profit Calculation:
  * - Daily Profit = Lock-in Amount × Daily Interest Rate
  * - Interest Rate is stored as percentage (e.g., 5.5 for 5.5%)
  * - Only ACTIVE lock-ins are considered for profit calculation
- * 
+ *
  * Referral System:
  * - When a user receives profit, their referrer gets a bonus
  * - Referral bonus is calculated from the lock-in plan's referral bonus rate
  * - Bonus is added to referrer's balance and profit totals
- * 
+ *
  * Error Handling:
  * - Individual user failures don't stop the entire process
  * - Database errors are logged but don't crash the system
  * - Email failures don't affect profit distribution
- * 
+ *
  * @returns {Promise<void>} Completes profit distribution for all eligible users
  */
 const addProfit = async () => {
   try {
     const MY_WALLET = process.env.DEFAULT_WALLET_ID || "SYSTEM_WALLET";
-    
+
     let users = await userRepo.getAllUsers();
 
     if (!users || users.length === 0) {
@@ -290,7 +302,7 @@ const addProfit = async () => {
     for (let user of users) {
       usersProcessed++;
       const userLockins = await lockinRepo.getLockinsByUserId(user._id);
-      
+
       if (!userLockins || userLockins.length === 0) {
         continue;
       }
@@ -322,16 +334,16 @@ const addProfit = async () => {
           ) {
             // Mark lock-in as completed
             await lockinRepo.updateLockin(lockin._id, { status: "COMPLETED" });
-            
+
             // Send maturity email notification
             try {
               const { sendEmail } = require("../services/emailService");
-              const maturityDate = endIst.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+              const maturityDate = endIst.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               });
-              
+
               await sendEmail(
                 user.email,
                 "lockinMaturity",
@@ -340,12 +352,19 @@ const addProfit = async () => {
                 user.email,
                 lockin.name || `Lock-In #${lockin._id}`,
                 parseFloat(lockin.amount).toFixed(2),
-                lockin.planDuration || 'N/A',
+                lockin.planDuration || "N/A",
                 maturityDate
               );
-              console.log(`✅ Maturity email sent for lock-in: ${lockin.name || lockin._id}`);
+              console.log(
+                `✅ Maturity email sent for lock-in: ${
+                  lockin.name || lockin._id
+                }`
+              );
             } catch (emailError) {
-              console.error(`Failed to send maturity email for lock-in ${lockin._id}:`, emailError);
+              console.error(
+                `Failed to send maturity email for lock-in ${lockin._id}:`,
+                emailError
+              );
               // Don't fail profit distribution if email fails
             }
           }
@@ -359,8 +378,10 @@ const addProfit = async () => {
         .reduce((sum, amount) => sum + amount, 0);
 
       // Get all active lockins
-      const activeLockins = userLockins.filter((lockin) => lockin.status === "ACTIVE");
-      
+      const activeLockins = userLockins.filter(
+        (lockin) => lockin.status === "ACTIVE"
+      );
+
       let totalUserProfit = 0;
       const transactionTimestamp = new Date();
 
@@ -380,7 +401,9 @@ const addProfit = async () => {
             userWalletId: user.walletId || null,
             type: "DAILY_PROFIT",
             lockinId: lockin._id,
-            description: `Daily profit from ${lockin.planName || 'Lock-in Plan'} (${lockinProfit.toFixed(2)} USDT)`,
+            description: `Daily profit from ${
+              lockin.planName || "Lock-in Plan"
+            } (${lockinProfit.toFixed(2)} USDT)`,
             status: "completed",
           });
 
@@ -403,18 +426,26 @@ const addProfit = async () => {
         });
       }
 
+      console.log(`is user reffered: ${user.referredBy}`);
+
       if (totalUserProfit > 0 && user.referredBy) {
         try {
           // referredBy stores the referrer's referralCode, not userId
-          const referrer = await userRepo.getUserByReferralCode(user.referredBy);
+          const referrer = await userRepo.getUserByReferralCode(
+            user.referredBy
+          );
+          console.log(`referrer: ${referrer}`);
           if (referrer) {
             let totalReferralBonus = 0;
-            const activeLockins = userLockins.filter(lockin => lockin.status === "ACTIVE");
-            
+            const activeLockins = userLockins.filter(
+              (lockin) => lockin.status === "ACTIVE"
+            );
+
             for (const lockin of activeLockins) {
               const referralBonusRate = (lockin.referralBonus || 0) / 100;
               const lockinAmount = parseFloat(lockin.amount) || 0;
-              const dailyProfit = lockinAmount * ((lockin.interestRate || 0) / 100);
+              const dailyProfit =
+                lockinAmount * ((lockin.interestRate || 0) / 100);
               const referralBonus = dailyProfit * referralBonusRate;
               totalReferralBonus += referralBonus;
             }
@@ -448,7 +479,10 @@ const addProfit = async () => {
                   newReferrerBalance.toFixed(2)
                 );
               } catch (emailError) {
-                console.error("Failed to send referral bonus email:", emailError);
+                console.error(
+                  "Failed to send referral bonus email:",
+                  emailError
+                );
               }
             }
           }
@@ -461,7 +495,6 @@ const addProfit = async () => {
         }
       }
     }
-
   } catch (error) {
     console.error("❌ [CRON] Error in addProfit:", error);
   }

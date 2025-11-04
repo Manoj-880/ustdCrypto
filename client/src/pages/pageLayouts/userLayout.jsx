@@ -22,6 +22,7 @@ import {
   FileTextOutlined,
   SafetyOutlined,
   ExclamationCircleOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import ScrollToTop from "../../components/ScrollToTop";
@@ -36,6 +37,7 @@ import FAQ from "../userPages/faq";
 import Profile from "../userPages/profile";
 import Lockins from "../userPages/lockins";
 import WithdrawalRequests from "../userPages/withdrawalRequests";
+import Referrals from "../userPages/referrals";
 import Terms from "../userPages/terms";
 import PrivacyPolicy from "../userPages/privacyPolicy";
 import RiskDisclaimer from "../static/riskDisclaimer";
@@ -192,6 +194,12 @@ const UserLayout = () => {
       path: "/app/withdrawals",
     },
     {
+      key: "referrals",
+      label: "My Referrals",
+      icon: <TeamOutlined />,
+      path: "/app/referrals",
+    },
+    {
       key: "faq",
       label: "FAQ",
       icon: <QuestionCircleOutlined />,
@@ -300,6 +308,7 @@ const UserLayout = () => {
             <Route path="/profit" element={<Profits />} />
             <Route path="/lockins" element={<Lockins />} />
             <Route path="/withdrawals" element={<WithdrawalRequests />} />
+            <Route path="/referrals" element={<Referrals />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />

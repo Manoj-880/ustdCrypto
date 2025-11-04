@@ -1,9 +1,9 @@
 /**
  * USDT Investment Platform - Main Server Entry Point
- * 
+ *
  * This is the primary Express.js server that handles all API requests for the USDT investment platform.
  * It manages user authentication, payment processing, profit calculations, and administrative functions.
- * 
+ *
  * Key Features:
  * - RESTful API endpoints for frontend communication
  * - Automated daily profit distribution via cron jobs
@@ -11,13 +11,13 @@
  * - CORS configuration for cross-origin requests
  * - Request logging and monitoring
  * - MongoDB database integration
- * 
+ *
  * @author USDT Platform Team
  * @version 1.0.0
  * @since 2024
  */
 
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
@@ -38,90 +38,103 @@ const app = express();
  * Configure Express to trust proxy headers for accurate IP address detection
  * This is essential for rate limiting and security when behind reverse proxies
  */
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 /**
  * CORS (Cross-Origin Resource Sharing) Configuration
- * 
+ *
  * This configuration controls which domains can access our API endpoints.
  * It supports both development and production environments with different rules.
- * 
+ *
  * Development Mode: Allows all localhost origins for local development
  * Production Mode: Only allows specific whitelisted domains
- * 
+ *
  * @param {string} origin - The origin domain making the request
  * @param {function} callback - Function to call with CORS decision
  */
 const corsOptions = {
   origin: function (origin, callback) {
-    if (process.env.NODE_ENV === 'development') {
-      if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    if (process.env.NODE_ENV === "development") {
+      if (
+        !origin ||
+        origin.includes("localhost") ||
+        origin.includes("127.0.0.1")
+      ) {
         return callback(null, true);
       }
     }
-    
+
     if (!origin) {
       return callback(null, true);
     }
 
-    const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-      process.env.ALLOWED_ORIGINS.split(',') : [
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:5173',
-        'https://www.secureusdt.com',
-        'https://api.secureusdt.com',
-        'https://secureusdt.com'
-      ];
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(",")
+      : [
+          "http://localhost:3000",
+          "http://localhost:5173",
+          "http://127.0.0.1:3000",
+          "http://127.0.0.1:5173",
+          "https://www.secureusdt.com",
+          "https://api.secureusdt.com",
+          "https://secureusdt.com",
+        ];
 
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Session-ID', 'X-User-ID']
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "X-Session-ID",
+    "X-User-ID",
+  ],
 };
 
 app.use(cors(corsOptions));
 
 /**
  * Request Logging Configuration using Morgan
- * 
+ *
  * This middleware logs all HTTP requests to both console and file for monitoring and debugging.
  * It captures request details including method, URL, status code, response time, and IP address.
- * 
+ *
  * Log Files: Stored in ./logs/request.log for persistent logging
  * Console Output: Simplified format for real-time monitoring
  */
 const filePath = path.join(__dirname, "logs", "request.log");
 const accessLogStream = fs.createWriteStream(filePath, { flags: "a" });
 
-morgan.token('timestamp', () => {
+morgan.token("timestamp", () => {
   return new Date().toISOString();
 });
 
-morgan.token('ip', (req) => {
-  return req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip;
+morgan.token("ip", (req) => {
+  return (
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip
+  );
 });
 
-app.use(morgan('combined', { stream: accessLogStream }));
-app.use(morgan(':method :url :status :response-time ms'));
+app.use(morgan("combined", { stream: accessLogStream }));
+app.use(morgan(":method :url :status :response-time ms"));
 
 /**
  * Rate Limiting Configuration
- * 
+ *
  * Implements IP-based rate limiting to prevent abuse and DDoS attacks.
  * Uses subnet-based grouping (/24 for IPv4) to limit requests per IP range.
- * 
+ *
  * Configuration:
  * - Window: 15 minutes (configurable via RATE_LIMIT_WINDOW_MS)
  * - Max Requests: 100 per window (configurable via RATE_LIMIT_MAX_REQUESTS)
  * - Grouping: IP subnet-based to prevent circumvention
- * 
+ *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {string} - IP subnet identifier for rate limiting
@@ -159,75 +172,93 @@ app.use(limiter);
  *
  * Default Schedule (UTC): "30 3 * * *" (03:30 UTC every day)
  */
-const PROFIT_CRON_SCHEDULE_UTC = process.env.PROFIT_CRON_SCHEDULE_UTC || "30 3 * * *";
-corn.schedule(
-  PROFIT_CRON_SCHEDULE_UTC,
-  async () => {
-    try {
-      console.log("⏰ [CRON] (UTC) Cron job triggered at:", new Date().toISOString());
-      await paymentController.addProfit();
-    } catch (error) {
-      console.error("Error running addProfit cron:", error);
-    }
+const PROFIT_CRON_SCHEDULE_UTC =
+  process.env.PROFIT_CRON_SCHEDULE_UTC || "* * * * *";
+corn.schedule(PROFIT_CRON_SCHEDULE_UTC, async () => {
+  try {
+    console.log(
+      "⏰ [CRON] (UTC) Cron job triggered at:",
+      new Date().toISOString()
+    );
+    await paymentController.addProfit();
+  } catch (error) {
+    console.error("Error running addProfit cron:", error);
   }
-);
+});
 
-console.log("🕐 [CRON] Profit cron job scheduled (UTC):", PROFIT_CRON_SCHEDULE_UTC);
+console.log(
+  "🕐 [CRON] Profit cron job scheduled (UTC):",
+  PROFIT_CRON_SCHEDULE_UTC
+);
 
 /**
  * Backup Interval-Based Profit Distribution
- * 
+ *
  * This serves as a fallback mechanism in case the cron job fails or is disabled.
  * It calculates the exact time until the next 9 AM IST and schedules the profit distribution.
- * 
+ *
  * Activation: Controlled by USE_INTERVAL_BACKUP environment variable
- * 
+ *
  * The system:
  * 1. Calculates milliseconds until next 9 AM IST
  * 2. Schedules profit distribution using setTimeout
  * 3. Automatically reschedules for the next day after completion
  * 4. Continues scheduling even if individual runs fail
- * 
+ *
  * This ensures profit distribution continues even if cron jobs are disabled or fail.
  */
 let cronInterval = null;
-if (process.env.USE_INTERVAL_BACKUP === 'true') {
-  console.log("🔄 [BACKUP] Starting interval-based profit addition (daily at 9 AM IST)");
-  
+if (process.env.USE_INTERVAL_BACKUP === "true") {
+  console.log(
+    "🔄 [BACKUP] Starting interval-based profit addition (daily at 9 AM IST)"
+  );
+
   const getNext9AM = () => {
     const now = new Date();
-    const ist9AM = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    const ist9AM = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
     ist9AM.setHours(9, 0, 0, 0);
-    
+
     if (ist9AM <= now) {
       ist9AM.setDate(ist9AM.getDate() + 1);
     }
-    
+
     return ist9AM.getTime() - now.getTime();
   };
-  
+
   const scheduleNext = () => {
     const delay = getNext9AM();
-    console.log(`⏰ [INTERVAL] Next profit addition scheduled in ${Math.round(delay / 1000 / 60)} minutes`);
-    
+    console.log(
+      `⏰ [INTERVAL] Next profit addition scheduled in ${Math.round(
+        delay / 1000 / 60
+      )} minutes`
+    );
+
     cronInterval = setTimeout(async () => {
       try {
-        console.log("⏰ [INTERVAL] Interval-based profit addition triggered at:", new Date().toISOString());
+        console.log(
+          "⏰ [INTERVAL] Interval-based profit addition triggered at:",
+          new Date().toISOString()
+        );
         await paymentController.addProfit();
         scheduleNext();
       } catch (error) {
-        console.error("❌ [INTERVAL] Error in interval-based profit addition:", error);
+        console.error(
+          "❌ [INTERVAL] Error in interval-based profit addition:",
+          error
+        );
         scheduleNext();
       }
     }, delay);
   };
-  
+
   scheduleNext();
 }
 
 /**
  * Middleware Configuration
- * 
+ *
  * Body parser middleware to handle JSON request bodies.
  * This is essential for processing API requests with JSON payloads.
  */
@@ -235,10 +266,10 @@ app.use(bodyParser.json());
 
 /**
  * MongoDB Database Connection
- * 
+ *
  * Establishes connection to MongoDB database using the connection string from environment variables.
  * The connection is essential for all data operations including user management, transactions, and profit calculations.
- * 
+ *
  * Connection String: Retrieved from MONGODB_URI environment variable
  * Error Handling: Logs connection errors and continues server startup
  */
@@ -253,28 +284,28 @@ mongoose
 
 /**
  * Health Check Endpoint
- * 
+ *
  * Provides a simple endpoint to verify server status and uptime.
  * Used by monitoring systems and load balancers to check server health.
- * 
+ *
  * @route GET /api/health
  * @returns {Object} Server status information including uptime and timestamp
  */
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running',
+    message: "Server is running",
     timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    uptime: process.uptime(),
   });
 });
 
 /**
  * API Route Configuration
- * 
+ *
  * All API routes are organized by functionality and mounted on specific paths.
  * Each route file contains related endpoints for a specific feature area.
- * 
+ *
  * Route Structure:
  * - /api/users - User management and registration
  * - /api/login - Authentication and login
@@ -326,10 +357,10 @@ app.use("/api/email-verification", emailVerification);
 
 /**
  * Server Startup
- * 
+ *
  * Starts the Express server on the configured port.
  * Default port is 5002, but can be overridden with PORT environment variable.
- * 
+ *
  * @param {number} PORT - Server port number (default: 5002)
  */
 const PORT = process.env.PORT || 5002;

@@ -201,10 +201,63 @@ const deleteUser = async (req, res) => {
     };
 };
 
+const getUserReferrals = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).send({
+                success: false,
+                message: "User ID is required"
+            });
+        }
+
+        // Get the user to find their referral code
+        const user = await userRepo.getUserById(userId);
+        if (!user) {
+            return res.status(404).send({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        if (!user.referralCode) {
+            return res.status(200).send({
+                success: true,
+                message: "No referrals found",
+                data: []
+            });
+        }
+
+        // Get all users who were referred by this user's referral code
+        const referrals = await userRepo.getUsersByReferralCode(user.referralCode);
+        
+        // Format the response data
+        const formattedReferrals = referrals.map(ref => ({
+            _id: ref._id,
+            name: `${ref.firstName} ${ref.lastName}`,
+            email: ref.email,
+            joinedDate: ref.joinDate
+        }));
+
+        res.status(200).send({
+            success: true,
+            message: "Referrals fetched successfully",
+            data: formattedReferrals
+        });
+    } catch (error) {
+        console.error("Error in getUserReferrals:", error);
+        res.status(500).send({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
 module.exports = {
     getAllUsers,
     createUser,
     getUserById,
     updateUser,
     deleteUser,
+    getUserReferrals,
 };
