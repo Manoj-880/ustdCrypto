@@ -173,7 +173,7 @@ app.use(limiter);
  * Default Schedule (UTC): "30 3 * * *" (03:30 UTC every day)
  */
 const PROFIT_CRON_SCHEDULE_UTC =
-  process.env.PROFIT_CRON_SCHEDULE_UTC || "* * * * *";
+  process.env.PROFIT_CRON_SCHEDULE_UTC || "30 3 * * *";
 corn.schedule(PROFIT_CRON_SCHEDULE_UTC, async () => {
   try {
     console.log(
