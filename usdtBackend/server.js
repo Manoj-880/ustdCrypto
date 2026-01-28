@@ -128,35 +128,38 @@ app.use(morgan(":method :url :status :response-time ms"));
  * Rate Limiting Configuration
  *
  * Implements IP-based rate limiting to prevent abuse and DDoS attacks.
- * Uses subnet-based grouping (/24 for IPv4) to limit requests per IP range.
+ * Uses subnet-based grouping to limit requests per IP range.
  *
  * Configuration:
- * - Window: 15 minutes (configurable via RATE_LIMIT_WINDOW_MS)
+ * - Window: 24 hours (configurable via RATE_LIMIT_WINDOW_MS)
  * - Max Requests: 100 per window (configurable via RATE_LIMIT_MAX_REQUESTS)
- * - Grouping: IP subnet-based to prevent circumvention
+ * - Grouping: /24 for IPv4, /64 for IPv6 to prevent circumvention
  *
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {string} - IP subnet identifier for rate limiting
  */
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 24 * 60 * 60 * 1000,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
   keyGenerator: (req, res) => {
-    const clientIp =
-      req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    const xForwardedFor = req.headers["x-forwarded-for"];
+    const rawIp =
+      (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null) ||
+      req.ip ||
+      req.connection?.remoteAddress;
+    const clientIp = typeof rawIp === "string" ? rawIp.trim() : "";
 
     try {
       const addr = ipaddr.parse(clientIp);
       if (addr.kind() === "ipv4") {
-        const octets = addr.octets;
-        return `${octets[0]}.${octets[1]}.${octets[2]}.0/24`;
+        return `${addr.mask(24).toString()}/24`;
       }
       if (addr.kind() === "ipv6") {
-        return addr.range();
+        return `${addr.mask(64).toNormalizedString()}/64`;
       }
     } catch (e) {
-      return clientIp;
+      return clientIp || "unknown";
     }
   },
   message: { error: "Too many requests from this IP range, try again later." },
