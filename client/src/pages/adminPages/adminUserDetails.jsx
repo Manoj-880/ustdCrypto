@@ -40,6 +40,7 @@ import {
 } from "@ant-design/icons";
 import "../../styles/pages/adminPages/adminUserDetails.css";
 import { getUserById, addBalance, deleteUser, updateUser } from "../../api_calls/userApi";
+import { getAllDepositNames } from "../../api_calls/depositNameApi";
 import { toast } from "react-toastify";
 
 const { Title, Text } = Typography;
@@ -57,9 +58,11 @@ const AdminUserDetails = () => {
   const [addBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
   const [addBalanceLoading, setAddBalanceLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [depositNames, setDepositNames] = useState([]);
 
   useEffect(() => {
     fetchUserData();
+    fetchDepositNames();
   }, []);
 
   const fetchUserData = async () => {
@@ -72,6 +75,13 @@ const AdminUserDetails = () => {
       toast.error(response.message);
     }
     setLoading(false);
+  };
+
+  const fetchDepositNames = async () => {
+    const response = await getAllDepositNames();
+    if (response.success) {
+      setDepositNames(response.data || []);
+    }
   };
 
   const handleEdit = () => {
@@ -167,7 +177,8 @@ const AdminUserDetails = () => {
       const result = await addBalance(
         userData._id,
         values.amount,
-        values.reason
+        values.reason,
+        values.depositName
       );
       
       if (result.success) {
@@ -553,6 +564,21 @@ const AdminUserDetails = () => {
             </Form.Item>
 
             <Form.Item
+              name="depositName"
+              label="Deposit Name (Optional)"
+            >
+              <Select
+                placeholder="Select a deposit name"
+                allowClear
+                size="large"
+                options={depositNames.map((item) => ({
+                  label: item.name,
+                  value: item.name,
+                }))}
+              />
+            </Form.Item>
+
+            <Form.Item
               name="reason"
               label="Reason (Optional)"
               rules={[
@@ -594,6 +620,7 @@ const AdminUserDetails = () => {
             </Text>
             <ul className="notice-list">
               <li>Add the specified amount to the user's wallet balance</li>
+              <li>If a deposit name is selected, description becomes "{'{name}'} added balance"</li>
               <li>Create a transaction record for audit purposes</li>
               <li>Send an email notification to {userData?.email}</li>
             </ul>

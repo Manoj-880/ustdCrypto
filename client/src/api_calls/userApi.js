@@ -59,12 +59,13 @@ const deleteUser = async (id) => {
     }
 }
 
-const addBalance = async (userId, amount, reason) => {
+const addBalance = async (userId, amount, reason, depositName) => {
     try {
         const response = await axios.post(`${url}/admin/add-balance`, {
             userId,
             amount,
-            reason
+            reason,
+            depositName
         });
         console.log('Add balance response:', response.data);
         return response.data;

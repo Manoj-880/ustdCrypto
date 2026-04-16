@@ -1,0 +1,76 @@
+.deposit-names-page {
+  padding: 0;
+}
+
+.deposit-names-page .page-header {
+  background: linear-gradient(135deg, var(--color-bg-card), var(--color-bg-secondary));
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.deposit-names-page .page-header .ant-typography {
+  color: var(--color-text-primary) !important;
+}
+
+.deposit-names-page .page-header .ant-typography-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+.deposit-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.deposit-card .ant-card-head,
+.deposit-card .ant-card-body {
+  background: transparent !important;
+}
+
+.deposit-card .ant-typography {
+  color: var(--color-text-primary) !important;
+}
+
+.deposit-card .ant-form-item-label > label {
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.deposit-card .ant-input {
+  background: var(--color-bg-secondary) !important;
+  border: 1px solid var(--color-border-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.deposit-card .ant-input::placeholder {
+  color: var(--color-text-tertiary) !important;
+}
+
+.deposit-card .ant-input:focus,
+.deposit-card .ant-input-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-primary-light) !important;
+}
+
+.deposit-card .ant-list-item {
+  border-bottom-color: var(--color-border-primary) !important;
+}
+
+.deposit-card .ant-list-item .ant-typography {
+  color: var(--color-text-primary) !important;
+}
+
+.deposit-card .ant-list-empty-text {
+  color: var(--color-text-tertiary) !important;
+}
+
+.deposit-add-btn {
+  min-width: 140px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover)) !important;
+  border: none !important;
+  color: var(--color-text-white) !important;
+}

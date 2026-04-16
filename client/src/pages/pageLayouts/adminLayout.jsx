@@ -9,6 +9,7 @@ import AdminWithdrawRequests from "../adminPages/adminWithdrawRequests";
 import AdminWallets from "../adminPages/adminWallets";
 import FAQManagement from "../adminPages/faqManagement";
 import LockinPlans from "../adminPages/lockinPlans";
+import DepositNames from "../adminPages/depositNames";
 import RiskDisclaimer from "../static/riskDisclaimer";
 import AdminSideNav from "../adminPages/components/AdminSideNav";
 import AdminHeader from "../adminPages/components/AdminHeader";
@@ -73,6 +74,7 @@ const AdminLayout = () => {
             <Route path="/wallets" element={<AdminWallets />} />
             <Route path="/faq" element={<FAQManagement />} />
             <Route path="/lockin-plans" element={<LockinPlans />} />
+            <Route path="/deposit-names" element={<DepositNames />} />
             <Route path="/risk-disclaimer" element={<RiskDisclaimer />} />
           </Routes>
         </div>
