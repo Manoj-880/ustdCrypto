@@ -1,6 +1,7 @@
 const adminRepo = require("../repos/adminRepo");
 const userRepo = require("../repos/userRepo");
 const transactionRepo = require("../repos/transactionRepo");
+const depositNameRepo = require("../repos/depositNameRepo");
 const { sendAdminBalanceAddedEmail } = require("../services/emailService");
 
 const createAdmin = async (req, res) => {
@@ -40,7 +41,7 @@ const updateAdmin = async (req, res) => {
 
 const addBalance = async (req, res) => {
   try {
-    const { userId, amount, reason } = req.body;
+    const { userId, amount, reason, depositName } = req.body;
 
     // Validate input
     if (!userId || !amount) {
@@ -76,6 +77,9 @@ const addBalance = async (req, res) => {
     // Calculate new balance
     const currentBalance = parseFloat(user.balance) || 0;
     const newBalance = (currentBalance + parseFloat(amount)).toFixed(2);
+    const effectiveDescription = depositName
+      ? `${depositName} added balance`
+      : reason || "Admin added balance";
 
     // Update user balance
     await userRepo.updateUser(userId, {
@@ -91,11 +95,11 @@ const addBalance = async (req, res) => {
       userWalletId: user.walletId || null,
       type: "ADMIN_ADD",
       status: "completed",
-      description: reason || "Admin added balance",
+      description: effectiveDescription,
       fee: 0
     };
 
-    await transactionRepo.createTransaction(transactionData);
+    const createdTransaction = await transactionRepo.createTransaction(transactionData);
 
     // Send email notification with PDF invoice
     try {
@@ -110,10 +114,10 @@ const addBalance = async (req, res) => {
         user.firstName,
         parseFloat(amount).toFixed(2),
         newBalance,
-        transactionData.transactionId,
-        reason || "Admin added balance",
+        createdTransaction.transactionId,
+        effectiveDescription,
         user, // userData for PDF generation
-        transactionData, // transactionData for PDF generation
+        createdTransaction, // transactionData for PDF generation
         adminData // adminData for PDF generation
       );
 
@@ -135,7 +139,8 @@ const addBalance = async (req, res) => {
         amount: parseFloat(amount).toFixed(2),
         previousBalance: currentBalance.toFixed(2),
         newBalance,
-        transactionId: transactionData.transactionId,
+        transactionId: createdTransaction.transactionId,
+        description: effectiveDescription,
       },
     });
   } catch (error) {
@@ -147,8 +152,88 @@ const addBalance = async (req, res) => {
   }
 };
 
+const getAllDepositNames = async (req, res) => {
+  try {
+    const depositNames = await depositNameRepo.getAllDepositNames();
+    res.status(200).send({
+      success: true,
+      message: "Deposit names fetched successfully",
+      data: depositNames,
+    });
+  } catch (error) {
+    console.error("getAllDepositNames error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const createDepositName = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).send({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    const created = await depositNameRepo.createDepositName({
+      name: name.trim(),
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Deposit name created successfully",
+      data: created,
+    });
+  } catch (error) {
+    if (error?.code === 11000) {
+      return res.status(400).send({
+        success: false,
+        message: "Deposit name already exists",
+      });
+    }
+    console.error("createDepositName error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+const deleteDepositName = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await depositNameRepo.deleteDepositName(id);
+
+    if (!deleted) {
+      return res.status(404).send({
+        success: false,
+        message: "Deposit name not found",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Deposit name deleted successfully",
+      data: deleted,
+    });
+  } catch (error) {
+    console.error("deleteDepositName error:", error);
+    res.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createAdmin,
   updateAdmin,
   addBalance,
+  getAllDepositNames,
+  createDepositName,
+  deleteDepositName,
 };
